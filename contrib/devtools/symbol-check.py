@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/env python3
 # Copyright (c) 2014 Wladimir J. van der Laan
 # Copyright (c) 2010-2019 The Freicoin Developers
 #
@@ -25,7 +25,6 @@ Example usage:
 
     find ../gitian-builder/build -type f -executable | xargs python contrib/devtools/symbol-check.py
 '''
-from __future__ import division, print_function, unicode_literals
 import subprocess
 import re
 import sys

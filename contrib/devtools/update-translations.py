@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # Copyright (c) 2014 Wladimir J. van der Laan
 # Copyright (c) 2010-2019 The Freicoin Developers
 #
@@ -29,7 +29,6 @@ It will do the following automatically:
 TODO:
 - auto-add new translations to the build system according to the translation process
 '''
-from __future__ import division, print_function
 import subprocess
 import re
 import sys

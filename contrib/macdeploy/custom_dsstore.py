@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Copyright (c) 2013-2015 The Bitcoin Core developers
 # Copyright (c) 2010-2019 The Freicoin Developers
 #

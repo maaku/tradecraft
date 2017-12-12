@@ -1083,6 +1083,11 @@ both the pull request and git merge commit are mentioned.
 - #9340 `fb987b3` [0.13] Update secp256k1 subtree (MarcoFalke)
 - #9229 `b172377` Remove calls to getaddrinfo_a (TheBlueMatt)
 
+Python Support
+--------------
+
+Support for Python 2 has been discontinued for all test files and tools.
+
 Credits
 =======
 
