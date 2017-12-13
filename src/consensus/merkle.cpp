@@ -60,7 +60,7 @@ typedef unsigned merklecomputationopts;
 static const merklecomputationopts MERKLE_COMPUTATION_MUTABLE = 0x1;
 static const merklecomputationopts MERKLE_COMPUTATION_FAST    = 0x2;
 
-static void MerkleHash_Hash256(uint256& parent, const uint256& left, const uint256& right) {
+void MerkleHash_Hash256(uint256& parent, const uint256& left, const uint256& right) {
     CHash256().Write(left.begin(), 32).Write(right.begin(), 32).Finalize(parent.begin());
 }
 
@@ -77,7 +77,7 @@ static unsigned char _MidstateIV[32] =
       0x08, 0xc8, 0xaf, 0x1c, 0x94, 0xf3, 0x4b, 0x9d,
       0x0a, 0xf2, 0xf4, 0x50, 0xdc, 0x24, 0xa3, 0xbc,
       0xef, 0x98, 0x31, 0x8f, 0xaf, 0x5e, 0x25, 0x06 };
-static void MerkleHash_Sha256Midstate(uint256& parent, const uint256& left, const uint256& right) {
+void MerkleHash_Sha256Midstate(uint256& parent, const uint256& left, const uint256& right) {
     CSHA256(_MidstateIV).Write(left.begin(), 32).Write(right.begin(), 32).Midstate(parent.begin(), nullptr, nullptr);
 }
 
