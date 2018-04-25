@@ -475,6 +475,7 @@ UniValue gettxoutsetinfo(const UniValue& params, bool fHelp)
         ret.push_back(Pair("txouts", (int64_t)stats.nTransactionOutputs));
         ret.push_back(Pair("bytes_serialized", (int64_t)stats.nSerializedSize));
         ret.push_back(Pair("hash_serialized", stats.hashSerialized.GetHex()));
+        ret.push_back(Pair("total_value", ValueFromAmount(stats.nTotalValue)));
         ret.push_back(Pair("total_amount", ValueFromAmount(stats.nTotalAmount)));
     }
     return ret;
@@ -551,13 +552,14 @@ UniValue gettxout(const UniValue& params, bool fHelp)
         ret.push_back(Pair("confirmations", 0));
     else
         ret.push_back(Pair("confirmations", pindex->nHeight - coins.nHeight + 1));
-    ret.push_back(Pair("value", ValueFromAmount(coins.vout[n].nValue)));
+    ret.push_back(Pair("value", ValueFromAmount(coins.vout[n].GetReferenceValue())));
     UniValue o(UniValue::VOBJ);
     ScriptPubKeyToJSON(coins.vout[n].scriptPubKey, o, true);
     ret.push_back(Pair("scriptPubKey", o));
     ret.push_back(Pair("version", coins.nVersion));
     ret.push_back(Pair("coinbase", coins.fCoinBase));
     ret.push_back(Pair("refheight", coins.refheight));
+    ret.push_back(Pair("amount", ValueFromAmount(coins.GetPresentValueOfOutput(n, pindex->nHeight + 1))));
 
     return ret;
 }

@@ -145,6 +145,13 @@ public:
         Cleanup();
     }
 
+    // calculate value of an output at the specified block height
+    CAmount GetPresentValueOfOutput(int n, uint32_t height) const
+    {
+        assert(n < (int)vout.size());
+        return vout[n].GetTimeAdjustedValue((int)height - refheight);
+    }
+
     void swap(CCoins &to) {
         std::swap(to.fCoinBase, fCoinBase);
         to.vout.swap(vout);
@@ -333,6 +340,7 @@ struct CCoinsStats
     uint64_t nTransactionOutputs;
     uint64_t nSerializedSize;
     uint256 hashSerialized;
+    CAmount nTotalValue;
     CAmount nTotalAmount;
 
     CCoinsStats() : nHeight(0), nTransactions(0), nTransactionOutputs(0), nSerializedSize(0), nTotalAmount(0) {}
