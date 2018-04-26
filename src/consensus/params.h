@@ -20,6 +20,7 @@
 #ifndef FREICOIN_CONSENSUS_PARAMS_H
 #define FREICOIN_CONSENSUS_PARAMS_H
 
+#include "amount.h"
 #include "uint256.h"
 #include <map>
 #include <string>
@@ -51,9 +52,13 @@ struct BIP9Deployment {
  */
 struct Params {
     uint256 hashGenesisBlock;
-    int nSubsidyHalvingInterval;
     /** Demurrage settings */
     bool permit_disable_time_adjust; // is '-notimeadjust' allowed
+    CAmount perpetual_subsidy; // equilibrium_monetary_base * demurrage rate
+    /** Initial distribution via excess subsidy */
+    int64_t equilibrium_height;
+    int64_t equilibrium_monetary_base;
+    CAmount initial_excess_subsidy;
     /** Used to check majorities for block version upgrade */
     int nMajorityEnforceBlockUpgrade;
     int nMajorityRejectBlockOutdated;
