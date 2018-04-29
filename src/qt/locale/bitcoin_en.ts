@@ -3630,8 +3630,8 @@ Address: %4
     </message>
     <message>
         <location line="+3"/>
-        <source>Distributed under the MIT software license, see the accompanying file COPYING or &lt;http://www.opensource.org/licenses/mit-license.php&gt;.</source>
-        <translation type="unfinished"></translation>
+        <source>Distributed under the conjunctive terms of BOTH the GNU Affero General Public License v3.0 and the MIT/X11 software license, see the accompanying file COPYING for details.</source>
+        <translation>Distributed under the conjunctive terms of BOTH the GNU Affero General Public License v3.0 and the MIT/X11 software license, see the accompanying file COPYING for details.</translation>
     </message>
     <message>
         <location line="+3"/>
