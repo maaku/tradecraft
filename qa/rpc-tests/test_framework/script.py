@@ -846,6 +846,7 @@ SIGHASH_ALL = 1
 SIGHASH_NONE = 2
 SIGHASH_SINGLE = 3
 SIGHASH_ANYONECANPAY = 0x80
+SIGHASH_NO_LOCK_HEIGHT = 0x100
 
 def FindAndDelete(script, sig):
     """Consensus critical, see FindAndDelete() in Satoshi codebase"""
@@ -909,7 +910,9 @@ def SignatureHash(script, txTo, inIdx, hashtype):
         txtmp.vin.append(tmp)
 
     s = txtmp.serialize()
-    s += struct.pack(b"<I", hashtype)
+    if (hashtype & SIGHASH_NO_LOCK_HEIGHT) or (txTo.nVersion==1 and len(txTo.vin)==1 and txTo.vin[0].prevout.hash==0 and txTo.vin[0].prevout.n in (-1,0xffffffff)):
+        s = s[:-4]
+    s += struct.pack(b"<I", (hashtype & ~SIGHASH_NO_LOCK_HEIGHT))
 
     hash = hash256(s)
 
@@ -956,6 +959,8 @@ def SegwitVersion1SignatureHash(script, txTo, inIdx, hashtype, amount):
     ss += struct.pack("<I", txTo.vin[inIdx].nSequence)
     ss += ser_uint256(hashOutputs)
     ss += struct.pack("<i", txTo.nLockTime)
-    ss += struct.pack("<I", hashtype)
+    if (not (hashtype & SIGHASH_NO_LOCK_HEIGHT)) and (txTo.nVersion!=1 or len(txTo.vin)!=1 or txTo.vin[0].prevout.hash!=0 or txTo.vin[0].prevout.n not in (-1,0xffffffff)):
+        ss += struct.pack("<i", txTo.lock_height)
+    ss += struct.pack("<I", (hashtype & ~SIGHASH_NO_LOCK_HEIGHT))
 
     return hash256(ss)
