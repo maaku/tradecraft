@@ -2747,10 +2747,6 @@ Adresa: %4
         <translation>Ataşaţi adresei date şi ascultaţi totdeauna pe ea. Folosiţi notaţia [host]:port pentru IPv6</translation>
     </message>
     <message>
-        <source>Distributed under the MIT software license, see the accompanying file COPYING or &lt;http://www.opensource.org/licenses/mit-license.php&gt;.</source>
-        <translation>Distribuit sub licenţa de programe MIT/X11, vezi fişierul însoţitor COPYING sau &lt;http://www.opensource.org/licenses/mit-license.php&gt;.</translation>
-    </message>
-    <message>
         <source>Enter regression test mode, which uses a special chain in which blocks can be solved instantly.</source>
         <translation>Iniţiază modul de test regresie, care foloseşte un lanţ special în care blocurile pot fi rezolvate instantaneu.</translation>
     </message>
