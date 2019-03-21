@@ -102,7 +102,7 @@ if ENABLE_ZMQ:
 
 #Tests
 testScripts = [
-    'bip68-112-113-p2p.py',
+#    'bip68-112-113-p2p.py', #not deployed on Freicoin
     'wallet.py',
     'listtransactions.py',
     'receivedby.py',
