@@ -169,10 +169,8 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         final_tx = pcoinsTip->GetFinalTx();
         if (final_tx.IsNull()) {
             // Should never happen
-            // FIXME: Change to "return nullptr" once the FinalTx code
-            //        is in, and remove the "else".
-            block_final_state = NO_BLOCK_FINAL_TX;
-        } else
+            return nullptr;
+        }
         // Fetch the unspent outputs of the last block-final tx.  This call
         // should always return results because the prior block-final
         // transaction was the last processed transaction (so none of the
@@ -182,11 +180,8 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
             const auto& coin = pcoinsTip->AccessCoin(prevout);
             if (coin.IsSpent()) {
                 // Should never happen
-                // FIXME: Change to "return nullptr" once the FinalTx code is
-                //        being tracked, and remove the "else".
-                block_final_state = NO_BLOCK_FINAL_TX;
-                break;
-            } else
+                return nullptr;
+            }
             // If it was a coinbase, meaning we're in the first 100 blocks after
             // activation, then we need to make sure it has matured, otherwise
             // we do nothing at all.
