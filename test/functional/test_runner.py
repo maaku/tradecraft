@@ -141,6 +141,7 @@ EXTENDED_SCRIPTS = [
     'p2p-timeouts.py',
     # vv Tests less than 60s vv
     'bip9-softforks.py',
+    'block-final-tx.py',
     'p2p-feefilter.py',
     'rpcbind_test.py',
     # vv Tests less than 30s vv

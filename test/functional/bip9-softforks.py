@@ -189,6 +189,10 @@ class BIP9SoftForksTest(ComparisonTestFramework):
         tmpl = self.nodes[0].getblocktemplate({})
         assert(bipName not in tmpl['rules'])
 
+        if bipName == 'finaltx':
+            test_blocks = self.generate_blocks(100, 4)
+            yield TestInstance(test_blocks, sync_every_block=False)
+
         # Test 5
         # Check that the new rule is enforced
         spendtx = self.create_transaction(self.nodes[0],
@@ -252,7 +256,8 @@ class BIP9SoftForksTest(ComparisonTestFramework):
         for test in itertools.chain(
                 self.test_BIP('csv', 0x20000001, self.sequence_lock_invalidate, self.donothing, 0),
                 self.test_BIP('csv', 0x20000001, self.mtp_invalidate, self.donothing, 0),
-                self.test_BIP('csv', 0x20000001, self.donothing, self.csv_invalidate, 0)
+                self.test_BIP('csv', 0x20000001, self.donothing, self.csv_invalidate, 0),
+                self.test_BIP('finaltx', 0x20001000, self.finaltx_invalidate, self.donothing, 12)
         ):
             yield test
 
@@ -278,6 +283,16 @@ class BIP9SoftForksTest(ComparisonTestFramework):
         # Disable Sequence lock, Activate nLockTime
         tx.vin[0].nSequence = 0x90FFFFFF
         tx.nLockTime = self.last_block_time
+
+    def finaltx_invalidate(self, tx):
+        '''Spend one of the block-final inputs with an OP_RETURN output, which
+        is invalid under the block-final tx rules.
+        '''
+        height = self.nodes[0].getblockcount() + 1
+        prev_height = height - 100
+        prev_block = self.nodes[0].getblock(self.nodes[0].getblockhash(prev_height))
+        tx.vin.append(CTxIn(COutPoint(uint256_from_str(unhexlify(prev_block['tx'][0])[::-1]), 0), CScript([]), 0xffffffff))
+        tx.vout.append(CTxOut(0, CScript([OP_RETURN])))
 
 if __name__ == '__main__':
     BIP9SoftForksTest().main()
