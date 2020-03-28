@@ -696,7 +696,7 @@ Low-level RPC changes
 - New RPC commands: `generatetoaddress`, `importprunedfunds`,
   `removeprunedfunds`, `signmessagewithprivkey`,
   `getmempoolancestors`, `getmempooldescendants`, `getmempoolentry`,
-  `createwitnessaddress`, `addwitnessaddress`.
+  `createwitnessaddress`, `addwitnessaddress`, `createmerkleproof`.
 
 - Removed RPC commands: `setgenerate`, `getgenerate`.
 
