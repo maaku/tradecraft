@@ -1,7 +1,9 @@
 Freicoin version v13.2-0 is now available from:
 
-  * [Linux 32-bit](https://s3.amazonaws.com/in.freico.stable/freicoin-v13.2-0-linux32.zip)
-  * [Linux 64-bit](https://s3.amazonaws.com/in.freico.stable/freicoin-v13.2-0-linux64.zip)
+  * [Linux i686 (Intel 32-bit)](https://s3.amazonaws.com/in.freico.stable/freicoin-v13.2-0-i686-pc-linux-gnu.tar.gz)
+  * [Linux x86_64 (Intel 64-bit)](https://s3.amazonaws.com/in.freico.stable/freicoin-v13.2-0-x86_64-linux-gnu.tar.gz)
+  * [Linux ARMv7-A (ARM 32-bit)](https://s3.amazonaws.com/in.freico.stable/freicoin-v13.2-0-arm-linux-gnueabihf.tar.gz)
+  * [Linux ARMv8-A (ARM 64-bit)](https://s3.amazonaws.com/in.freico.stable/freicoin-v13.2-0-aarch64-linux-gnu.tar.gz)
   * [macOS (app)](https://s3.amazonaws.com/in.freico.stable/freicoin-v13.2-0-osx.dmg)
   * [macOS (server)](https://s3.amazonaws.com/in.freico.stable/freicoin-v13.2-0-osx64.tar.gz)
   * [Windows 32-bit (installer)](https://s3.amazonaws.com/in.freico.stable/freicoin-v13.2-0-win32-setup.exe)
@@ -11,16 +13,16 @@ Freicoin version v13.2-0 is now available from:
   * [Source](https://github.com/tradecraftio/tradecraft/archive/v13.2-0.zip)
 
 This is a new major version release, including activation parameters
-for the segwit softfork, new features, various bugfixes and
+for the segwit soft-fork, new features, various bug fixes and
 performance improvements, as well as updated translations.
 
-Please report bugs using the issue tracker at github:
+Please report bugs using the issue tracker at GitHub:
 
-  <https://github.com/freicoin/freicoin/issues>
+  <https://github.com/tradecraftio/tradecraft/issues>
 
 To receive security and update notifications, please subscribe to:
 
-  FIXME
+  <https://tradecraft.groups.io/g/announce/>
 
 Compatibility
 ==============
@@ -29,7 +31,7 @@ Microsoft ended support for Windows XP on [April 8th,
 2014](https://www.microsoft.com/en-us/WindowsForBusiness/end-of-xp-support),
 an OS initially released in 2001. This means that not even critical
 security updates will be released anymore. Without security updates,
-using a freicoin wallet on a XP machine is irresponsible at least.
+using a Freicoin wallet on a XP machine is irresponsible at least.
 
 In addition to that, with the upstream 0.12.x releases of Bitcoin
 Core, which Freicoin is based on, there have been varied reports of
@@ -40,12 +42,12 @@ libraries such as Qt are no longer being tested on XP.
 
 We do not have time nor resources to provide support for an OS that is
 end-of-life. From v13 on, Windows XP is no longer supported. Users are
-suggested to upgrade to a newer verion of Windows, or install an
+suggested to upgrade to a newer version of Windows, or install an
 alternative OS that is supported.
 
 No attempt is made to prevent installing or running the software on
 Windows XP, you can still do so at your own risk, but do not expect it
-to work: do not report issues about Windows XP to the issue tracker.
+to work, and do not report issues about Windows XP to the issue tracker.
 
 From v13 onwards OS X 10.7 is no longer supported. v13 was originally
 intended to work on 10.7+, but severe issues with the libc++ version
@@ -79,7 +81,7 @@ immediate benefits:
   are not part of the data currently used to calculate the size of a
   block, which allows a block containing segwit transactions to hold
   more data than allowed by the current maximum block size. Estimates
-  based on the transactions currently found in blocks indicate that if
+  based on the transactions found in bitcoin blocks indicate that if
   all wallets switch to using segwit, the network will be able to
   support about 70% more transactions. The network will also be able
   to support more of the advanced-style payments (such as multisig)
@@ -106,24 +108,40 @@ immediate benefits:
   signature generators (such as hardware wallets), reduces the amount
   of data the signature generator needs to download, and allows the
   signature generator to operate more quickly.  This is made possible
-  by having the generator sign the amount of freicoins they think they
-  are spending, and by having full nodes refuse to accept those
-  signatures unless the amount of freicoins being spent is exactly the
-  same as was signed.  For non-segwit transactions, wallets instead
-  had to download the complete previous transactions being spent for
-  every payment they made, which could be a slow operation on hardware
-  wallets and in other situations where bandwidth or computation speed
-  was constrained.
+  by having the generator sign the amount and reference height of
+  freicoins they think they are spending, and by having full nodes
+  refuse to accept those signatures unless the amount of freicoins
+  being spent is exactly the same as was signed.  For non-segwit
+  transactions, wallets instead had to download the complete previous
+  transactions being spent for every payment they made, which could be
+  a slow operation on hardware wallets and in other situations where
+  bandwidth or computation speed was constrained.
 
 - **Linear scaling of sighash operations:** In 2015 a block was
   produced in Bitcoin that required about 25 seconds to validate on
   modern hardware because of the way transaction signature hashes are
   performed.  Other similar blocks, or blocks that could take even
   longer to validate, can still be produced today.  The problem that
-  caused this can't be fixed in a soft fork without unwanted
-  side-effects, but transactions that opt-in to using segwit will now
-  use a different signature method that doesn't suffer from this
-  problem and doesn't have any unwanted side-effects.
+  caused this can't be fixed for existing outputs in a soft fork
+  without unwanted side-effects, but transactions that opt-in to using
+  segwit will now use a different signature method that doesn't suffer
+  from this problem and doesn't have any unwanted side-effects.
+
+- **Linear scaling of script validation:** A full audit of the script
+  interpreter code has identified all sources of execution costs that
+  are non-linear with script size, and these scaling issues have been
+  fixed or removed.  For example, signature hashing no longer scales
+  quadraticly with transaction size, and OP_PICK (which has an cost
+  dependent on stack size) has been removed.
+
+- **Relaxation of constraints on scripts:** As script execution scales
+  linearly with script size for segwit scripts, there is no longer a
+  need to limit script resources as a DoS prevention measure.  The
+  following explicit limits are removed (leaving only the implicit
+  limits set by maximum transaction size): the maximum script size,
+  the maximum push size, the 1,000 element maximum stack size
+  (replaced with a 32,767 element maximum stack size), and the
+  non-push opcode execution limit.
 
 - **Increased security for multisig:** Freicoin addresses (both P2PKH
   addresses that start with a '1' and P2SH addresses that start with a
@@ -139,6 +157,34 @@ immediate benefits:
   maximum bits of security believed to be provided by Freicoin's
   choice of parameters for its Elliptic Curve Digital Security
   Algorithm [ECDSA].)
+
+- **CHECKLOCKTIMEVERIFY:** NOP2 is now CHECKLOCKTIMEVERIFY within
+  segregated witness scripts.  Unlike the related opcode in Bitcoin,
+  Freicoin's implementation drops its inputs and is only activated for
+  segwit scripts.  NOP2 remains a no-side-effect opcode for non-segwit
+  scripts.
+
+- **CHECKSEQUENCEVERIFY:** NOP3 is now CHECKSEQUENCEVERIFY within
+  segregated witness scripts.  Unlike the related opcode in Bitcoin,
+  Freicoin's implementation drops its inputs and is only activated for
+  segwit scripts.  NOP3 remains a no-side-effect opcode for non-segwit
+  scripts.
+
+- **MERKLEBRANCHVERIFY:** NOP4 is now MERKLEBRANCHVERIFY within
+  segregated witness scripts, an opcode which was proposed for Bitcoin
+  in [BIP116][] but never deployed.  Unlike the proposed Bitcoin
+  opcode, MERKLEBRANCHVERIFY in Freicoin drops its first 3 arguments
+  (count, roof, and proof) from the stack, and is only activated for
+  segwit scripts.  NOP4 remains a no-side-effect opcode for non-segwit
+  scripts.
+
+- **Merkleized alternative script trees:** Instead of P2WSH which in
+  Bitcoin hashes a single script as the witness commitment, Freicoin
+  permits an arbitrary number of script alternates to be hashed into a
+  Merkle tree, the root hash being the witness commitment, and one
+  script to be provided with an inclusion proof at time of spend.
+  This allows an effective 1-of-N spend threshold for N alternative
+  scripts.
 
 - **More efficient almost-full-node security** Satoshi Nakamoto's
   original Bitcoin paper from which Freicoin is derived describes a
@@ -160,22 +206,22 @@ immediate benefits:
 
 - **Script versioning:** Segwit makes it easy for future soft forks to
   allow Freicoin users to individually opt-in to almost any change in
-  the Freicoin Script language when those users receive new
-  transactions.  Features currently being researched by Freicoin
-  contributors that may use this capability include support for
-  Schnorr signatures, which can improve the privacy and efficiency of
-  multisig transactions (or transactions with multiple inputs), and
-  Merklized Alternative Script Trees (MAST), which can improve the
-  privacy and efficiency of scripts with two or more alternative spend
-  conditions.  Other Freicoin community members are studying several
-  other improvements that can be made using script versioning.
+  the Freicoin Script language when those users specify their
+  receiving addresses.  Features currently being researched by
+  Freicoin contributors that may use this capability include support
+  for Schnorr signatures, which can improve the privacy and efficiency
+  of multisig transactions (or transactions with multiple inputs), and
+  alternative signing modes, which extend the capabilities of smart
+  contracts built on top of Freicoin Script.  Other Freicoin community
+  members are studying several other improvements that can be made
+  using script versioning.
 
 Activation for the segwit soft fork is being managed using BIP9
-versionbits.  Segwit's version bit is bit 1, and nodes will begin
+versionbits.  Segwit's version bit is bit 2, and nodes will begin
 tracking which blocks signal support for segwit at the beginning of
-the first retarget period after segwit's start date of 15 November
-2016.  If 95% of blocks within a 2,016-block retarget period (about
-two weeks) signal support for segwit, the soft fork will be locked in.
+the first retarget period after segwit's start date of 16 April 2020.
+If 95% of blocks within a 2,016-block retarget period (about two
+weeks) signal support for segwit, the soft fork will be locked in.
 After another 2,016 blocks, segwit will activate.
 
 For more information about segwit, please see the [segwit FAQ][], the
@@ -184,8 +230,133 @@ For more information about segwit, please see the [segwit FAQ][], the
 operator, please see the [versionbits FAQ][] for information about
 signaling support for a soft fork.
 
+Segregated witness as implemented for Freicoin differs from the
+well-documented Bitcoin implementation in the following ways:
+
+- **Location of the witness commitment:** Bitcoin places the
+  commitment in an output of the miner's choosing in the coinbase
+  transaction; Freicoin places the commitment in the more optimal
+  location of the last output of the block-final transaction.  This
+  allows shorter, or more secure proofs of the witness commitment.
+
+- **Witness commitment structure:** Bitcoin uses the Satoshi-design
+  Merkle tree structure to build the witness commitment; Freicoin uses
+  the considerably more efficient fast Merkle trees specified in
+  [BIP98][].
+
+- **Witness commitment nonce:** Bitcoin allows additional data to be
+  committed to via the witness commitment nonce; Freicoin instead
+  allows the witness commitment to be placed within another Merkle
+  tree, at a depth of up to 7 layers, and the nonce is the resulting
+  inclusion Merkle proof.  Unlike Bitcoin's design, this does not
+  privilege proof sizes for witness data over those of future
+  extensions.
+
+- **Coinbase is covered by the commitment:** In the witness Merkle
+  tree, Bitcoin replaces the coinbase transaction hash with the
+  witness nonce; Freicoin includes the coinbase and the block-final
+  transactions, with only the contents of certain fields removed.
+
+  The Bitcoin approach is simple solution to the problem of the
+  witness commitment being within the coinbase itself, and works in
+  the context of Bitcoin because a proof of the witness commitment
+  necessarily includes the entire coinbase transaction anyway.  With
+  Freicoin, the witness commitment is in the block-final transaction,
+  and is detected in a way that permits mid-state compression of the
+  block-final transaction.  So to permit information critical to the
+  maintenance of the UTXO set ledger to be covered by a witness proof,
+  both the coinbase and block-final transaction are included in the
+  witness commitment.  To permit efficient work construction using
+  existing mining protocols, the scriptSig and nSequence fields of the
+  coinbase transaction are truncated and zero'd out, respectfully, in
+  the computation of the witness commitment.  To be computable, the
+  witness commitment field of the block-final transaction is also
+  zero'd out.
+
+  Since the nonce is placed in the coinbase's witness field, the
+  modified coinbase transaction is serialized without its witness.
+  The consensus rules for the block-final transaction prohibit it from
+  having a witness either.
+
+- **Segwit inner-script version:** Bitcoin's implementation of segwit
+  includes what it calls "script versions", which are within the
+  scriptPubKey of a segwit output.  Freicoin retains these, but will
+  use them only for versioning upgrades to the script hashing
+  mechanism itself.  Upgrades to the script interpreter rules are
+  handled by a new "inner-script version" which is prepended to the
+  beginning of the script.
+
+  Note that this means that ALL segwit scripts for Freicoin need to
+  have a byte added to their beginning, currently zero for all defined
+  segwit scripts.  Specifying a non-zero inner-script version will
+  allow that script pathway to be spent by anyone under the current
+  rules.
+
+  Be sure to update any segwit-supporting wallet software ported from
+  Bitcoin!
+
+- **Witness output encoding:** Freicoin allows up to 31 distinct outer
+  version bytes which indicate the script-to-commitment hashing method
+  used.  The commitment is allowed to be between 2 and 75 bytes in
+  length.  In addition to these two fields which the Bitcoin segwit
+  implementation also has (albeit with less flexibility), there are
+  also an optional shard specifier (up to 256 distinct values) and an
+  optional extension output (push between 2 and 75 bytes in length).
+  These fields are currently unused, but are likely to be used in the
+  implementation of Forward Blocks in the future.
+
+- **Replacement of P2WSH with long-hash MAST:** As noted above,
+  Freicoin replaces Bitcoin's P2WSH with a commitment to a 1-of-N
+  alternative script tree.  Note that a Merkle tree of 1 element is
+  allowed, which is effectively the same as P2WSH construction, except
+  with an extra zero-length element on the witness stack as the proof
+  for a single-element tree.
+
+- **Replacement of P2WPKH with short-hash MAST:** Instead of P2WPKH
+  which in Bitcoin hashes a single public key using a short 160-bit
+  hash, Freicoin allows the same Merkleized alternative script tree
+  construct to be used with the shorter 160-bit hash.  In general this
+  provides an inadequate 80 bit level of security, but with adequate
+  precautions a subset of use cases will have the full 160 bits of
+  security, while saving a non-trivial amount of space.
+
+  Do not use the "shorthash" segwit output construction in multi-party
+  protocols without consulting an applied cryptographer!
+
+- **Script interpreter changes:** All explicit script limitations
+  (maximum script size, maximum push size, non-push opcode limits,
+  etc.) have been removed.  The opcodes CHECKLOCKTIMEVERIFY and
+  CHECKSEQUENCEVERIFY are only available in segwit scripts, and drop
+  their arguments.  The opcode MERKLEBRANCHVERIFY is also added, and
+  drops its first 3 arguments (unlike the opcode proposed in
+  [BIP116][]).  All reserved or undefined opcodes cause script
+  execution to terminate with success, as does the previously defined
+  OP_PICK and OP_SHA1.  Disabled opcodes no longer affect non-executed
+  branches.  Instead of Bitcoin's NULLDUMMY semantics, Freicoin segwit
+  scripts have NULLFAIL and MULTISIG_HINT enforced.
+
+- **Transaction serialization changes:** In bitcoin, the "extended"
+  serialization format which includes witness data is indicated by
+  serializing a 0 where the length of the input vector would normally
+  be.  For on-chain transactions this works because there is never a
+  transaction with zero inputs--even a coinbase has a dummy input.
+  However it turns out that there are protocols where it is useful to
+  communicate outputs of a transaction before it is funded, and
+  therefore would require serializing a transaction with no inputs.
+  To support these use cases, Freicoin instead indicates the extended
+  serialization format by having the first byte of the serialized
+  length of the input vector be 0xff, which indicates a 64-bit value
+  follows, which implies at least 2^32 inputs for the transaction,
+  which is also not allowed by the consensus rules.
+
+Please note that these linked resources describe Bitcoin's version of
+segregated witness, which differs from Freicoin's implementation in
+important respects.
+
 [Segwit FAQ]: https://bitcoincore.org/en/2016/01/26/segwit-benefits/
 [segwit wallet developers guide]: https://bitcoincore.org/en/segwit_wallet_dev/
+[BIP98]: https://github.com/bitcoin/bips/blob/master/bip-0098.mediawiki
+[BIP116]: https://github.com/bitcoin/bips/blob/master/bip-0116.mediawiki
 [BIP141]: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki
 [BIP143]: https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki
 [BIP144]: https://github.com/bitcoin/bips/blob/master/bip-0144.mediawiki
@@ -193,7 +364,7 @@ signaling support for a soft fork.
 [versionbits FAQ]: https://bitcoincore.org/en/2016/06/08/version-bits-miners-faq/
 
 Change to wallet handling of mempool rejection
------------------------------------------------
+----------------------------------------------
 
 When a newly created transaction failed to enter the mempool due to
 the limits on chains of unconfirmed transactions the sending RPC calls
@@ -210,7 +381,7 @@ can be abandoned with the previously existing abandontransaction RPC
 (or in the GUI via a context menu on the transaction).
 
 Database cache memory increased
---------------------------------
+-------------------------------
 
 As a result of growth of the UTXO set, performance with the prior
 default database cache of 100 MiB has suffered.  For this reason the
@@ -226,7 +397,7 @@ Note that the database cache setting has the most performance impact
 during initial sync of a node, and when catching up after downtime.
 
 freicoin-cli: arguments privacy
-------------------------------
+-------------------------------
 
 The RPC command line client gained a new argument, `-stdin` to read
 extra arguments from standard input, one per line until EOF/Ctrl-D.
@@ -289,7 +460,7 @@ Compact Block support (BIP 152)
 -------------------------------
 
 Support for block relay using the Compact Blocks protocol has been
-implemented in PR 8068.
+implemented in the upstream Bitcoin PR 8068.
 
 The primary goal is reducing the bandwidth spikes at relay time,
 though in many cases it also reduces propagation delay. It is
@@ -334,7 +505,6 @@ HD wallets are incompatible with older versions of Freicoin.
 
 [Pull request](https://github.com/bitcoin/bitcoin/pull/8035/files), [BIP 32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
 
-
 Segregated Witness
 ------------------
 
@@ -345,6 +515,10 @@ The code preparations for Segregated Witness ("segwit"), as described in [BIP
 145](https://github.com/bitcoin/bips/blob/master/bip-0145.mediawiki) are
 finished and included in this release, and activation parameters for both
 mainnet and testnet.
+
+Note that Freicoin's version of segregated witness differs from that
+specified by these Bitcoin documents in many important ways, which are
+explained elsewhere in these release notes.
 
 Mining transaction selection ("Child Pays For Parent")
 ------------------------------------------------------
@@ -472,7 +646,7 @@ Low-level P2P changes
   since PR #8084.
 
 Low-level RPC changes
-----------------------
+---------------------
 
 - RPC calls have been added to output detailed statistics for
   individual mempool entries, as well as to calculate the in-mempool
@@ -496,6 +670,9 @@ Low-level RPC changes
 
   - OP_NOP3 has been renamed to OP_CHECKSEQUENCEVERIFY by [BIP 
 112](https://github.com/bitcoin/bips/blob/master/bip-0112.mediawiki)
+
+  - OP_NOP4 has been renamed to OP_MERKLEBRANCHVERIFY by [BIP
+116](https://github.com/bitcoin/bips/blob/master/bip-0116.mediawiki)
 
   - The following outputs are affected by this change:
 
@@ -523,7 +700,7 @@ Low-level RPC changes
   ignored. Make sure to never pass more than two arguments.
 
 Low-level ZMQ changes
-----------------------
+---------------------
 
 - Each ZMQ notification now contains an up-counting sequence number
   that allows listeners to detect lost notifications.  The sequence
@@ -531,8 +708,44 @@ Low-level ZMQ changes
   and therefore backward compatible. Each message type has its own
   counter.  PR [#7762](https://github.com/bitcoin/bitcoin/pull/7762).
 
+Stratum server changes
+----------------------
+
+Release v12.1.3.3-10198 saw the introduction of a new stratum mining
+service capable of providing low-latency work to the latest generation
+of mining hardware devices.  This service was written with speed and
+scalability in mind, by precomputing the information necessary to
+serve work and validate shares, so that heavyweight block construction
+and validation codes are not in the critical path to delivering work
+to miners, and are only executed once the proof of work is satisfied.
+
+However the implementation of segregated witness for Freicoin changes
+some assumptions built into the earlier stratum server.  In particular
+it is not just the coinbase but now also the block-final transaction
+(which contains the segwit commitment) that changes with the work
+generated for each miner.  While there are potentially efficient
+mechanisms for generating the segwit commitment without instantiating
+the entire block, it requires new tooling infrastructure to be written
+and tested.  As this was discovered late in the release process, it
+was decided to ship this v13.2-0 release without those performance
+optimizations.  It is anticipated that future releases with address
+these performance concerns once there is adequate time to test a
+solution.
+
+Beginning with this release and until further notice, every time work
+is sent to a miner and every time a share is received the candidate
+block is instantiated, manipulated, and its commitments regenerated.
+With the current low transaction volume of the Freicoin network this
+is not expected to be a performance issue.  However should high
+transaction volumes be sustained, miners might experience delays in
+work generation or share processing.  In the unlikely event of this
+occurring before the performance issue is fixed in a future release,
+miners can avoid contention by instantiating a greater number of
+Freicoin daemons to accept miner connections in parallel, and thereby
+avoid resource contention during work requests.
+
 v13.2-0 Change log
-=================
+==================
 
 Detailed release notes follow.  This overview includes changes that
 affect behavior, not code moves, refactors and string updates.  For
@@ -1156,6 +1369,7 @@ Thanks to everyone who directly contributed to this release:
 - jonnynewbs
 - Jorge Timón
 - Justin Camarena
+- Kalle Alm
 - Kaz Wesley
 - Kefkius
 - kirkalx
