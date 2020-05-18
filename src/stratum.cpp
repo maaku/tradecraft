@@ -79,10 +79,11 @@ struct StratumClient
     uint32_t m_version_rolling_mask;
 
     CBlockIndex* m_last_tip;
+    bool m_expects_extranonce;
     bool m_send_work;
 
-    StratumClient() : m_listener(0), m_socket(0), m_bev(0), m_authorized(false), m_mindiff(0.0), m_version_rolling_mask(0x00000000), m_last_tip(0), m_send_work(false) { GenSecret(); }
-    StratumClient(evconnlistener* listener, evutil_socket_t socket, bufferevent* bev, CService from) : m_listener(listener), m_socket(socket), m_bev(bev), m_from(from), m_authorized(false), m_mindiff(0.0), m_version_rolling_mask(0x00000000), m_last_tip(0), m_send_work(false) { GenSecret(); }
+    StratumClient() : m_listener(0), m_socket(0), m_bev(0), m_authorized(false), m_mindiff(0.0), m_version_rolling_mask(0x00000000), m_last_tip(0), m_expects_extranonce(false), m_send_work(false) { GenSecret(); }
+    StratumClient(evconnlistener* listener, evutil_socket_t socket, bufferevent* bev, CService from) : m_listener(listener), m_socket(socket), m_bev(bev), m_from(from), m_authorized(false), m_mindiff(0.0), m_version_rolling_mask(0x00000000), m_last_tip(0), m_expects_extranonce(false), m_send_work(false) { GenSecret(); }
 
     void GenSecret();
 };
@@ -342,8 +343,24 @@ std::string GetWorkUnit(StratumClient& client)
     mining_notify.push_back(Pair("id", NullUniValue));
     mining_notify.push_back(Pair("method", "mining.notify"));
 
-    return set_difficulty.write() + "\n"
-         + mining_notify.write()  + "\n";
+    std::string ret;
+
+    // If requested, prepend extranonce information.
+    if (client.m_expects_extranonce) {
+        UniValue set_extranonce(UniValue::VOBJ);
+        set_extranonce.push_back(Pair("id", 4)); // by random dice roll
+        set_extranonce.push_back(Pair("method", "mining.set_extranonce"));
+        UniValue params(UniValue::VARR);
+        params.push_back(""); // extranonce1
+        params.push_back(4);  // extranonce2.size()
+        set_extranonce.push_back(Pair("params", params));
+        ret += set_extranonce.write() + "\n";
+    }
+
+    ret += set_difficulty.write() + "\n";
+    ret += mining_notify.write() + "\n";
+
+    return ret;
 }
 
 bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork& current_work, std::vector<unsigned char> extranonce2, uint32_t nTime, uint32_t nNonce, uint32_t nVersion)
@@ -547,6 +564,16 @@ UniValue stratum_mining_submit(StratumClient& client, const UniValue& params)
     }
 
     SubmitBlock(client, job_id, current_work, extranonce2, nTime, nNonce, nVersion);
+
+    return true;
+}
+
+UniValue stratum_mining_extranonce_subscribe(StratumClient& client, const UniValue& params)
+{
+    const std::string method("mining.submit");
+    BoundParams(method, params, 0, 0);
+
+    client.m_expects_extranonce = true;
 
     return true;
 }
@@ -819,6 +846,8 @@ bool InitStratumServer()
     stratum_method_dispatch["mining.authorize"] = stratum_mining_authorize;
     stratum_method_dispatch["mining.configure"] = stratum_mining_configure;
     stratum_method_dispatch["mining.submit"]    = stratum_mining_submit;
+    stratum_method_dispatch["mining.extranonce.subscribe"] =
+        stratum_mining_extranonce_subscribe;
 
     // Start thread to wait for block notifications and send updated
     // work to miners.
