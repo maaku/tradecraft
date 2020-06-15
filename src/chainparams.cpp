@@ -109,6 +109,11 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1586995200; // April 16th, 2020.
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1622592000; // June 2nd, 2021.
 
+        // Deployment of merge mining
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].bit = 3;
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nStartTime = 1591056000; // June 2nd, 2020.
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nTimeout = 1622592000; // June 2nd, 2021.
+
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000001bfc1acb352e9310223");
 
@@ -274,6 +279,11 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 1586995200; // April 16th, 2020.
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 1622592000; // June 2nd, 2021.
 
+        // Deployment of merge mining
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].bit = 3;
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nStartTime = 1591056000; // June 2nd, 2020.
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nTimeout = 1622592000; // June 2nd, 2021.
+
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000100010001");
 
@@ -371,6 +381,9 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].bit = 2;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nStartTime = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL;
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].bit = 3;
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nStartTime = 0;
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nTimeout = 999999999999ULL;
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x00");
