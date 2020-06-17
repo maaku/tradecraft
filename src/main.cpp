@@ -1682,7 +1682,7 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     }
 
     // Check the header
-    if (!CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
+    if (!CheckAuxiliaryProofOfWork(block) || !CheckProofOfWork(block, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
@@ -3597,7 +3597,11 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW)
 {
     // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, consensusParams))
+    if (fCheckPOW && !CheckAuxiliaryProofOfWork(block)) {
+        return state.DoS(50, false, REJECT_INVALID, "high-aux-hash", false, "auxiliary proof of work failed");
+    }
+
+    if (fCheckPOW && !CheckProofOfWork(block, consensusParams))
         return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
 
     return true;
@@ -3784,6 +3788,12 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     // Check proof of work
     if (protocol_cleanup ? !CheckNextWorkRequired(pindexPrev, block, consensusParams) : (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams)))
         return state.DoS(100, false, REJECT_INVALID, "bad-diffbits", false, "incorrect proof of work");
+
+    if (!block.m_aux_pow.IsNull()) {
+        if (protocol_cleanup ? !CheckNextWorkRequiredAux(pindexPrev, block, consensusParams) : (block.m_aux_pow.m_commit_bits != GetNextWorkRequiredAux(pindexPrev, block, consensusParams))) {
+            return state.DoS(100, false, REJECT_INVALID, "bad-aux-diffbits", false, "incorrect auxiliary proof of work target");
+        }
+    }
 
     // Check timestamp against prev
     if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast())
