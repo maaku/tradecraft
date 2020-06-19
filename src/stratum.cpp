@@ -279,7 +279,8 @@ std::string GetWorkUnit(StratumClient& client)
         .Finalize(job_nonce.begin());
     std::vector<unsigned char> nonce(job_nonce.begin(),
                                      job_nonce.begin()+8);
-    nonce.resize(nonce.size()+4, 0x00);
+    nonce.resize(nonce.size()+4, 0x00); // extranonce1
+    nonce.resize(nonce.size()+4, 0x00); // extranonce2
     cb.vin.front().scriptSig =
            CScript()
         << cb.lock_height
@@ -293,7 +294,7 @@ std::string GetWorkUnit(StratumClient& client)
     assert(ds.size() >= (pos + 4));
 
     std::string cb1 = HexStr(&ds[0], &ds[pos]);
-    std::string cb2 = HexStr(&ds[pos+4], &ds[ds.size()]);
+    std::string cb2 = HexStr(&ds[pos+4+4], &ds[ds.size()]);
 
     UniValue params(UniValue::VARR);
     params.push_back(job_id.GetHex());
@@ -361,6 +362,10 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
         .Finalize(job_nonce.begin());
     std::vector<unsigned char> nonce(job_nonce.begin(),
                                      job_nonce.begin()+8);
+    CDataStream ds(SER_NETWORK, PROTOCOL_VERSION);
+    ds << client.m_secret;
+    nonce.insert(nonce.end(), ds.begin(),
+                              ds.begin()+4);
     assert(extranonce2.size() == 4);
     nonce.insert(nonce.end(), extranonce2.begin(),
                               extranonce2.end());
@@ -450,8 +455,10 @@ UniValue stratum_mining_subscribe(StratumClient& client, const UniValue& params)
 
     UniValue ret(UniValue::VARR);
     ret.push_back(msg);
-    ret.push_back(""); //        extranonce1
-    ret.push_back(4);  // sizeof(extranonce2)
+    CDataStream ds(SER_NETWORK, PROTOCOL_VERSION);
+    ds << client.m_secret;
+    ret.push_back(HexStr(ds.begin(), ds.begin()+4)); //        extranonce1
+    ret.push_back(4);                                // sizeof(extranonce2)
 
     //ScheduleSendWork(client);
     return ret;
@@ -573,8 +580,10 @@ UniValue stratum_mining_extranonce_subscribe(StratumClient& client, const UniVal
         +     "\"id\":4," // by random dice roll
         +     "\"method\":\"mining.set_extranonce\","
         +     "\"params\":["
-        +         "\"\"," // extranonce1
-        +         "4"     // extranonce2.size()
+        +         "\"";
+    const std::string k_extranonce_req2 = std::string()
+        +            "\"," // extranonce1
+        +         "4"      // extranonce2.size()
         +     "]"
         + "}"
         + "\n";
@@ -582,7 +591,11 @@ UniValue stratum_mining_extranonce_subscribe(StratumClient& client, const UniVal
     const std::string method("mining.extranonce.subscribe");
     BoundParams(method, params, 0, 0);
 
-    client.m_extranonce_req = k_extranonce_req;
+    CDataStream ds(SER_NETWORK, PROTOCOL_VERSION);
+    ds << client.m_secret;
+    client.m_extranonce_req = k_extranonce_req
+                            + HexStr(ds.begin(), ds.begin()+4)
+                            + k_extranonce_req2;
 
     return true;
 }
