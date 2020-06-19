@@ -290,8 +290,8 @@ std::string GetWorkUnit(StratumClient& client)
     CDataStream ds(SER_GETHASH, SERIALIZE_TRANSACTION_NO_WITNESS);
     ds << CTransaction(cb);
     assert(ds.size() >= (4 + 1 + 32 + 4 + 1));
-    size_t pos = 4 + 1 + 32 + 4 + 1 + ds[4+1+32+4] - 4;
-    assert(ds.size() >= (pos + 4));
+    size_t pos = 4 + 1 + 32 + 4 + 1 + ds[4+1+32+4] - 4 - 4;
+    assert(ds.size() >= (pos + 4 + 4));
 
     std::string cb1 = HexStr(&ds[0], &ds[pos]);
     std::string cb2 = HexStr(&ds[pos+4+4], &ds[ds.size()]);
