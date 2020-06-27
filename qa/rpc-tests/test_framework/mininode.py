@@ -968,6 +968,25 @@ class CBlock(CBlockHeader):
         return True
 
     def solve(self):
+        if self.aux_pow:
+            self.rehashaux()
+            aux_target1 = uint256_from_compact(self.aux_pow.commit_bits)
+            aux_target2 = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+            bias = self.get_bias()
+            aux_target1 = aux_target1 << bias
+            assert (aux_target1 <= aux_target2)
+            aux_target2 = aux_target2 >> bias
+            while (self.aux_hash1 > aux_target1) or (self.aux_hash2 > aux_target2):
+                self.aux_pow.aux_nonce += 1
+                self.rehashaux()
+            # First remove the existing commitment, if there is one.  There isn't a way
+            # to identify the commitment, so we presume that one is present if the
+            # coinbase miner string is large enough to contain one.
+            if len(self.vtx[0].vin[0].scriptSig) > 32:
+                self.vtx[0].vin[0].scriptSig = self.vtx[0].vin[0].scriptSig[:-32]
+            self.vtx[0].vin[0].scriptSig += ser_uint256(self.aux_hash2)
+            self.vtx[0].rehash()
+            self.hashMerkleRoot = self.calc_merkle_root()
         self.rehash()
         target = uint256_from_compact(self.nBits)
         while self.sha256 > target:
