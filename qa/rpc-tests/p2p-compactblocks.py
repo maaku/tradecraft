@@ -145,8 +145,12 @@ class CompactBlocksTest(FreicoinTestFramework):
         mtp = node.getblockheader(tip)['mediantime']
         block = create_block(int(tip, 16), create_coinbase(height + 1), mtp + 1)
         block.nVersion = 4
+        if height > 1:
+            blocktemplate = node.getblocktemplate({'rules':['segwit','auxpow']})
+        else:
+            blocktemplate = []
         try:
-            blockfinal_prevout = node.getblocktemplate({'rules':['segwit','auxpow']})['blockfinal']['prevout']
+            blockfinal_prevout = blocktemplate['blockfinal']['prevout']
         except:
             blockfinal_prevout = []
         if blockfinal_prevout:
@@ -164,6 +168,16 @@ class CompactBlocksTest(FreicoinTestFramework):
             block.rehash()
         if segwit:
             add_witness_commitment(block)
+        if 'rules' in blocktemplate and '!auxpow' in blocktemplate['rules']:
+            block.aux_pow = CAuxProofOfWork()
+            block.aux_pow.commit_version = block.nVersion
+            block.aux_pow.commit_hash_merkle_root = block.calc_commit_merkle_root()
+            block.aux_pow.commit_time = block.nTime
+            block.aux_pow.commit_bits = 0x207fffff # Will break after a difficulty adjustment...
+            block.aux_pow.midstate_hash = uint256_from_str(SHA256().midstate()[0])
+            block.aux_pow.aux_num_txns = 1
+            block.aux_pow.aux_version = 0x20000000
+            block.aux_pow.aux_bits = block.aux_pow.commit_bits
         block.solve()
         return block
 
