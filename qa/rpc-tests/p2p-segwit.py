@@ -221,8 +221,12 @@ class SegWitTest(FreicoinTestFramework):
         height = self.nodes[0].getblockcount() + 1
         block_time = self.nodes[0].getblockheader(tip)["mediantime"] + 1
         block = create_block(int(tip, 16), create_coinbase(height), block_time)
+        if height > 1:
+            blocktemplate = self.nodes[0].getblocktemplate({'rules':['segwit','auxpow']})
+        else:
+            blocktemplate = []
         try:
-            blockfinal_prevout = self.nodes[0].getblocktemplate({'rules':['segwit','auxpow']})['blockfinal']['prevout']
+            blockfinal_prevout = blocktemplate['blockfinal']['prevout']
         except:
             blockfinal_prevout = []
         if blockfinal_prevout:
@@ -236,6 +240,17 @@ class SegWitTest(FreicoinTestFramework):
             finaltx.rehash()
             block.vtx.append(finaltx)
             block.hashMerkleRoot = block.calc_merkle_root()
+        if 'rules' in blocktemplate and '!auxpow' in blocktemplate['rules']:
+            block.aux_pow = CAuxProofOfWork()
+            block.aux_pow.commit_version = nVersion
+            block.aux_pow.commit_hash_merkle_root = block.calc_commit_merkle_root()
+            block.aux_pow.commit_time = block.nTime
+            block.aux_pow.commit_bits = 0x207fffff # Will break after a difficulty adjustment...
+            block.aux_pow.midstate_hash = uint256_from_str(SHA256().midstate()[0])
+            block.aux_pow.aux_num_txns = 1
+            block.aux_pow.aux_version = VB_TOP_BITS
+            block.aux_pow.aux_bits = block.aux_pow.commit_bits
+            block.rehashaux()
         block.nVersion = nVersion
         block.rehash()
         return block
