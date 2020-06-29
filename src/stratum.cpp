@@ -323,7 +323,7 @@ std::string GetWorkUnit(StratumClient& client)
     if (client.m_mindiff > 0) {
         diff = std::min(diff, client.m_mindiff);
     }
-    diff = std::max(diff, 0.001);
+    diff = std::max(diff, 500000.0);
 
     UniValue set_difficulty(UniValue::VOBJ);
     set_difficulty.push_back(Pair("id", NullUniValue));
