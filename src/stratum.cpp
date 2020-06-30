@@ -174,8 +174,8 @@ void UpdateSegwitCommitment(const StratumWork& current_work, CMutableTransaction
 {
     // Calculate witnessroot
     CMutableTransaction cb2(cb);
-    cb2.vin.front().scriptSig = CScript();
-    cb2.vin.front().nSequence = 0;
+    cb2.vin[0].scriptSig = CScript();
+    cb2.vin[0].nSequence = 0;
     auto witnessroot = ComputeFastMerkleRootFromBranch(cb2.GetHash(), current_work.m_cb_wit_branch, 0, nullptr);
 
     // Build block-final tx
