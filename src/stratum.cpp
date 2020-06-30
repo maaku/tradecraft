@@ -339,7 +339,7 @@ std::string GetWorkUnit(StratumClient& client)
            CScript()
         << cb.lock_height
         << nonce;
-    cb.vout.front().scriptPubKey =
+    cb.vout[0].scriptPubKey =
         GetScriptForDestination(client.m_addr.Get());
     CDataStream ds(SER_GETHASH, SERIALIZE_TRANSACTION_NO_WITNESS);
     ds << CTransaction(cb);
@@ -427,18 +427,18 @@ std::string GetWorkUnit(StratumClient& client)
 bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork& current_work, std::vector<unsigned char> extranonce2, uint32_t nTime, uint32_t nNonce, uint32_t nVersion)
 {
     assert(current_work.GetBlock().vtx.size() >= 1);
-    CMutableTransaction cb(current_work.GetBlock().vtx.front());
+    CMutableTransaction cb(current_work.GetBlock().vtx[0]);
     assert(cb.vin.size() == 1);
     auto nonce = client.ExtraNonce1(job_id);
     assert(extranonce2.size() == 4);
     nonce.insert(nonce.end(), extranonce2.begin(),
                               extranonce2.end());
-    cb.vin.front().scriptSig =
+    cb.vin[0].scriptSig =
            CScript()
         << cb.lock_height
         << nonce;
     assert(cb.vout.size() >= 1);
-    cb.vout.front().scriptPubKey =
+    cb.vout[0].scriptPubKey =
         GetScriptForDestination(client.m_addr.Get());
 
     CMutableTransaction bf(current_work.GetBlock().vtx.back());
@@ -457,7 +457,7 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
     if (CheckProofOfWork(blkhdr.GetHash(), blkhdr.nBits, Params().GetConsensus())) {
         LogPrintf("GOT BLOCK!!! by %s: %s\n", client.m_addr.ToString(), blkhdr.GetHash().ToString());
         CBlock block(current_work.GetBlock());
-        block.vtx.front() = CTransaction(cb);
+        block.vtx[0] = CTransaction(cb);
         if (current_work.m_is_witness_enabled) {
             block.vtx.back() = CTransaction(bf);
         }
