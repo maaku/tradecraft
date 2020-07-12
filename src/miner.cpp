@@ -278,6 +278,7 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
         pblock->m_aux_pow.m_aux_num_txns = 1;
 
         // Set difficulty for the auxiliary proof-of-work.
+        pblock->SetFilteredTime(GetFilteredTimeAux(pindexPrev, chainparams.GetConsensus()));
         pblock->m_aux_pow.m_commit_bits = CalculateNextWorkRequiredAux(pindexPrev, chainparams.GetConsensus());;
 
         // Setup the auxiliary header fields to have reasonable values.
