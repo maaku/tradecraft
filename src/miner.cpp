@@ -84,6 +84,7 @@ int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParam
     if (consensusParams.fPowAllowMinDifficultyBlocks) {
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams, false);
         if (!pblock->m_aux_pow.IsNull()) {
+            pblock->SetFilteredTime(GetFilteredTimeAux(pindexPrev, consensusParams));
             pblock->m_aux_pow.m_commit_bits = GetNextWorkRequiredAux(pindexPrev, *pblock, consensusParams);
             pblock->m_aux_pow.m_aux_bits = pblock->m_aux_pow.m_commit_bits;
         }
@@ -287,6 +288,7 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
         pblock->m_aux_pow.m_aux_num_txns = 1;
 
         // Set difficulty for the auxiliary proof-of-work.
+        pblock->SetFilteredTime(GetFilteredTimeAux(pindexPrev, chainparams.GetConsensus()));
         pblock->m_aux_pow.m_commit_bits = CalculateNextWorkRequiredAux(pindexPrev, chainparams.GetConsensus());;
 
         // Setup the auxiliary header fields to have reasonable values.
