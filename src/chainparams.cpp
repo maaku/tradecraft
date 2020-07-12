@@ -112,8 +112,8 @@ public:
 
         // Deployment of merge mining
         consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].bit = 3;
-        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nStartTime = 1591056000; // June 2nd, 2020.
-        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nTimeout = 1622592000; // June 2nd, 2021.
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nStartTime = 0;
+        consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nTimeout = 0; // NEVER
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000001bfc1acb352e9310223");
