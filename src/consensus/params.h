@@ -90,7 +90,6 @@ struct Params {
     /** Proof of work parameters */
     uint256 powLimit;
     uint256 aux_pow_limit;
-    bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     /** Difficulty adjustment parameters */
     int64_t nPowTargetSpacing;
