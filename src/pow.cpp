@@ -102,6 +102,42 @@ int64_t GetFilteredTime(const CBlockIndex* pindexLast, const Consensus::Params& 
     return filtered_time;
 }
 
+int64_t GetFilteredTimeAux(const CBlockIndex* pindexLast, const Consensus::Params& params)
+{
+    std::array<int64_t, 3> x = { 0, 0, 0 };
+    int64_t y = 0;
+
+    auto pitr = pindexLast;
+    for (size_t idx = 0; idx != x.size(); ++idx) {
+        if (pitr && pitr->pprev) {
+            x[idx] = pitr->GetBlockTime() - pitr->pprev->GetBlockTime();
+            pitr = pitr->pprev;
+        } else {
+            x[idx] = params.aux_pow_target_spacing;
+        }
+    }
+
+    if (pindexLast && pindexLast->pprev) {
+        y = pindexLast->pprev->GetFilteredBlockTime();
+    } else {
+        y = params.aux_pow_target_spacing << 32;
+    }
+
+    static const int64_t low = 0xffffffff;
+    auto time = x[0] * static_cast<int64_t>(0x4498517a)
+              + x[1] * static_cast<int64_t>(0x8930a2f5)
+              + x[2] * static_cast<int64_t>(0x4498517a)
+         - (y >> 32) * static_cast<int64_t>(0x126145ea)
+        - ((y & low) * static_cast<int64_t>(0x126145ea) >> 32);
+
+    if (time > 0x007fffffffffffffLL)
+        time = 0x007fffffffffffffLL;
+    if (time < -36028797018963968LL) // -0x80000000000000
+        time = -36028797018963968LL;
+
+    return time;
+}
+
 std::pair<int64_t, int64_t> GetFilteredAdjustmentFactor(const CBlockIndex* pindexLast, const Consensus::Params& params)
 {
     const std::pair<int16_t, int16_t> gain(41, 400); //! 0.1025
@@ -128,23 +164,23 @@ std::pair<int64_t, int64_t> GetFilteredAdjustmentFactor(const CBlockIndex* pinde
 
 std::pair<int64_t, int64_t> GetFilteredAdjustmentFactorAux(const CBlockIndex* pindexLast, const Consensus::Params& params)
 {
-    const std::pair<int16_t, int16_t> gain(41, 400); //! 0.1025
-    const std::pair<int16_t, int16_t> limiter(211, 200); //! 1.055
+    const std::pair<int16_t, int16_t> gain(1, 64); //! 0.015625
+    const std::pair<int16_t, int16_t> limiter(17, 16); //! 1.0625
 
-    int64_t filtered_time = GetFilteredTime(pindexLast, params);
+    int64_t filtered_time = GetFilteredTimeAux(pindexLast, params);
 
     int64_t numerator;
     int64_t denominator;
-    if (filtered_time < 597105209444LL) {
+    if (filtered_time < -11596411699199LL) {
         numerator   = limiter.first;
         denominator = limiter.second;
-    } else if (filtered_time > 1943831401459LL) {
+    } else if (filtered_time > 18417830345788LL) {
         numerator   = limiter.second;
         denominator = limiter.first;
     } else {
-        numerator = ((int64_t)(gain.first + gain.second) * params.aux_pow_target_spacing) << 31;
+        numerator = ((int64_t)(gain.first + gain.second) * params.aux_pow_target_spacing) << 32;
         numerator -= (int64_t)gain.first * filtered_time;
-        denominator = ((int64_t)gain.second * params.aux_pow_target_spacing) << 31;
+        denominator = ((int64_t)gain.second * params.aux_pow_target_spacing) << 32;
     }
 
     return std::make_pair(numerator, denominator);
