@@ -244,7 +244,6 @@ class SegWitTest(FreicoinTestFramework):
             block.aux_pow = CAuxProofOfWork()
             block.aux_pow.commit_version = nVersion
             block.aux_pow.commit_hash_merkle_root = block.calc_commit_merkle_root()
-            block.aux_pow.commit_time = block.nTime
             block.aux_pow.commit_bits = 0x207fffff # No difficulty adjustment on regtest.
             block.aux_pow.midstate_hash = uint256_from_str(SHA256().midstate()[0])
             block.aux_pow.aux_num_txns = 1
