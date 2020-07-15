@@ -3602,7 +3602,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
     // Check that the variable-length auxiliary proof-of-work data are
     // within acceptable ranges.
     if (!block.m_aux_pow.IsNull()) {
-        const CAuxProofOfWork& aux_pow = block.m_aux_pow;
+        const AuxProofOfWork& aux_pow = block.m_aux_pow;
 
         if (aux_pow.m_midstate_buffer.size() >= 64) {
             return state.DoS(100, false, REJECT_INVALID, "auxpow-midstate-buffer", false, "auxiliary proof-of-work midstate buffer is too large");
@@ -3666,7 +3666,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
                 return state.DoS(100, false, REJECT_INVALID, "bad-auxpow-commit", true, "incorrect commitment to auxiliary proof-of-work in coinbase string");
             }
 
-            // Check that CAuxProofOfWork::m_commit_hash_merkle_root is correct.
+            // Check that AuxProofOfWork::m_commit_hash_merkle_root is correct.
             CMutableTransaction cb(block.vtx[0]);
             cb.vin[0].scriptSig = CScript();
             cb.vin[0].nSequence = 0;

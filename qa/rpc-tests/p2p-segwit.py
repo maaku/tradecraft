@@ -241,7 +241,7 @@ class SegWitTest(FreicoinTestFramework):
             block.vtx.append(finaltx)
             block.hashMerkleRoot = block.calc_merkle_root()
         if 'rules' in blocktemplate and '!auxpow' in blocktemplate['rules']:
-            block.aux_pow = CAuxProofOfWork()
+            block.aux_pow = AuxProofOfWork()
             block.aux_pow.commit_version = nVersion
             block.aux_pow.commit_hash_merkle_root = block.calc_commit_merkle_root()
             block.aux_pow.commit_bits = 0x207fffff # No difficulty adjustment on regtest.

@@ -28,7 +28,7 @@
 
 static const int SERIALIZE_BLOCK_NO_AUX_POW = 0x20000000;
 
-class CAuxProofOfWork
+class AuxProofOfWork
 {
 public:
     // The CBlockHeader structure contains the native proof-of-work header,
@@ -187,7 +187,7 @@ public:
     //
 
 public:
-    CAuxProofOfWork()
+    AuxProofOfWork()
     {
         SetNull();
     }
@@ -243,7 +243,7 @@ public:
         READWRITE(m_aux_nonce);
     }
 
-    CAuxProofOfWork& SetNull()
+    AuxProofOfWork& SetNull()
     {
         m_commit_version = 0;
         m_commit_hash_merkle_root.SetNull();
@@ -290,7 +290,7 @@ public:
     uint32_t nNonce;
 
     // Auxiliary proof-of-work header:
-    CAuxProofOfWork m_aux_pow;
+    AuxProofOfWork m_aux_pow;
 
 public:
     CBlockHeader()
@@ -317,7 +317,7 @@ public:
      * - unsigned char dummy = 0xff
      * - unsigned char flags (!= 0)
      * - if (flags & 1):
-     *   - CAuxProofOfWork m_aux_pow
+     *   - AuxProofOfWork m_aux_pow
      */
     ADD_SERIALIZE_METHODS;
 
