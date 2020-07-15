@@ -224,7 +224,7 @@ class SegWitTest(FreicoinTestFramework):
         if height > 1:
             blocktemplate = self.nodes[0].getblocktemplate({'rules':['segwit','auxpow']})
         else:
-            blocktemplate = []
+            blocktemplate = {}
         try:
             blockfinal_prevout = blocktemplate['blockfinal']['prevout']
         except:

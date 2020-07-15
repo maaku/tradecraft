@@ -148,7 +148,7 @@ class CompactBlocksTest(FreicoinTestFramework):
         if height > 1:
             blocktemplate = node.getblocktemplate({'rules':['segwit','auxpow']})
         else:
-            blocktemplate = []
+            blocktemplate = {}
         try:
             blockfinal_prevout = blocktemplate['blockfinal']['prevout']
         except:
