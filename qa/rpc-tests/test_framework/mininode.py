@@ -127,8 +127,8 @@ def ser_varint(n):
         r += struct.pack("B", (n & 0x7F) | (0x80 if len(r) > 0 else 0x00))
         if n <= 0x7f:
             break
-        n = (n >> 7) - 1;
-    return r;
+        n = (n >> 7) - 1
+    return r[::-1]
 
 def deser_varint(f):
     n = 0
