@@ -214,7 +214,7 @@ public:
     unsigned int nTime;
     unsigned int nBits;
     unsigned int nNonce;
-    CAuxProofOfWork m_aux_pow;
+    AuxProofOfWork m_aux_pow;
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     uint32_t nSequenceId;

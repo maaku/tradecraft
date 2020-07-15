@@ -579,7 +579,7 @@ class CTransaction(object):
             % (self.nVersion, repr(self.vin), repr(self.vout), repr(self.wit), self.nLockTime, self.lock_height)
 
 
-class CAuxProofOfWork(object):
+class AuxProofOfWork(object):
     def __init__(self, aux_pow=None):
         if aux_pow is None:
             self.set_null()
@@ -667,7 +667,7 @@ class CAuxProofOfWork(object):
         return r
 
     def __repr__(self):
-        return "CAuxProofOfWork(commit_version=%d commit_hash_merkle_root=%064x commit_time=%s commit_bits=%08x commit_nonce=%08x secret=%08x%08x midstate_hash=%064x midstate_buffer=%s midstate_length=%d aux_lock_time=%08x aux_branch=%s aux_num_txns=%d aux_version=%d aux_hash_prev_block=%064x aux_bits=%08x aux_nonce=%08x)" \
+        return "AuxProofOfWork(commit_version=%d commit_hash_merkle_root=%064x commit_time=%s commit_bits=%08x commit_nonce=%08x secret=%08x%08x midstate_hash=%064x midstate_buffer=%s midstate_length=%d aux_lock_time=%08x aux_branch=%s aux_num_txns=%d aux_version=%d aux_hash_prev_block=%064x aux_bits=%08x aux_nonce=%08x)" \
             % (self.commit_version, self.commit_hash_merkle_root,
                time.ctime(self.commit_time), self.commit_bits,
                self.commit_nonce, self.secret_hi, self.secret_lo,
@@ -728,7 +728,7 @@ class CBlockHeader(object):
             flags = struct.unpack("B", f.read(1))[0]
             if flags & 1:
                 flags = flags ^ 1
-                self.aux_pow = CAuxProofOfWork()
+                self.aux_pow = AuxProofOfWork()
                 self.aux_pow.deserialize(f)
             assert(flags == 0x00)
         self.sha256 = None
