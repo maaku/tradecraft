@@ -417,7 +417,7 @@ std::string GetWorkUnit(StratumClient& client)
     CBlockHeader blkhdr;
     if (!current_work.GetBlock().m_aux_pow.IsNull() && !current_work.m_aux_hash2) {
         // Setup auxiliary proof-of-work
-        const CAuxProofOfWork& aux_pow = current_work.GetBlock().m_aux_pow;
+        const AuxProofOfWork& aux_pow = current_work.GetBlock().m_aux_pow;
 
         CMutableTransaction cb2(cb);
         cb2.vin[0].scriptSig = CScript();
