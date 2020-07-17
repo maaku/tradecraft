@@ -173,10 +173,10 @@ std::pair<int64_t, int64_t> GetFilteredAdjustmentFactorAux(const CBlockIndex* pi
 
     int64_t numerator;
     int64_t denominator;
-    if (filtered_time < -9277129359359LL) {
+    if (filtered_time < -11596411699199LL) {
         numerator   = limiter.first;
         denominator = limiter.second;
-    } else if (filtered_time > 14734264276630LL) {
+    } else if (filtered_time > 18417830345788LL) {
         numerator   = limiter.second;
         denominator = limiter.first;
     } else {
