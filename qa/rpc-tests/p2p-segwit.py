@@ -221,10 +221,7 @@ class SegWitTest(FreicoinTestFramework):
         height = self.nodes[0].getblockcount() + 1
         block_time = self.nodes[0].getblockheader(tip)["mediantime"] + 1
         block = create_block(int(tip, 16), create_coinbase(height), block_time)
-        if height > 1:
-            blocktemplate = self.nodes[0].getblocktemplate({'rules':['segwit','auxpow']})
-        else:
-            blocktemplate = {}
+        blocktemplate = {} if height < 2 else self.nodes[0].getblocktemplate({'rules':['segwit','auxpow']})
         try:
             blockfinal_prevout = blocktemplate['blockfinal']['prevout']
         except:
