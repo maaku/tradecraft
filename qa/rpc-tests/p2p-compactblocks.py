@@ -169,14 +169,7 @@ class CompactBlocksTest(FreicoinTestFramework):
         if segwit:
             add_witness_commitment(block)
         if 'rules' in blocktemplate and '!auxpow' in blocktemplate['rules']:
-            block.aux_pow = AuxProofOfWork()
-            block.aux_pow.commit_version = block.nVersion
-            block.aux_pow.commit_hash_merkle_root = block.calc_commit_merkle_root()
-            block.aux_pow.commit_bits = 0x207fffff # No difficulty adjustment on regtest
-            block.aux_pow.midstate_hash = uint256_from_str(SHA256().midstate()[0])
-            block.aux_pow.aux_num_txns = 1
-            block.aux_pow.aux_version = 0x20000000
-            block.aux_pow.aux_bits = block.aux_pow.commit_bits
+            block.setup_default_aux_pow()
         block.solve()
         return block
 

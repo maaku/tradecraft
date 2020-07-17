@@ -967,6 +967,16 @@ class CBlock(CBlockHeader):
             return False
         return True
 
+    def setup_default_aux_pow(self):
+        self.aux_pow = AuxProofOfWork()
+        self.aux_pow.commit_version = self.nVersion
+        self.aux_pow.commit_hash_merkle_root = self.calc_commit_merkle_root()
+        self.aux_pow.commit_bits = 0x207fffff # No difficulty adjustment on regtest
+        self.aux_pow.midstate_hash = uint256_from_str(SHA256().midstate()[0])
+        self.aux_pow.aux_num_txns = 1
+        self.aux_pow.aux_version = 0x20000000
+        self.aux_pow.aux_bits = self.aux_pow.commit_bits
+
     def solve(self):
         if self.aux_pow:
             self.rehashaux()
