@@ -3619,7 +3619,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
 
     // Check proof of work matches claimed amount
     if (fCheckPOW && !CheckAuxiliaryProofOfWork(block)) {
-        return state.DoS(50, false, REJECT_INVALID, "high-aux-hash", false, "auxiliary proof of work failed");
+        return state.DoS(50, false, REJECT_INVALID, "aux-pow-invalid", false, "auxiliary proof of work failed");
     }
 
     if (fCheckPOW && !CheckProofOfWork(block, consensusParams))
