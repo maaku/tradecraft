@@ -986,10 +986,11 @@ class CBlock(CBlockHeader):
             while (self.aux_hash1 > aux_target1) or (self.aux_hash2 > aux_target2):
                 self.aux_pow.aux_nonce += 1
                 self.rehashaux()
-            # First remove the existing commitment, if there is one.  There isn't a way
-            # to identify the commitment, so we presume that one is present if the
-            # coinbase miner string is large enough to contain one.
-            if len(self.vtx[0].vin[0].scriptSig) > 32:
+            # First remove the existing commitment, if there is one.  There
+            # isn't a way to identify the commitment, so we presume that one is
+            # present if the coinbase miner string is large enough to contain
+            # it.
+            if len(self.vtx[0].vin[0].scriptSig) >= 32:
                 self.vtx[0].vin[0].scriptSig = self.vtx[0].vin[0].scriptSig[:-32]
             self.vtx[0].vin[0].scriptSig += ser_uint256(self.aux_hash2)
             self.vtx[0].rehash()
