@@ -3658,7 +3658,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
             // Check that auxiliary proof-of-work data have canonical encoding.
             auto aux_hash = block.GetAuxiliaryHash(&mutated);
             if (mutated) {
-                return state.DoS(100, false, REJECT_INVALID, "bad-auxpow-mutated", true, "auxiliary proof-of-work header is non-canonical");
+                return state.DoS(100, false, REJECT_INVALID, "bad-auxpow-mutated", true, "auxiliary proof-of-work header is non-canonical (mutated)");
             }
 
             // The auxiliary proof-of-work is committed to in the coinbase string.
