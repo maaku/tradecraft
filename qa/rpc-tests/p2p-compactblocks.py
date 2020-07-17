@@ -145,10 +145,7 @@ class CompactBlocksTest(FreicoinTestFramework):
         mtp = node.getblockheader(tip)['mediantime']
         block = create_block(int(tip, 16), create_coinbase(height + 1), mtp + 1)
         block.nVersion = 4
-        if height > 1:
-            blocktemplate = node.getblocktemplate({'rules':['segwit','auxpow']})
-        else:
-            blocktemplate = {}
+        blocktemplate = {} if height < 2 else node.getblocktemplate({'rules':['segwit','auxpow']})
         try:
             blockfinal_prevout = blocktemplate['blockfinal']['prevout']
         except:
