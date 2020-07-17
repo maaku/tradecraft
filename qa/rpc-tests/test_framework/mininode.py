@@ -1004,12 +1004,12 @@ class CBlock(CBlockHeader):
             self.rehash()
 
     def __repr__(self):
-        aux_pow = ""
+        aux_pow_str = ""
         if self.aux_pow:
-            aux_pow = " aux_pow=%s" % repr(self.aux_pow)
+            aux_pow_str = " aux_pow=%s" % repr(self.aux_pow)
         return "CBlock(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTime=%s nBits=%08x nNonce=%08x%s vtx=%s)" \
             % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot,
-               time.ctime(self.nTime), self.nBits, self.nNonce, aux_pow,
+               time.ctime(self.nTime), self.nBits, self.nNonce, aux_pow_str,
                repr(self.vtx))
 
 
