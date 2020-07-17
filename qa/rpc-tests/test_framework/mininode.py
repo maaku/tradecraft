@@ -874,10 +874,7 @@ class CBlock(CBlockHeader):
         return r
 
     def get_bias(self):
-        if not self.aux_pow:
-            return 0
-        else:
-            return self.aux_pow.commit_nonce & 0xff
+        return 0 if not self.aux_pow else (self.aux_pow.commit_nonce & 0xff)
 
     def set_bias(self, bias):
         if self.aux_pow:
