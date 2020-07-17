@@ -3668,8 +3668,8 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
 
             // Check that AuxProofOfWork::m_commit_hash_merkle_root is correct.
             CMutableTransaction cb(block.vtx[0]);
-            cb.vin[0].scriptSig = CScript();
-            cb.vin[0].nSequence = 0;
+            cb.vin[0].scriptSig = CScript(); // not in commitment as miner may
+            cb.vin[0].nSequence = 0;         // alter these values later.
             auto cb_branch = BlockMerkleBranch(block, 0);
             if (ComputeMerkleRootFromBranch(cb.GetHash(), cb_branch, 0) != block.m_aux_pow.m_commit_hash_merkle_root) {
                 return state.DoS(100, false, REJECT_INVALID, "bad-commit-txnmrklroot", true, "block template hashMerkleRoot mismatch");
