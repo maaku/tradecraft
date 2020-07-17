@@ -4610,7 +4610,7 @@ bool RewindBlockIndex(const CChainParams& params)
         // must not have their validity reduced.
         if (((IsWitnessEnabled(pindexIter->pprev, params.GetConsensus()) && !(pindexIter->nStatus & BLOCK_OPT_WITNESS)) ||
              (IsMergeMiningEnabled(pindexIter->pprev, params.GetConsensus()) && !(pindexIter->nStatus & BLOCK_OPT_MERGE_MINING))) &&
-            !chainActive.Contains(pindexIter)))
+            !chainActive.Contains(pindexIter))
         {
             // Reduce validity
             pindexIter->nStatus = std::min<unsigned int>(pindexIter->nStatus & BLOCK_VALID_MASK, BLOCK_VALID_TREE) | (pindexIter->nStatus & ~BLOCK_VALID_MASK);
