@@ -625,11 +625,16 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
                     | (*nVersion & client.m_version_rolling_mask);
         }
 
+        if (!current_work.GetBlock().m_aux_pow.IsNull() && nTime != current_work.GetBlock().nTime) {
+            LogPrint("stratum", strprintf("Error: miner %s returned altered nTime value for native proof-of-work; nTime-rolling is not supported\n", client.m_addr.ToString()).data());
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "nTime-rolling is not supported");
+        }
+
         CBlockHeader blkhdr;
         blkhdr.nVersion = version;
         blkhdr.hashPrevBlock = current_work.GetBlock().hashPrevBlock;
         blkhdr.hashMerkleRoot = ComputeMerkleRootFromBranch(cb.GetHash(), cb_branch, 0);
-        blkhdr.nTime = current_work.GetBlock().nTime;
+        blkhdr.nTime = nTime;
         blkhdr.nBits = current_work.GetBlock().nBits;
         blkhdr.nNonce = nNonce;
 
