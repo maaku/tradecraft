@@ -26,6 +26,8 @@
 #include "primitives/block.h"
 #include "uint256.h"
 
+#include <array>
+
 static const uint256 k_min_pow_limit = uint256S("0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
 int64_t GetActualTimespan(const CBlockIndex* pindexLast, const Consensus::Params& params)
