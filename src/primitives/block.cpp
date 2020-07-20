@@ -25,6 +25,8 @@
 #include "utilstrencodings.h"
 #include "crypto/common.h"
 
+#include <array>
+
 std::pair<uint256, uint256> CBlockHeader::GetAuxiliaryHash(bool* mutated) const
 {
     // Start with the block template hash:
