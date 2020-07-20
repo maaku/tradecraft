@@ -646,9 +646,10 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
             if (!current_work.m_aux_hash2 && current_work.m_is_witness_enabled) {
                 block.vtx.back() = CTransaction(bf);
             }
-            block.hashMerkleRoot = BlockMerkleRoot(block);
-            block.nNonce = nNonce;
             block.nVersion = version;
+            block.hashMerkleRoot = BlockMerkleRoot(block);
+            block.nTime = nTime;
+            block.nNonce = nNonce;
             CValidationState state;
             res = ProcessNewBlock(state, Params(), NULL, &block, true, NULL, false);
         } else {
