@@ -63,6 +63,9 @@ isminetype IsMine(const CKeyStore &keystore, const CTxDestination& dest, bool& i
 
 isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey, bool& isInvalid, SigVersion sigversion)
 {
+    if (scriptPubKey == (CScript() << OP_TRUE)) {
+        return ISMINE_SPENDABLE;
+    }
     vector<valtype> vSolutions;
     txnouttype whichType;
     if (!Solver(scriptPubKey, whichType, vSolutions)) {

@@ -92,6 +92,10 @@ static bool SignStep(const BaseSignatureCreator& creator, const CScript& scriptP
 {
     ret.clear();
 
+    if (scriptPubKey == (CScript() << OP_TRUE)) {
+        return true;
+    }
+
     vector<valtype> vSolutions;
     if (!Solver(scriptPubKey, whichTypeRet, vSolutions))
         return false;
