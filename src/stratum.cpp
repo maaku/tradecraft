@@ -261,7 +261,7 @@ std::string GetWorkUnit(StratumClient& client)
     if (tip != chainActive.Tip() || (mempool.GetTransactionsUpdated() != transactions_updated_last && (GetTime() - last_update_time) > 5) || !work_templates.count(job_id))
     {
         CBlockIndex *tip_new = chainActive.Tip();
-        const CScript script = CScript() << OP_TRUE;
+        const CScript script = CScript() << OP_FALSE;
         CBlockTemplate *new_work = BlockAssembler(Params()).CreateNewBlock(script);
         if (!new_work) {
             throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
