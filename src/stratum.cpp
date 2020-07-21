@@ -210,7 +210,7 @@ void UpdateSegwitCommitment(const StratumWork& current_work, CMutableTransaction
             break;
         }
     }
-    auto pathmask = ComputeMerklePathAndMask(current_work.m_bf_branch.size(), size - 1);
+    auto pathmask = ComputeMerklePathAndMask(current_work.m_bf_branch.size()+1, size - 1);
     cb_branch.push_back(ComputeStableMerkleRootFromBranch(bf.GetHash(), current_work.m_bf_branch, pathmask.first, pathmask.second, nullptr));
 }
 
