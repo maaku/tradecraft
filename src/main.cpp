@@ -3870,6 +3870,9 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 
     // Reject non-merge-mining blocks after activation:
     if (IsMergeMiningEnabled(pindexPrev, consensusParams) && block.m_aux_pow.IsNull()) {
+        // Note: we do not ban nodes which relay a native-mined header
+        // after activation, because it might be an old node.  Just
+        // ignore and move on...
         return state.Invalid(false, REJECT_INVALID, "native-mined-post", "rejected non-merge-mined block after activation");
     }
 
