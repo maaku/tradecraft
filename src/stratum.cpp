@@ -197,20 +197,7 @@ void UpdateSegwitCommitment(const StratumWork& current_work, CMutableTransaction
               &scriptPubKey[scriptPubKey.size()-36]);
 
     // Calculate right-branch
-    //
-    // Since we are calculating the root of the right-branch subtree, we need to
-    // calculate appropriate path and mask values.  The size of the right-branch
-    // subtree is calculated by masking off the highest set bit in the number of
-    // transactions in the block.
-    uint32_t size = current_work.GetBlock().vtx.size();
-    for (int i = 31; i >= 0; --i) {
-        uint32_t bit = ((uint32_t)1) << i;
-        if (size & bit) {
-            size ^= bit;
-            break;
-        }
-    }
-    auto pathmask = ComputeMerklePathAndMask(current_work.m_bf_branch.size(), size - 1);
+    auto pathmask = ComputeMerklePathAndMask(current_work.m_bf_branch.size() + 1, current_work.GetBlock().vtx.size() - 1);
     cb_branch.push_back(ComputeStableMerkleRootFromBranch(bf.GetHash(), current_work.m_bf_branch, pathmask.first, pathmask.second, nullptr));
 }
 
