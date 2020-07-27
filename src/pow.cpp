@@ -399,7 +399,7 @@ bool CheckNextWorkRequiredAux(const CBlockIndex* pindexLast, const CBlockHeader&
     return ((min <= target) && (target <= max));
 }
 
-bool CheckAuxiliaryProofOfWork(const CBlockHeader& block)
+bool CheckAuxiliaryProofOfWork(const CBlockHeader& block, const Consensus::Params& params)
 {
     bool mutated = false;
     bool negative = false;
@@ -414,7 +414,7 @@ bool CheckAuxiliaryProofOfWork(const CBlockHeader& block)
     // parent chain, presumably bitcoin.  Since this involves a Merkle root
     // calculation, there's a possibility the data is in non-canonical form,
     // and we reject that as a block data mutation.
-    auto aux_hash = block.GetAuxiliaryHash(&mutated);
+    auto aux_hash = block.GetAuxiliaryHash(params, &mutated);
     if (mutated) {
         return false;
     }
