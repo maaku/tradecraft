@@ -1682,7 +1682,7 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     }
 
     // Check the header
-    if (!CheckAuxiliaryProofOfWork(block) || !CheckProofOfWork(block, consensusParams))
+    if (!CheckAuxiliaryProofOfWork(block, consensusParams) || !CheckProofOfWork(block, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
@@ -3618,7 +3618,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
     }
 
     // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckAuxiliaryProofOfWork(block)) {
+    if (fCheckPOW && !CheckAuxiliaryProofOfWork(block, consensusParams)) {
         return state.DoS(50, false, REJECT_INVALID, "aux-pow-invalid", false, "auxiliary proof of work failed");
     }
 
@@ -3656,7 +3656,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
         // Merge mining checks.
         if (!block.m_aux_pow.IsNull()) {
             // Check that auxiliary proof-of-work data have canonical encoding.
-            auto aux_hash = block.GetAuxiliaryHash(&mutated);
+            auto aux_hash = block.GetAuxiliaryHash(consensusParams, &mutated);
             if (mutated) {
                 return state.DoS(100, false, REJECT_INVALID, "bad-auxpow-mutated", true, "auxiliary proof-of-work header is non-canonical (mutated)");
             }

@@ -45,7 +45,7 @@ uint32_t CalculateNextWorkRequiredAux(const CBlockIndex* pindexLast, const Conse
 bool CheckNextWorkRequiredAux(const CBlockIndex* pindexLast, const CBlockHeader& block, const Consensus::Params&);
 
 /** Check whether a block hash satisfies the proof-of-work requirement specified by nBits */
-bool CheckAuxiliaryProofOfWork(const CBlockHeader& block);
+bool CheckAuxiliaryProofOfWork(const CBlockHeader& block, const Consensus::Params&);
 bool CheckProofOfWork(const CBlockHeader& block, const Consensus::Params&);
 
 #endif // FREICOIN_POW_H
