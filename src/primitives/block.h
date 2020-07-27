@@ -20,6 +20,7 @@
 #ifndef FREICOIN_PRIMITIVES_BLOCK_H
 #define FREICOIN_PRIMITIVES_BLOCK_H
 
+#include "consensus/params.h"
 #include "primitives/transaction.h"
 #include "script/script.h"
 #include "serialize.h"
@@ -112,6 +113,12 @@ public:
     // the block witholding secret.
     //
 
+    // The merge mining commitment is aggregated with other commitments in the
+    // auxiliary block using a Merkle hash map structure.  The key is fixed for
+    // this chain, so we need only store the skip hash and number of compressed
+    // bits for each level.
+    std::vector<std::pair<unsigned char, uint256> > m_commit_branch;
+
     // The merged mining commitment is stored in the last bytes of the last
     // output of the last transaction in the auxiliary block.  This permits us
     // to compress the auxiliary block's final transaction to the midstate of
@@ -202,6 +209,7 @@ public:
      *   - uint32_t m_commit_nonce
      *   - uint64_t m_secret_lo
      *   - uint64_t m_secret_hi
+     *   - std::vector<std::pair<unsigned char, uint256> > m_commit_branch
      *   - uint256 m_midstate_hash
      *   - std::vector<unsigned char> m_midstate_buffer
      *   - VARINT(uint32_t) m_midstate_length
@@ -222,6 +230,7 @@ public:
         READWRITE(m_commit_nonce);
         READWRITE(m_secret_lo);
         READWRITE(m_secret_hi);
+        READWRITE(m_commit_branch);
         READWRITE(m_midstate_hash);
         READWRITE(m_midstate_buffer);
         READWRITE(VARINT(m_midstate_length));
@@ -252,6 +261,7 @@ public:
         m_commit_nonce = 0;
         m_secret_lo = 0;
         m_secret_hi = 0;
+        m_commit_branch.clear();
         m_midstate_hash.SetNull();
         m_midstate_buffer.clear();
         m_midstate_length = 0;
@@ -412,7 +422,7 @@ public:
     // GetAuxiliaryHash() returns a pair of hash values: the first is a hash of
     // a parent chain block header, the second is the block-witholding
     // prevention hash.
-    std::pair<uint256, uint256> GetAuxiliaryHash(bool* mutated = nullptr) const;
+    std::pair<uint256, uint256> GetAuxiliaryHash(const Consensus::Params&, bool* mutated = nullptr) const;
 
     // GetHash() returns the hash seen by non-upgraded nodes, which is also the
     // hash used in the hashPrevBlock field of the next block.  Since this hash
