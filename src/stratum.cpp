@@ -575,8 +575,9 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
         blkhdr.m_aux_pow.m_aux_nonce = nNonce;
         blkhdr.m_aux_pow.m_aux_version = version;
 
-        res = CheckAuxiliaryProofOfWork(blkhdr);
-        auto aux_hash = blkhdr.GetAuxiliaryHash();
+        const Consensus::Params& params = Params().GetConsensus();
+        res = CheckAuxiliaryProofOfWork(blkhdr, params);
+        auto aux_hash = blkhdr.GetAuxiliaryHash(params);
         if (res) {
             LogPrintf("GOT AUXILIARY BLOCK!!! by %s: %s, %s\n", client.m_addr.ToString(), aux_hash.first.ToString(), aux_hash.second.ToString());
             blkhdr.hashMerkleRoot = ComputeMerkleRootFromBranch(cb.GetHash(), cb_branch, 0);
