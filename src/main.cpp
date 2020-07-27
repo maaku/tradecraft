@@ -1682,7 +1682,7 @@ bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus:
     }
 
     // Check the header
-    if (!CheckAuxiliaryProofOfWork(block) || !CheckProofOfWork(block, consensusParams))
+    if (!CheckAuxiliaryProofOfWork(block, consensusParams) || !CheckProofOfWork(block, consensusParams))
         return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
 
     return true;
@@ -3615,10 +3615,23 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const 
         if (aux_pow.m_aux_branch.size() > MAX_AUX_POW_BRANCH_LENGTH) {
             return state.DoS(100, false, REJECT_INVALID, "auxpow-merkle-branch", false, "auxiliary proof-of-work Merkle branch is too long");
         }
+
+        if (aux_pow.m_commit_branch.size() > MAX_AUX_POW_COMMIT_BRANCH_LENGTH) {
+            return state.DoS(100, false, REJECT_INVALID, "auxpow-commit-branch", false, "auxiliary proof-of-work Merkle map path is too long");
+        }
+
+        size_t nbits = 0;
+        for (size_t idx = 0; idx < aux_pow.m_commit_branch.size(); ++idx) {
+            ++nbits;
+            nbits += aux_pow.m_commit_branch[idx].first;
+        }
+        if (nbits >= 256) {
+            return state.DoS(100, false, REJECT_INVALID, "auxpow-commit-branch-bits", false, "auxiliary proof-of-work Merkle map path is greater than 256 bits");
+        }
     }
 
     // Check proof of work matches claimed amount
-    if (fCheckPOW && !CheckAuxiliaryProofOfWork(block)) {
+    if (fCheckPOW && !CheckAuxiliaryProofOfWork(block, consensusParams)) {
         return state.DoS(50, false, REJECT_INVALID, "aux-pow-invalid", false, "auxiliary proof of work failed");
     }
 
@@ -3656,7 +3669,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
         // Merge mining checks.
         if (!block.m_aux_pow.IsNull()) {
             // Check that auxiliary proof-of-work data have canonical encoding.
-            auto aux_hash = block.GetAuxiliaryHash(&mutated);
+            auto aux_hash = block.GetAuxiliaryHash(consensusParams, &mutated);
             if (mutated) {
                 return state.DoS(100, false, REJECT_INVALID, "bad-auxpow-mutated", true, "auxiliary proof-of-work header is non-canonical (mutated)");
             }
