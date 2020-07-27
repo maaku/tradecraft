@@ -27,7 +27,7 @@
 
 #include <array>
 
-std::pair<uint256, uint256> CBlockHeader::GetAuxiliaryHash(bool* mutated) const
+std::pair<uint256, uint256> CBlockHeader::GetAuxiliaryHash(const Consensus::Params& params, bool* mutated) const
 {
     // Start with the block template hash:
     CBlockHeader blkhdr;
@@ -48,6 +48,15 @@ std::pair<uint256, uint256> CBlockHeader::GetAuxiliaryHash(bool* mutated) const
         secret << m_aux_pow.m_secret_lo;
         secret << m_aux_pow.m_secret_hi;
         MerkleHash_Sha256Midstate(hash, hash, secret.GetHash());
+    }
+
+    // The merge-mining commitment for this chain might be stored alongside
+    // other commitments in the form of a Merkle hash map.  We therefore use the
+    // branch proof to work our way up to the root value of the Merkle hash map.
+    bool invalid = false;
+    hash = ComputeMerkleMapRootFromBranch(hash, m_aux_pow.m_commit_branch, params.aux_pow_path, &invalid);
+    if (invalid && mutated) {
+        *mutated = true;
     }
 
     // Next we complete the auxiliary block's block-final transaction hash,
