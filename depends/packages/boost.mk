@@ -11,7 +11,7 @@ $(package)_config_opts_debug=variant=debug
 $(package)_config_opts=--layout=tagged --build-type=complete --user-config=user-config.jam
 $(package)_config_opts+=threading=multi link=static -sNO_BZIP2=1 -sNO_ZLIB=1
 $(package)_config_opts_linux=threadapi=pthread runtime-link=shared
-ifeq (x$(GBUILD_BITS),"x")
+ifeq ($(GBUILD_BITS),"")
 $(package)_config_opts_darwin=--toolset=clang-darwin runtime-link=shared
 else
 $(package)_config_opts_darwin=--toolset=darwin-4.2.1 runtime-link=shared
