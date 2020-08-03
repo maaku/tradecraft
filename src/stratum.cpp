@@ -245,9 +245,11 @@ std::string GetWorkUnit(StratumClient& client)
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Freicoin is not connected!");
     }
 
+#if 0
     if (IsInitialBlockDownload()) {
         throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Freicoin is downloading blocks...");
     }
+#endif
 
     if (!client.m_authorized) {
         throw JSONRPCError(RPC_INVALID_REQUEST, "Stratum client not authorized.  Use mining.authorize first, with a Freicoin address as the username.");
