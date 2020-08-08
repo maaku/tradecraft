@@ -1040,10 +1040,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     nMaxTipAge = GetArg("-maxtipage", DEFAULT_MAX_TIP_AGE);
 
     if (!mapMultiArgs["-bip9params"].empty()) {
-        // Allow overriding bip9 parameters for testing
-        if (!Params().MineBlocksOnDemand()) {
-            return InitError("BIP9 parameters may only be overridden on regtest.");
-        }
         const vector<string>& deployments = mapMultiArgs["-bip9params"];
         for (auto i : deployments) {
             std::vector<std::string> vDeploymentParams;
