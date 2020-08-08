@@ -254,9 +254,9 @@ public:
         consensus.bitcoin_mode = false;
         consensus.nSubsidyHalvingInterval = 0; // never
         consensus.perpetual_subsidy = 9536743164; // 95.367,431,64fc
-        consensus.equilibrium_height = 161280; // three years
-        consensus.equilibrium_monetary_base = 10000000000000000LL; // 100,000,000.0000,0000fc
-        consensus.initial_excess_subsidy = 15916928404LL; // 1519.1692,8404fc
+        consensus.equilibrium_height = 0; // disable
+        consensus.equilibrium_monetary_base = 0;
+        consensus.initial_excess_subsidy = 0;
         consensus.verify_dersig_activation_height = 1;
         consensus.truncate_inputs_activation_height = 1;
         consensus.alu_activation_height = 1;
@@ -309,7 +309,7 @@ public:
 
         consensus.original_adjust_interval = 2016; // two weeks
         consensus.filtered_adjust_interval = 9; // 1.5 hrs
-        consensus.diff_adjust_threshold = 2016;
+        consensus.diff_adjust_threshold = 0;
 
         pchMessageStart[0] = 0x5e;
         pchMessageStart[1] = 0xd6;
@@ -318,10 +318,31 @@ public:
         nDefaultPort = 18639;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1356123600, 3098244593U, 0x1d00ffff, 1);
+        std::string timestamp("The Times 7/Aug/2020 Foreign Office cat quits to spend more time with family");
+        CMutableTransaction genesis_tx;
+        genesis_tx.nVersion = 2;
+        genesis_tx.vin.resize(1);
+        genesis_tx.vin[0].prevout.SetNull();
+        genesis_tx.vin[0].scriptSig = CScript() << std::vector<unsigned char>((const unsigned char*)timestamp.data(), (const unsigned char*)timestamp.data() + timestamp.length());
+        genesis_tx.vin[0].nSequence = 0xffffffff;
+        genesis_tx.vout.resize(1);
+        genesis_tx.vout[0].SetReferenceValue(consensus.perpetual_subsidy);
+        genesis_tx.vout[0].scriptPubKey = CScript() << OP_RETURN;
+        genesis_tx.nLockTime = 1596844800;
+        genesis_tx.lock_height = 0;
+
+        genesis = CBlock();
+        genesis.nVersion = 1;
+        genesis.hashPrevBlock.SetNull();
+        genesis.nTime = 1596844800;
+        genesis.nBits = 0x1d00ffff;
+        genesis.nNonce = 3701696636UL;
+        genesis.vtx.push_back(CTransaction(genesis_tx));
+        genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
+
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x00000000a52504ffe3420a43bd385ef24f81838921a903460b235d95f37cd65e"));
-        assert(genesis.hashMerkleRoot == uint256S("0xf53b1baa971ea40be88cf51288aabd700dfec96c486bf7155a53a4919af4c8bd"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00000000d725fe9f13eddf718b6a990bcc0b349904a90963f8f18dfb92c6fb09"));
+        assert(genesis.hashMerkleRoot == uint256S("0xc59e067938f9598e11b2fd7972bbbbb5db9f889c0f24c549364d23bfcfa014ac"));
 
         uint256 tag;
         CSHA256().Write(reinterpret_cast<const unsigned char*>("auxpow"), 6).Finalize(tag.begin());
@@ -330,7 +351,7 @@ public:
         hw << tag;
         hw << genesis;
         consensus.aux_pow_path = hw.GetHash();
-        assert(consensus.aux_pow_path == uint256S("0xcb2c00dc58978bb29b78cb8449d76454e3055c10d0410fcf890b39958ab2d336"));
+        assert(consensus.aux_pow_path == uint256S("0x9ebc2031edbcabf27eef0b5232867d2db0eb9c7b3d3d2af4b0768ba42f396217"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
