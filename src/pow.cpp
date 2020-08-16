@@ -441,7 +441,10 @@ bool CheckAuxiliaryProofOfWork(const CBlockHeader& block, const Consensus::Param
     target >>= bias;
 
     // Check auxiliary proof-of-work (2nd stage)
-    if (UintToArith256(aux_hash.second) > target) {
+    auto target2 = ArithToUint256(target);
+    std::reverse(target2.begin(),
+                 target2.end());
+    if (std::memcmp(aux_hash.second.begin(), target2.begin(), 32) > 0) {
         return false;
     }
 
