@@ -71,10 +71,12 @@ struct StratumClient
     bool m_second_stage;
     bool m_send_work;
 
+    bool m_supports_aux;
+
     bool m_supports_extranonce;
 
-    StratumClient() : m_listener(0), m_socket(0), m_bev(0), m_authorized(false), m_mindiff(0.0), m_version_rolling_mask(0x00000000), m_last_tip(0), m_second_stage(false), m_send_work(false), m_supports_extranonce(false) { GenSecret(); }
-    StratumClient(evconnlistener* listener, evutil_socket_t socket, bufferevent* bev, CService from) : m_listener(listener), m_socket(socket), m_bev(bev), m_from(from), m_authorized(false), m_mindiff(0.0), m_version_rolling_mask(0x00000000), m_last_tip(0), m_second_stage(false), m_send_work(false), m_supports_extranonce(false) { GenSecret(); }
+    StratumClient() : m_listener(0), m_socket(0), m_bev(0), m_authorized(false), m_mindiff(0.0), m_version_rolling_mask(0x00000000), m_last_tip(0), m_second_stage(false), m_send_work(false), m_supports_aux(false), m_supports_extranonce(false) { GenSecret(); }
+    StratumClient(evconnlistener* listener, evutil_socket_t socket, bufferevent* bev, CService from) : m_listener(listener), m_socket(socket), m_bev(bev), m_from(from), m_authorized(false), m_mindiff(0.0), m_version_rolling_mask(0x00000000), m_last_tip(0), m_second_stage(false), m_send_work(false), m_supports_aux(false), m_supports_extranonce(false) { GenSecret(); }
 
     void GenSecret();
     std::vector<unsigned char> ExtraNonce1(uint256 job_id) const;
@@ -235,6 +237,17 @@ uint32_t ParseHexInt4(UniValue hex, std::string name)
     ret |= vch[1] << 16;
     ret |= vch[2] <<  8;
     ret |= vch[3];
+    return ret;
+}
+
+uint256 ParseUint256(UniValue hex, std::string name)
+{
+    std::vector<unsigned char> vch = ParseHexV(hex, name);
+    if (vch.size() != 32) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, name+" must be exactly 32 bytes / 64 hex");
+    }
+    uint256 ret;
+    std::copy(vch.begin(), vch.end(), ret.begin());
     return ret;
 }
 
@@ -411,6 +424,23 @@ std::string GetWorkUnit(StratumClient& client)
             secret << aux_pow.m_secret_lo;
             secret << aux_pow.m_secret_hi;
             MerkleHash_Sha256Midstate(hash, hash, secret.GetHash());
+        }
+
+        if (client.m_supports_aux) {
+            UniValue params(UniValue::VARR);
+            params.push_back(job_id.GetHex());
+            params.push_back(HexStr(hash.begin(), hash.end()));
+
+            params.push_back(client.m_last_tip != tip);
+            client.m_last_tip = tip;
+            client.m_second_stage = false;
+
+            UniValue mining_aux_notify(UniValue::VOBJ);
+            mining_aux_notify.push_back(Pair("params", params));
+            mining_aux_notify.push_back(Pair("id", NullUniValue));
+            mining_aux_notify.push_back(Pair("method", "mining.aux.notify"));
+
+            return mining_aux_notify.write() + '\n';
         }
 
         hash = ComputeMerkleMapRootFromBranch(hash, aux_pow.m_commit_branch, Params().GetConsensus().aux_pow_path);
@@ -640,6 +670,49 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
     return res;
 }
 
+bool SubmitAuxiliaryBlock(StratumClient& client, const uint256& job_id, const StratumWork& current_work, CBlockHeader& blkhdr)
+{
+    CMutableTransaction cb, bf;
+    std::vector<uint256> cb_branch;
+    static const std::vector<unsigned char> dummy(4, 0x00); // extranonce2
+    CustomizeWork(client, job_id, current_work, dummy, cb, bf, cb_branch);
+
+    CMutableTransaction cb2(cb);
+    cb2.vin[0].scriptSig = CScript();
+    cb2.vin[0].nSequence = 0;
+
+    blkhdr.m_aux_pow.m_commit_hash_merkle_root = ComputeMerkleRootFromBranch(cb2.GetHash(), cb_branch, 0);
+
+    const Consensus::Params& params = Params().GetConsensus();
+    auto aux_hash = blkhdr.GetAuxiliaryHash(params);
+    if (!CheckAuxiliaryProofOfWork(blkhdr, params)) {
+        LogPrintf("NEW AUXILIARY SHARE!!! by %s: %s, %s\n", client.m_addr.ToString(), aux_hash.first.ToString(), aux_hash.second.ToString());
+        return false;
+    }
+
+    LogPrintf("GOT AUXILIARY BLOCK!!! by %s: %s, %s\n", client.m_addr.ToString(), aux_hash.first.ToString(), aux_hash.second.ToString());
+    blkhdr.hashMerkleRoot = ComputeMerkleRootFromBranch(cb.GetHash(), cb_branch, 0);
+
+    uint256 new_job_id = blkhdr.GetHash();
+    work_templates[new_job_id] = current_work;
+    StratumWork& new_work = work_templates[new_job_id];
+    new_work.GetBlock().vtx[0] = CTransaction(cb);
+    if (new_work.m_is_witness_enabled) {
+        new_work.GetBlock().vtx.back() = CTransaction(bf);
+    }
+    new_work.GetBlock().hashMerkleRoot = BlockMerkleRoot(new_work.GetBlock(), nullptr);
+    new_work.m_cb_branch = cb_branch;
+    new_work.GetBlock().m_aux_pow = blkhdr.m_aux_pow;
+    new_work.GetBlock().nTime = blkhdr.nTime;
+    new_work.m_aux_hash2 = aux_hash.second;
+    assert(new_job_id == new_work.GetBlock().GetHash());
+
+    half_solved_work = new_job_id;
+    client.m_send_work = true;
+
+    return false;
+}
+
 void BoundParams(const std::string& method, const UniValue& params, size_t min, size_t max)
 {
     if (params.size() < min) {
@@ -786,6 +859,118 @@ UniValue stratum_mining_submit(StratumClient& client, const UniValue& params)
     SubmitBlock(client, job_id, current_work, extranonce2, nTime, nNonce, nVersion);
 
     return true;
+}
+
+UniValue stratum_mining_aux_submit(StratumClient& client, const UniValue& params)
+{
+    const std::string method("mining.aux.submit");
+    BoundParams(method, params, 14, 14);
+    // First parameter is the client username, which is ignored.
+
+    uint256 job_id = uint256S(params[1].get_str());
+    if (!work_templates.count(job_id)) {
+        LogPrint("stratum", "Received completed auxiliary share for unknown job_id : %s\n", job_id.GetHex());
+        return false;
+    }
+    StratumWork &current_work = work_templates[job_id];
+
+    CBlockHeader blkhdr(current_work.GetBlock());
+    AuxProofOfWork& aux_pow = blkhdr.m_aux_pow;
+
+    const UniValue& commit_branch = params[2].get_array();
+    aux_pow.m_commit_branch.clear();
+    for (int i = 0; i < commit_branch.size(); ++i) {
+        const UniValue& inner_hash_node = commit_branch[i].get_array();
+        if (inner_hash_node.size() != 2) {
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "commit_branch has unexpected size; must be of the form [[int, uint256]...]");
+        }
+        int bits = inner_hash_node[0].get_int();
+        if (bits < 0 || bits > 255) {
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "bits parameter within commit_branch does not fit in unsigned char");
+        }
+        uint256 hash = ParseUint256(inner_hash_node[1], "commit_branch");
+        aux_pow.m_commit_branch.emplace_back((unsigned char)bits, hash);
+    }
+    if (aux_pow.m_commit_branch.size() > MAX_AUX_POW_COMMIT_BRANCH_LENGTH) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "auxiliary proof-of-work Merkle map path is too long");
+    }
+    size_t nbits = 0;
+    for (size_t idx = 0; idx < aux_pow.m_commit_branch.size(); ++idx) {
+        ++nbits;
+        nbits += aux_pow.m_commit_branch[idx].first;
+    }
+    if (nbits >= 256) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "auxiliary proof-of-work Merkle map path is greater than 256 bits");
+    }
+
+    aux_pow.m_midstate_hash = ParseUint256(params[3], "midstate_hash");
+    if (!params[4].get_str().empty()) {
+        aux_pow.m_midstate_buffer = ParseHexV(params[4], "midstate_buffer");
+    }
+    if (aux_pow.m_midstate_buffer.size() >= 64) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "auxiliary proof-of-work midstate buffer is too large");
+    }
+    int64_t midstate_length = 0;
+    try {
+        midstate_length = params[5].get_int64();
+    } catch (...) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "midstate_length is not an integer as expected");
+    }
+    if (midstate_length < 0) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "midstate length cannot be negative");
+    }
+    if (midstate_length >= std::numeric_limits<uint32_t>::max()) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "non-representable midstate length for auxiliary proof-of-work");
+    }
+    aux_pow.m_midstate_length = (uint32_t)midstate_length;
+    if (aux_pow.m_midstate_buffer.size() != aux_pow.m_midstate_length % 64) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "auxiliary proof-of-work midstate buffer doesn't match anticipated length");
+    }
+
+    aux_pow.m_aux_lock_time = ParseHexInt4(params[6], "lock_time");
+
+    const UniValue& aux_branch = params[7].get_array();
+    aux_pow.m_aux_branch.clear();
+    for (int i = 0; i < aux_branch.size(); ++i) {
+        aux_pow.m_aux_branch.push_back(ParseUint256(aux_branch[i], "aux_branch"));
+    }
+    if (aux_pow.m_aux_branch.size() > MAX_AUX_POW_BRANCH_LENGTH) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "auxiliary proof-of-work Merkle branch is too long");
+    }
+    int64_t num_txns = params[8].get_int64();
+    if (num_txns < 1) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "number of transactions in auxiliary block cannot be less than one");
+    }
+    if (num_txns > std::numeric_limits<uint32_t>::max()) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "non-representable number of transactions in auxiliary block");
+    }
+    aux_pow.m_aux_num_txns = (uint32_t)num_txns;
+
+    aux_pow.m_aux_hash_prev_block = ParseUint256(params[10], "hashPrevBlock");
+    blkhdr.nTime = ParseHexInt4(params[11], "nTime");
+    aux_pow.m_aux_bits = ParseHexInt4(params[12], "nBits");
+    aux_pow.m_aux_nonce = ParseHexInt4(params[13], "nNonce");
+    aux_pow.m_aux_version = ParseHexInt4(params[9], "nVersion");
+
+    SubmitAuxiliaryBlock(client, job_id, current_work, blkhdr);
+
+    return true;
+}
+
+UniValue stratum_mining_aux_subscribe(StratumClient& client, const UniValue& params)
+{
+    const std::string method("mining.aux.subscribe");
+    BoundParams(method, params, 0, 0);
+
+    client.m_supports_aux = true;
+
+    UniValue ret(UniValue::VARR);
+    const uint256& aux_pow_path = Params().GetConsensus().aux_pow_path;
+    ret.push_back(HexStr(aux_pow_path.begin(), aux_pow_path.end()));
+    ret.push_back((int)MAX_AUX_POW_COMMIT_BRANCH_LENGTH);
+    ret.push_back((int)MAX_AUX_POW_BRANCH_LENGTH);
+
+    return ret;
 }
 
 UniValue stratum_mining_extranonce_subscribe(StratumClient& client, const UniValue& params)
@@ -1075,6 +1260,9 @@ bool InitStratumServer()
     stratum_method_dispatch["mining.authorize"] = stratum_mining_authorize;
     stratum_method_dispatch["mining.configure"] = stratum_mining_configure;
     stratum_method_dispatch["mining.submit"]    = stratum_mining_submit;
+    stratum_method_dispatch["mining.aux.submit"] = stratum_mining_aux_submit;
+    stratum_method_dispatch["mining.aux.subscribe"] =
+        stratum_mining_aux_subscribe;
     stratum_method_dispatch["mining.extranonce.subscribe"] =
         stratum_mining_extranonce_subscribe;
 
