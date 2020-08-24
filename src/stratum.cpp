@@ -431,6 +431,13 @@ std::string GetWorkUnit(StratumClient& client)
             params.push_back(job_id.GetHex());
             params.push_back(HexStr(hash.begin(), hash.end()));
 
+            unsigned char bias = current_work.GetBlock().GetBias();
+            uint32_t bits = aux_pow.m_commit_bits;
+            bits += static_cast<uint32_t>(bias / 8) << 24;
+            bias = bias % 8;
+            params.push_back(HexInt4(bits));
+            params.push_back((int)bias);
+
             params.push_back(client.m_last_tip != tip);
             client.m_last_tip = tip;
             client.m_second_stage = false;
