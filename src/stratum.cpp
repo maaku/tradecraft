@@ -422,7 +422,9 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
         LogPrintf("NEW SHARE!!! by %s: %s\n", client.m_addr.ToString(), blkhdr.GetHash().ToString());
     }
 
-    client.m_send_work = true;
+    if (res) {
+        client.m_send_work = true;
+    }
 
     return res;
 }
