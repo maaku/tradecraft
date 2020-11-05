@@ -6,6 +6,18 @@
 #ifndef BITCOIN_MERGEMINE_H
 #define BITCOIN_MERGEMINE_H
 
+#include <sync.h>
+#include <uint256.h>
+
+#include <map>
+#include <string>
+
+//! Mapping of alternative names to chain specifiers
+extern std::map<std::string, uint256> chain_names;
+
+//! Critical seciton guarding access to all of the merge-mining global state
+extern CCriticalSection cs_merge_mining;
+
 /** Configure the merge-mining subsystem.  This involved setting up some global
  ** state and spawning initialization and management threads. */
 bool InitMergeMining();

@@ -46,11 +46,11 @@ static event_base* base = nullptr;
 //! Merge-mining manager thread
 static boost::thread merge_mining_manager_thread;
 
-//! Critical seciton guarding access to all of the merge-mining global state
-CCriticalSection cs_merge_mining;
-
 //! Mapping of alternative names to chain specifiers
 std::map<std::string, uint256> chain_names;
+
+//! Critical seciton guarding access to all of the merge-mining global state
+CCriticalSection cs_merge_mining;
 
 struct AuxWorkServer
 {
