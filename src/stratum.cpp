@@ -857,10 +857,13 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
 UniValue stratum_mining_aux_authorize(StratumClient& client, const UniValue& params)
 {
     const std::string method("mining.aux.authorize");
-    BoundParams(method, params, 1, 1);
+    BoundParams(method, params, 1, 2);
 
     std::string username = params[0].get_str();
     boost::trim(username);
+
+    // The second parameter is the password.  We don't actually do any
+    // authorization, so we ignore the password field.
 
     size_t pos = username.find('+');
     if (pos != std::string::npos) {
