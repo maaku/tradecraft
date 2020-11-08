@@ -882,9 +882,7 @@ UniValue stratum_mining_aux_authorize(StratumClient& client, const UniValue& par
 
     client.m_aux_addr.insert(addr);
 
-    if (client.m_authorized) {
-        client.m_send_work = true;
-    }
+    client.m_send_work = true;
 
     LogPrintf("Authorized client %s of stratum miner %s\n", addr.ToString(), client.GetPeer().ToString());
 
@@ -1331,7 +1329,7 @@ void BlockWatcher()
             evbuffer *output = bufferevent_get_output(bev);
             StratumClient& client = subscription.second;
             // Ignore clients that aren't authorized yet.
-            if (!client.m_authorized) {
+            if (!client.m_authorized && client.m_aux_addr.empty()) {
                 continue;
             }
             // Ignore clients that are already working on the new block.
