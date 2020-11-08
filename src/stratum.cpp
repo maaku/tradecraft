@@ -433,7 +433,7 @@ std::string GetWorkUnit(StratumClient& client)
 
         UniValue mining_aux_notify(UniValue::VOBJ);
         mining_aux_notify.push_back(Pair("params", params));
-        mining_aux_notify.push_back(Pair("id", NullUniValue));
+        mining_aux_notify.push_back(Pair("id", client.m_nextid++));
         mining_aux_notify.push_back(Pair("method", "mining.aux.notify"));
 
         return mining_aux_notify.write() + '\n';
