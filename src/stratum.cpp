@@ -887,7 +887,7 @@ UniValue stratum_mining_aux_authorize(StratumClient& client, const UniValue& par
 
     LogPrintf("Authorized client %s of stratum miner %s\n", addr.ToString(), client.GetPeer().ToString());
 
-    return true;
+    return addr.ToString();
 }
 
 UniValue stratum_mining_aux_deauthorize(StratumClient& client, const UniValue& params)
