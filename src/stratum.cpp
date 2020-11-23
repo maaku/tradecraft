@@ -878,11 +878,11 @@ UniValue stratum_mining_aux_authorize(StratumClient& client, const UniValue& par
         throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid Freicoin address: %s", username));
     }
     if (client.m_aux_addr.count(addr)) {
-        return strprintf("User with address is already registered: %s", addr.ToString());
+        LogPrint("stratum", "Client with address %s is already registered for stratum miner %s\n", addr.ToString(), client.GetPeer().ToString());
+        return addr.ToString();
     }
 
     client.m_aux_addr.insert(addr);
-
     client.m_send_work = true;
 
     LogPrintf("Authorized client %s of stratum miner %s\n", addr.ToString(), client.GetPeer().ToString());
@@ -910,7 +910,8 @@ UniValue stratum_mining_aux_deauthorize(StratumClient& client, const UniValue& p
         throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid Freicoin address: %s", username));
     }
     if (client.m_aux_addr.count(addr)) {
-        return strprintf("No user with address %s is currently registered", addr.ToString());
+        LogPrint("stratum", "No client with address %s is currently registered for stratum miner %s\n", addr.ToString(), client.GetPeer().ToString());
+        return false;
     }
 
     client.m_aux_addr.erase(addr);
