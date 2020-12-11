@@ -369,7 +369,7 @@ void MergeMiningManagerThread()
             std::string chainid(*i, pos+1);
             uint256 hash;
             try {
-                hash = uint256S(chainid);
+                hash = ParseUint256(chainid, "chainid");
             } catch (...) {
                 LogPrintf("Unable to convert \"%s\" to uint256. Not a proper chain id?\n", chainid);
             }
