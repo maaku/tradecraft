@@ -9,6 +9,7 @@
 #include "clientversion.h"
 #include "netbase.h"
 #include "rpc/server.h"
+#include "stratum.h"
 #include "sync.h"
 #include "uint256.h"
 #include "util.h"
@@ -77,20 +78,6 @@ static std::map<bufferevent*, AuxWorkServer> g_mergemine_conn;
 
 //! An index mapping aux_pow_path to AuxWorkServer (via bev).
 static std::map<uint256, bufferevent*> g_mergemine;
-
-uint256 ParseUint256(const UniValue& hex, std::string name)
-{
-    if (!hex.isStr()) {
-        throw std::runtime_error(name+" must be a hexidecimal string");
-    }
-    std::vector<unsigned char> vch = ParseHex(hex.get_str());
-    if (vch.size() != 32) {
-        throw std::runtime_error(name+" must be exactly 32 bytes / 64 hex");
-    }
-    uint256 ret;
-    std::copy(vch.begin(), vch.end(), ret.begin());
-    return ret;
-}
 
 static void merge_mining_read_cb(bufferevent *bev, void *ctx)
 {
@@ -195,7 +182,7 @@ static void merge_mining_read_cb(bufferevent *bev, void *ctx)
                 }
                 uint256 aux_pow_path;
                 try {
-                    aux_pow_path = ParseUint256(result[0], "aux_pow_path");
+                    aux_pow_path = ParseUInt256(result[0], "aux_pow_path");
                 } catch (...) {
                     // result[0] was not a uint256
                     throw std::runtime_error("expected hex-encoded aux_pow_path as first value of mining.aux.subscribe response");
@@ -369,7 +356,7 @@ void MergeMiningManagerThread()
             std::string chainid(*i, pos+1);
             uint256 hash;
             try {
-                hash = ParseUint256(chainid, "chainid");
+                hash = ParseUInt256(chainid, "chainid");
             } catch (...) {
                 LogPrintf("Unable to convert \"%s\" to uint256. Not a proper chain id?\n", chainid);
             }
