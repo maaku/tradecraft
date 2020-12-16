@@ -230,7 +230,7 @@ std::string HexInt4(uint32_t val)
     return HexStr(vch);
 }
 
-uint32_t ParseHexInt4(UniValue hex, std::string name)
+uint32_t ParseHexInt4(const UniValue& hex, const std::string& name)
 {
     std::vector<unsigned char> vch = ParseHexV(hex, name);
     if (vch.size() != 4) {
