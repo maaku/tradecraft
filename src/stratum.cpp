@@ -16,12 +16,12 @@
 #include "netbase.h"
 #include "net.h"
 #include "rpc/server.h"
-#include "utilstrencodings.h"
 #include "serialize.h"
 #include "streams.h"
 #include "sync.h"
 #include "txmempool.h"
 #include "util.h"
+#include "utilstrencodings.h"
 
 #include <univalue.h>
 
