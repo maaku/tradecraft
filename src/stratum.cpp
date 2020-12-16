@@ -1005,9 +1005,9 @@ UniValue stratum_mining_aux_submit(StratumClient& client, const UniValue& params
         LogPrint("stratum", "No user with address %s is currently registered\n", addr.ToString());
     }
 
-    uint256 job_id = uint256S(params[1].get_str());
+    uint256 job_id = ParseUint256(params[1].get_str(), "job_id");
     if (!work_templates.count(job_id)) {
-        LogPrint("stratum", "Received completed auxiliary share for unknown job_id : %s\n", job_id.GetHex());
+        LogPrint("stratum", "Received completed auxiliary share for unknown job_id : %s\n", HexStr(job_id.begin(), job_id.end()));
         return false;
     }
     StratumWork &current_work = work_templates[job_id];
