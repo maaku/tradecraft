@@ -264,7 +264,9 @@ void CustomizeWork(const StratumClient& client, const StratumWork& current_work,
     std::vector<unsigned char> nonce(extranonce1);
     nonce.insert(nonce.end(), extranonce2.begin(),
                               extranonce2.end());
-    assert(nonce.size() == 12);
+    if (nonce.size() != 12) {
+        throw std::runtime_error("Expected 12-byte combined nonce value.");
+    }
     cb.vin[0].scriptSig =
            CScript()
         << cb.lock_height
