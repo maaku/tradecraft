@@ -317,8 +317,6 @@ uint256 CustomizeCommitHash(const StratumClient& client, const CFreicoinAddress&
 
 std::string GetWorkUnit(StratumClient& client)
 {
-    using std::swap;
-
     LOCK(cs_main);
 
     if (vNodes.empty() && !Params().MineBlocksOnDemand()) {
