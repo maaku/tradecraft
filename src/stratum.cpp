@@ -1308,7 +1308,7 @@ static bool StratumBindAddresses(event_base* base)
         return false;
 
     // Bind each addresses
-    for (auto endpoint : endpoints) {
+    for (const auto& endpoint : endpoints) {
         LogPrint("stratum", "Binding stratum on address %s port %i\n", endpoint.first, endpoint.second);
         // Use CService to translate string -> sockaddr
         CService socket(CNetAddr(endpoint.first), endpoint.second);
@@ -1403,7 +1403,7 @@ bool InitStratumServer()
     }
 
     std::string strAllowed;
-    for (auto subnet : stratum_allow_subnets) {
+    for (const auto& subnet : stratum_allow_subnets) {
         strAllowed += subnet.ToString() + " ";
     }
     LogPrint("stratum", "Allowing stratum connections from: %s\n", strAllowed);
@@ -1446,7 +1446,7 @@ void InterruptStratumServer()
 {
     LOCK(cs_stratum);
     // Stop listening for connections on stratum sockets
-    for (auto binding : bound_listeners) {
+    for (const auto& binding : bound_listeners) {
         LogPrint("stratum", "Interrupting stratum service on %s\n", binding.second.ToString());
         evconnlistener_disable(binding.first);
     }
@@ -1465,7 +1465,7 @@ void StopStratumServer()
     }
     subscriptions.clear();
     /* Un-bind our listeners from their network interfaces. */
-    for (auto binding : bound_listeners) {
+    for (const auto& binding : bound_listeners) {
         LogPrint("stratum", "Removing stratum server binding on %s\n", binding.second.ToString());
         evconnlistener_free(binding.first);
     }
