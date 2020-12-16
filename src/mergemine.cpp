@@ -22,8 +22,8 @@
 #include <string>
 #include <vector>
 
-#include <boost/function.hpp>
 #include <boost/bind.hpp>
+#include <boost/function.hpp>
 #include <boost/thread.hpp>
 
 #include <event2/event.h>
