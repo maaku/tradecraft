@@ -420,7 +420,7 @@ std::string GetWorkUnit(StratumClient& client)
         }
 
         UniValue params(UniValue::VARR);
-        params.push_back(job_id.GetHex());
+        params.push_back(HexStr(job_id.begin(), job_id.end()));
         params.push_back(commits);
 
         unsigned char bias = current_work.GetBlock().GetBias();
