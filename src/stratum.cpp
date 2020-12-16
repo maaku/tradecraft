@@ -168,7 +168,7 @@ std::string HexInt4(uint32_t val)
     return HexStr(vch);
 }
 
-uint32_t ParseHexInt4(UniValue hex, std::string name)
+uint32_t ParseHexInt4(const UniValue& hex, const std::string& name)
 {
     std::vector<unsigned char> vch = ParseHexV(hex, name);
     if (vch.size() != 4) {
@@ -182,7 +182,7 @@ uint32_t ParseHexInt4(UniValue hex, std::string name)
     return ret;
 }
 
-uint256 ParseUint256(const UniValue& hex, const std::string& name)
+uint256 ParseUInt256(const UniValue& hex, const std::string& name)
 {
     if (!hex.isStr()) {
         throw std::runtime_error(name+" must be a hexidecimal string");
@@ -572,7 +572,7 @@ UniValue stratum_mining_submit(StratumClient& client, const UniValue& params)
         boost::trim_right(username);
     }
 
-    uint256 job_id = ParseUint256(params[1], "job_id");
+    uint256 job_id = ParseUInt256(params[1], "job_id");
     if (!work_templates.count(job_id)) {
         LogPrint("stratum", "Received completed share for unknown job_id : %s\n", HexStr(job_id.begin(), job_id.end()));
         return false;
