@@ -182,6 +182,20 @@ uint32_t ParseHexInt4(UniValue hex, std::string name)
     return ret;
 }
 
+uint256 ParseUint256(const UniValue& hex, const std::string& name)
+{
+    if (!hex.isStr()) {
+        throw std::runtime_error(name+" must be a hexidecimal string");
+    }
+    std::vector<unsigned char> vch = ParseHex(hex.get_str());
+    if (vch.size() != 32) {
+        throw std::runtime_error(name+" must be exactly 32 bytes / 64 hex");
+    }
+    uint256 ret;
+    std::copy(vch.begin(), vch.end(), ret.begin());
+    return ret;
+}
+
 std::string GetWorkUnit(StratumClient& client)
 {
     using std::swap;
@@ -226,7 +240,7 @@ std::string GetWorkUnit(StratumClient& client)
         delete new_work;
         new_work = NULL;
 
-        LogPrint("stratum", "New stratum block template (%d total): %s\n", work_templates.size(), job_id.GetHex());
+        LogPrint("stratum", "New stratum block template (%d total): %s\n", work_templates.size(), HexStr(job_id.begin(), job_id.end()));
 
         // Remove any old templates
         std::vector<uint256> old_job_ids;
@@ -252,13 +266,13 @@ std::string GetWorkUnit(StratumClient& client)
         // Remove all outdated work.
         for (const auto& old_job_id : old_job_ids) {
             work_templates.erase(old_job_id);
-            LogPrint("stratum", "Removed outdated stratum block template (%d total): %s\n", work_templates.size(), old_job_id.GetHex());
+            LogPrint("stratum", "Removed outdated stratum block template (%d total): %s\n", work_templates.size(), HexStr(old_job_id.begin(), old_job_id.end()));
         }
         // Remove the oldest work unit if we're still over the maximum
         // number of stored work templates.
         if (work_templates.size() > 30 && oldest_job_id) {
             work_templates.erase(oldest_job_id.get());
-            LogPrint("stratum", "Removed oldest stratum block template (%d total): %s\n", work_templates.size(), oldest_job_id.get().GetHex());
+            LogPrint("stratum", "Removed oldest stratum block template (%d total): %s\n", work_templates.size(), HexStr(oldest_job_id.get().begin(), oldest_job_id.get().end()));
         }
     }
 
@@ -300,7 +314,7 @@ std::string GetWorkUnit(StratumClient& client)
     std::string cb2 = HexStr(&ds[pos+8+4], &ds[ds.size()]);
 
     UniValue params(UniValue::VARR);
-    params.push_back(job_id.GetHex());
+    params.push_back(HexStr(job_id.begin(), job_id.end()));
     // For reasons of who-the-heck-knows-why, stratum byte-swaps each
     // 32-bit chunk of the hashPrevBlock, and prints in reverse order.
     // The byte swaps are only done with this hash.
@@ -309,9 +323,7 @@ std::string GetWorkUnit(StratumClient& client)
         ((uint32_t*)hashPrevBlock.begin())[i] = bswap_32(
             ((uint32_t*)hashPrevBlock.begin())[i]);
     }
-    std::reverse(hashPrevBlock.begin(),
-                 hashPrevBlock.end());
-    params.push_back(hashPrevBlock.GetHex());
+    params.push_back(HexStr(hashPrevBlock.begin(), hashPrevBlock.end()));
     params.push_back(cb1);
     params.push_back(cb2);
 
@@ -321,15 +333,9 @@ std::string GetWorkUnit(StratumClient& client)
         UpdateSegwitCommitment(current_work, cb, bf, cb_branch);
     }
 
-    // Reverse the order of the hashes, because that's what stratum does.
-    for (int j = 0; j < cb_branch.size(); ++j) {
-        std::reverse(cb_branch[j].begin(),
-                     cb_branch[j].end());
-    }
-
     UniValue branch(UniValue::VARR);
     for (const auto& hash : cb_branch) {
-        branch.push_back(hash.GetHex());
+        branch.push_back(HexStr(hash.begin(), hash.end()));
     }
     params.push_back(branch);
 
@@ -566,9 +572,9 @@ UniValue stratum_mining_submit(StratumClient& client, const UniValue& params)
         boost::trim_right(username);
     }
 
-    uint256 job_id = uint256S(params[1].get_str());
+    uint256 job_id = ParseUint256(params[1], "job_id");
     if (!work_templates.count(job_id)) {
-        LogPrint("stratum", "Received completed share for unknown job_id : %s\n", job_id.GetHex());
+        LogPrint("stratum", "Received completed share for unknown job_id : %s\n", HexStr(job_id.begin(), job_id.end()));
         return false;
     }
     StratumWork &current_work = work_templates[job_id];
