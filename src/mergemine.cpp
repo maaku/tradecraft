@@ -116,8 +116,8 @@ static void merge_mining_read_cb(bufferevent *bev, void *ctx)
             if (val.exists("result") && val.exists("id")) {
                 isreply = true;
                 const int id = val["id"].get_int();
-                if ((id == 1 || id == 2) && (server.idflags & id)) {
-                    server.idflags ^= id;
+                if ((id == -1 || id == -2) && (server.idflags & id)) {
+                    server.idflags ^= -id;
                 } else {
                     // Not a JSON-RPC reply we care about.  Ignore.
                     throw std::runtime_error("Ignorable stratum response");
@@ -136,7 +136,7 @@ static void merge_mining_read_cb(bufferevent *bev, void *ctx)
         }
 
         try {
-            if (isreply && val["id"].get_int() == 1) {
+            if (isreply && val["id"].get_int() == -1) {
                 // val contains the reply to our mining.subscribe request, from
                 // which we extract the extranonce information.  Any errors from
                 // here on are fatal.
@@ -168,7 +168,7 @@ static void merge_mining_read_cb(bufferevent *bev, void *ctx)
                 server.extranonce2_size = extranonce2_size;
             }
 
-            if (isreply && val["id"].get_int() == 2) {
+            if (isreply && val["id"].get_int() == -2) {
                 // val contains the reply to our mining.aux.subscribe request.
                 // Any errors from here on are fatal.
                 if (val.exists("error") && !val["error"].isNull()) {
@@ -196,7 +196,7 @@ static void merge_mining_read_cb(bufferevent *bev, void *ctx)
                 g_mergemine[aux_pow_path] = bev;
             }
         } catch (const std::exception& e) {
-            LogPrint("mergemine", "Received %s response from stratum+tcp://%s (%s): %s\n", val["id"].get_int()==1 ? "mining.subscribe" : "mining.aux.subscribe", server.socket.ToString(), server.name, e.what());
+            LogPrint("mergemine", "Received %s response from stratum+tcp://%s (%s): %s\n", val["id"].get_int()==-1 ? "mining.subscribe" : "mining.aux.subscribe", server.socket.ToString(), server.name, e.what());
             LogPrintf("Unable to subscribe to auxiliary work notifications from stratum+tcp://%s (%s) ; not adding\n", server.socket.ToString(), server.name);
             // Do nothing here.  The connection will be torn down without the
             // server having been added as a source of auxiliary work units.
@@ -306,9 +306,9 @@ static void SendSubscribeRequest(AuxWorkServer& server)
     LogPrintf("Sending request to source merge-mine work from stratum+tcp://%s (%s)\n", server.socket.ToString(), server.name);
 
     static const std::string request =
-        "{\"id\":1,\"method\":\"mining.subscribe\",\"params\":[\""
+        "{\"id\":-1,\"method\":\"mining.subscribe\",\"params\":[\""
         + FormatFullVersion()
-        + "\"]}\n{\"id\":2,\"method\":\"mining.aux.subscribe\",\"params\":[]}\n";
+        + "\"]}\n{\"id\":-2,\"method\":\"mining.aux.subscribe\",\"params\":[]}\n";
 
     LogPrint("mergemine", "Sending stratum request to %s (%s) : %s", server.socket.ToString(), server.name, request);
     evbuffer *output = bufferevent_get_output(server.bev);
