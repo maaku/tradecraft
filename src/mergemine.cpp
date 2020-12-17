@@ -23,6 +23,9 @@
 #include <string>
 #include <vector>
 
+// for argument-dependent lookup
+using std::swap;
+
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/thread.hpp>
@@ -81,7 +84,6 @@ static std::map<uint256, bufferevent*> g_mergemine;
 
 static void merge_mining_read_cb(bufferevent *bev, void *ctx)
 {
-    using std::swap;
     LOCK(cs_merge_mining);
     // Lookup the client record for this connection
     if (!g_mergemine_conn.count(bev)) {
