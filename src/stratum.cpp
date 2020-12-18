@@ -223,8 +223,6 @@ uint256 AuxWorkMerkleRoot(const std::map<uint256, AuxWork>& mmwork)
 
 std::string GetWorkUnit(StratumClient& client)
 {
-    using std::swap;
-
     LOCK(cs_main);
 
     if (vNodes.empty() && !Params().MineBlocksOnDemand()) {
