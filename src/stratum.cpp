@@ -12,6 +12,7 @@
 #include "crypto/sha256.h"
 #include "httpserver.h"
 #include "main.h"
+#include "mergemine.h"
 #include "miner.h"
 #include "netbase.h"
 #include "net.h"
@@ -32,6 +33,7 @@
 
 #include <boost/algorithm/string.hpp> // for boost::trim
 #include <boost/lexical_cast.hpp>
+#include <boost/none.hpp>
 #include <boost/optional.hpp>
 
 #include <event2/event.h>
@@ -64,11 +66,14 @@ struct StratumClient
 
     bool m_authorized;
     CBitcoinAddress m_addr;
+    std::map<uint256, std::pair<std::string, std::string> > m_mmauth;
+    std::map<uint256, std::pair<uint64_t, std::map<uint256, AuxWork> > > m_mmwork;
     double m_mindiff;
 
     uint32_t m_version_rolling_mask;
 
     CBlockIndex* m_last_tip;
+    boost::optional<std::pair<uint256, uint256> > m_last_second_stage;
     bool m_send_work;
 
     bool m_supports_extranonce;
@@ -155,6 +160,9 @@ static std::map<std::string, boost::function<UniValue(StratumClient&, const UniV
 //! A mapping of job_id -> work templates
 static std::map<uint256, StratumWork> work_templates;
 
+//! A mapping of job_id -> second stage work
+static std::map<std::string, std::pair<uint256, SecondStageWork> > second_stages;
+
 //! A thread to watch for new blocks and send mining notifications
 static boost::thread block_watcher_thread;
 
@@ -193,6 +201,23 @@ uint256 ParseUInt256(const UniValue& hex, const std::string& name)
     }
     uint256 ret;
     std::copy(vch.begin(), vch.end(), ret.begin());
+    return ret;
+}
+
+uint256 AuxWorkMerkleRoot(const std::map<uint256, AuxWork>& mmwork)
+{
+    if (mmwork.empty()) {
+        return uint256();
+    }
+    assert(mmwork.size() == 1);
+    uint256 key = mmwork.begin()->first;
+    LogPrintf("AuxWorkMerkleRoot: key = %s\n", HexStr(key.begin(), key.end()));
+    uint256 value = mmwork.begin()->second.commit;
+    LogPrintf("AuxWorkMerkleRoot: value = %s\n", HexStr(value.begin(), value.end()));
+    bool invalid = false;
+    uint256 ret = ComputeMerkleMapRootFromBranch(value, {}, key, &invalid);
+    LogPrintf("AuxWorkMerkleRoot: mmroot = %s\n", HexStr(ret.begin(), ret.end()));
+    assert(!invalid);
     return ret;
 }
 
