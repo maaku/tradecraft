@@ -214,7 +214,7 @@ uint256 ParseUInt256(const UniValue& hex, const std::string& name)
     return ret;
 }
 
-uint256 AuxWorkMerkleRoot(const std::map<uint256, AuxWork>& mmwork)
+static uint256 AuxWorkMerkleRoot(const std::map<uint256, AuxWork>& mmwork)
 {
     if (mmwork.empty()) {
         return uint256();
