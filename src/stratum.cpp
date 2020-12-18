@@ -135,8 +135,18 @@ StratumWork::StratumWork(const CBlockIndex* prev_block_index, int height, const 
 void UpdateSegwitCommitment(const StratumWork& current_work, CMutableTransaction& cb, CMutableTransaction& bf, std::vector<uint256>& cb_branch)
 {
     CBlock block2(current_work.GetBlock());
-    block2.vtx.front() = CTransaction(cb);
+    block2.vtx.back() = CTransaction(bf);
+    block2.vtx[0] = CTransaction(cb);
+    // Erase any existing commitments:
+    int commitpos = -1;
+    while ((commitpos = GetWitnessCommitmentIndex(block2)) != -1) {
+        CMutableTransaction mtx(block2.vtx[0]);
+        mtx.vout.erase(mtx.vout.begin()+commitpos);
+        block2.vtx[0] = CTransaction(mtx);
+    }
+    // Generate new commitment:
     GenerateCoinbaseCommitment(block2, current_work.m_prev_block_index, Params().GetConsensus());
+    // Save results from temporary block structure:
     cb = block2.vtx.front();
     bf = block2.vtx.back();
     cb_branch = BlockMerkleBranch(block2, 0);
