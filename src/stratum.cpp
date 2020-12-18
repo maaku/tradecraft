@@ -339,8 +339,7 @@ std::string GetWorkUnit(StratumClient& client)
     UniValue params(UniValue::VARR);
     params.push_back(HexStr(job_id.begin(), job_id.end()));
     // For reasons of who-the-heck-knows-why, stratum byte-swaps each
-    // 32-bit chunk of the hashPrevBlock, and prints in reverse order.
-    // The byte swaps are only done with this hash.
+    // 32-bit chunk of the hashPrevBlock.
     uint256 hashPrevBlock(current_work.GetBlock().hashPrevBlock);
     for (int i = 0; i < 256/32; ++i) {
         ((uint32_t*)hashPrevBlock.begin())[i] = bswap_32(
