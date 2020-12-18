@@ -231,6 +231,15 @@ uint256 AuxWorkMerkleRoot(const std::map<uint256, AuxWork>& mmwork)
     return ret;
 }
 
+static double ClampDifficulty(const StratumClient& client, double diff)
+{
+    if (client.m_mindiff > 0) {
+        diff = client.m_mindiff;
+    }
+    diff = std::max(diff, 0.001);
+    return diff;
+}
+
 std::string GetWorkUnit(StratumClient& client)
 {
     LOCK(cs_main);
@@ -313,11 +322,7 @@ std::string GetWorkUnit(StratumClient& client)
 
     CBlockIndex tmp_index;
     tmp_index.nBits = current_work.GetBlock().nBits;
-    double diff = GetDifficulty(&tmp_index);
-    if (client.m_mindiff > 0) {
-        diff = client.m_mindiff;
-    }
-    diff = std::max(diff, 0.001);
+    double diff = ClampDifficulty(client, GetDifficulty(&tmp_index));
 
     UniValue set_difficulty(UniValue::VOBJ);
     set_difficulty.push_back(Pair("id", client.m_nextid++));
