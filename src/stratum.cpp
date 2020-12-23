@@ -497,14 +497,18 @@ std::string GetWorkUnit(StratumClient& client)
         cb.vout.front().scriptPubKey =
             GetScriptForDestination(client.m_addr.Get());
     }
+
     CDataStream ds(SER_GETHASH, SERIALIZE_TRANSACTION_NO_WITNESS);
     ds << CTransaction(cb);
-    assert(ds.size() >= (4 + 1 + 32 + 4 + 1));
-    size_t pos = 4 + 1 + 32 + 4 + 1 + ds[4+1+32+4] - 4 - 8;
-    assert(ds.size() >= (pos + 8 + 4));
-
-    std::string cb1 = HexStr(&ds[0], &ds[pos]);
-    std::string cb2 = HexStr(&ds[pos+8+4], &ds[ds.size()]);
+    if (ds.size() < (4 + 1 + 32 + 4 + 1)) {
+        throw std::runtime_error("Serialized transaction is too small to be parsed.  Is this even a coinbase?");
+    }
+    size_t pos = 4 + 1 + 32 + 4 + 1 + ds[4+1+32+4];
+    if (ds.size() < pos) {
+        throw std::runtime_error("Customized coinbase transaction does not contain extranonce field at expected location.");
+    }
+    std::string cb1 = HexStr(&ds[0], &ds[pos-4-8]);
+    std::string cb2 = HexStr(&ds[pos], &ds[ds.size()]);
 
     UniValue params(UniValue::VARR);
     params.push_back(HexStr(job_id.begin(), job_id.end()) + (has_merge_mining? ":" + HexStr(mmroot.begin(), mmroot.end()): ""));
