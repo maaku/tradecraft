@@ -216,18 +216,21 @@ uint256 ParseUInt256(const UniValue& hex, const std::string& name)
 
 static uint256 AuxWorkMerkleRoot(const std::map<uint256, AuxWork>& mmwork)
 {
+    // If there is nothing to commit to, then the default zero hash is as good
+    // as any other value.
     if (mmwork.empty()) {
         return uint256();
     }
-    assert(mmwork.size() == 1);
+    // The protocol supports an effectively limitless number of auxiliary
+    // commitments under the Merkle root, however code has not yet been written
+    // to generate root values and proofs for arbitrary trees.
+    if (mmwork.size() != 1) {
+        throw std::runtime_error("AuxWorkMerkleRoot: we do not yet support more than one merge-mining commitment");
+    }
+    // For now, we've hard-coded the special case of a single hash commitment:
     uint256 key = mmwork.begin()->first;
-    LogPrintf("AuxWorkMerkleRoot: key = %s\n", HexStr(key.begin(), key.end()));
     uint256 value = mmwork.begin()->second.commit;
-    LogPrintf("AuxWorkMerkleRoot: value = %s\n", HexStr(value.begin(), value.end()));
-    bool invalid = false;
-    uint256 ret = ComputeMerkleMapRootFromBranch(value, {}, key, &invalid);
-    LogPrintf("AuxWorkMerkleRoot: mmroot = %s\n", HexStr(ret.begin(), ret.end()));
-    assert(!invalid);
+    uint256 ret = ComputeMerkleMapRootFromBranch(value, {}, key);
     return ret;
 }
 
