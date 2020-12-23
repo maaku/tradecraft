@@ -768,7 +768,9 @@ UniValue stratum_mining_submit(StratumClient& client, const UniValue& params)
     StratumWork &current_work = work_templates[job_id];
 
     std::vector<unsigned char> extranonce2 = ParseHexV(params[2], "extranonce2");
-    assert(extranonce2.size() == 4);
+    if (extranonce2.size() != 4) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("extranonce2 is wrong length (received %d bytes; expected %d bytes", extranonce2.size(), 4));
+    }
     uint32_t nTime = ParseHexInt4(params[3], "nTime");
     uint32_t nNonce = ParseHexInt4(params[4], "nNonce");
     uint32_t nVersion = current_work.GetBlock().nVersion;
