@@ -588,6 +588,7 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
     std::vector<uint256> cb_branch = current_work.m_cb_branch;
     if (current_work.m_is_witness_enabled) {
         UpdateSegwitCommitment(current_work, cb, bf, cb_branch);
+        LogPrint("stratum", "Updated segwit commitment in coinbase.\n");
     }
 
     CBlockHeader blkhdr(current_work.GetBlock());
@@ -597,8 +598,9 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
     blkhdr.nVersion = nVersion;
 
     bool res = false;
-    if (CheckProofOfWork(blkhdr.GetHash(), blkhdr.nBits, 0, Params().GetConsensus())) {
-        LogPrintf("GOT BLOCK!!! by %s: %s\n", client.m_addr.ToString(), blkhdr.GetHash().ToString());
+    uint256 hash = blkhdr.GetHash();
+    if (CheckProofOfWork(hash, blkhdr.nBits, 0, Params().GetConsensus())) {
+        LogPrintf("GOT BLOCK!!! by %s: %s\n", client.m_addr.ToString(), hash.ToString());
         CBlock block(current_work.GetBlock());
         block.vtx.front() = CTransaction(cb);
         if (current_work.m_is_witness_enabled) {
@@ -611,7 +613,7 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
         CValidationState state;
         res = ProcessNewBlock(state, Params(), NULL, &block, true, NULL, false);
     } else {
-        LogPrintf("NEW SHARE!!! by %s: %s\n", client.m_addr.ToString(), blkhdr.GetHash().ToString());
+        LogPrintf("NEW SHARE!!! by %s: %s\n", client.m_addr.ToString(), hash.ToString());
     }
 
     if (res) {
