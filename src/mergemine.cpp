@@ -807,7 +807,10 @@ void MergeMiningManagerThread()
 /** Configure the merge-mining subsystem. */
 bool InitMergeMining()
 {
+    // Assertion is allowed because this is initialization code.  If base is
+    // non-NULL, then we have been called twice, and that is a serious bug.
     assert(!base);
+
 #ifdef WIN32
     evthread_use_windows_threads();
 #else
