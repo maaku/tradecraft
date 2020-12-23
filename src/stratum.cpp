@@ -1209,16 +1209,27 @@ void BlockWatcher()
             if (!client.m_authorized) {
                 continue;
             }
+            // Ignore clients that are already working on the current second
+            // stage work unit.
+            auto second_stage =
+                GetSecondStageWork(client.m_last_second_stage
+                                 ? boost::optional<uint256>(client.m_last_second_stage->first)
+                                 : boost::none);
+            if (second_stage && client.m_last_second_stage && (client.m_last_second_stage.get() == std::make_pair(second_stage.get().first, second_stage.get().second.hashPrevBlock))) {
+                continue;
+            }
             // Ignore clients that are already working on the new block.
             // Typically this is just the miner that found the block, who was
             // immediately sent a work update.  This check avoids sending that
             // work notification again, moments later.  Due to race conditions
             // there could be more than one miner that have already received an
             // update, however.
-            std::map<uint256, AuxWork> mmwork = GetMergeMineWork(client.m_mmauth);
-            uint256 mmroot = AuxWorkMerkleRoot(mmwork);
-            if ((client.m_last_tip == chainActive.Tip()) && client.m_mmwork.count(mmroot)) {
-                continue;
+            if (!second_stage) {
+                std::map<uint256, AuxWork> mmwork = GetMergeMineWork(client.m_mmauth);
+                uint256 mmroot = AuxWorkMerkleRoot(mmwork);
+                if ((client.m_last_tip == chainActive.Tip()) && client.m_mmwork.count(mmroot)) {
+                    continue;
+                }
             }
             // Get new work
             std::string data;
