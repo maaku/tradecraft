@@ -367,7 +367,7 @@ std::string GetWorkUnit(StratumClient& client)
     nonce.resize(nonce.size()+4, 0x00); // extranonce2
     cb.vin.front().scriptSig =
            CScript()
-        << current_work.m_height + 1
+        << current_work.m_height
         << nonce;
     if (cb.vout.front().scriptPubKey == (CScript() << OP_FALSE)) {
         cb.vout.front().scriptPubKey =
@@ -438,7 +438,7 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
                               extranonce2.end());
     cb.vin.front().scriptSig =
            CScript()
-        << current_work.m_height + 1
+        << current_work.m_height
         << nonce;
     assert(cb.vout.size() >= 1);
     if (cb.vout.front().scriptPubKey == (CScript() << OP_FALSE)) {
