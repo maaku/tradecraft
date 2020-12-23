@@ -243,6 +243,34 @@ static double ClampDifficulty(const StratumClient& client, double diff)
     return diff;
 }
 
+static std::string GetExtraNonceRequest(StratumClient& client, const uint256& job_id)
+{
+    std::string ret;
+    if (client.m_supports_extranonce) {
+        const std::string k_extranonce_req = std::string()
+            + "{"
+            +     "\"id\":";
+        const std::string k_extranonce_req2 = std::string()
+            +     ","
+            +     "\"method\":\"mining.set_extranonce\","
+            +     "\"params\":["
+            +         "\"";
+        const std::string k_extranonce_req3 = std::string()
+            +            "\"," // extranonce1
+            +         "4"      // extranonce2.size()
+            +     "]"
+            + "}"
+            + "\n";
+
+        ret = k_extranonce_req
+            + strprintf("%d", client.m_nextid++)
+            + k_extranonce_req2
+            + HexStr(client.ExtraNonce1(job_id))
+            + k_extranonce_req3;
+    }
+    return ret;
+}
+
 std::string GetWorkUnit(StratumClient& client)
 {
     LOCK(cs_main);
@@ -394,27 +422,7 @@ std::string GetWorkUnit(StratumClient& client)
     mining_notify.push_back(Pair("id", client.m_nextid++));
     mining_notify.push_back(Pair("method", "mining.notify"));
 
-    std::string extranonce_req;
-    if (client.m_supports_extranonce) {
-        const std::string k_extranonce_req = std::string()
-            + "{"
-            +     "\"id\":4," // by random dice roll
-            +     "\"method\":\"mining.set_extranonce\","
-            +     "\"params\":["
-            +         "\"";
-        const std::string k_extranonce_req2 = std::string()
-            +            "\"," // extranonce1
-            +         "4"      // extranonce2.size()
-            +     "]"
-            + "}"
-            + "\n";
-
-        extranonce_req = k_extranonce_req
-                       + HexStr(client.ExtraNonce1(job_id))
-                       + k_extranonce_req2;
-    }
-
-    return extranonce_req
+    return GetExtraNonceRequest(client, job_id)
          + set_difficulty.write() + "\n"
          + mining_notify.write()  + "\n";
 }
