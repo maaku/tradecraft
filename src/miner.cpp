@@ -560,6 +560,13 @@ void BlockAssembler::initFinalTx(const CCoins& prev_final)
         return;
     }
 
+#ifdef ENABLE_WALLET
+    // If the block-final transaction was created via the wallet, then we need
+    // to update the state to indicate that the block-final transaction is
+    // present.
+    block_final_state |= HAS_BLOCK_FINAL_TX;
+#endif // ENABLE_WALLET
+
     // Add block-final transaction to block template.
     pblock->vtx.push_back(txFinal);
     ++nBlockTx;
@@ -822,7 +829,8 @@ bool UpdateBlockFinalTransaction(CMutableTransaction &ret, const uint256& hash)
         mtx.vout.emplace_back(0, CScript() << new_commitment);
     }
 
-    LOCK(cs_main);
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
 
     // Sign transaction
     CTransaction tx(mtx);
@@ -845,6 +853,7 @@ bool UpdateBlockFinalTransaction(CMutableTransaction &ret, const uint256& hash)
             return false;
         }
     }
+#endif // ENABLE_WALLET
 
     ret = mtx;
     return true;
