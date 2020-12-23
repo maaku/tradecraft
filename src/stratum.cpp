@@ -551,18 +551,34 @@ std::string GetWorkUnit(StratumClient& client)
 
 bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork& current_work, std::vector<unsigned char> extranonce2, uint32_t nTime, uint32_t nNonce, uint32_t nVersion)
 {
-    assert(current_work.GetBlock().vtx.size() >= 1);
+    if (current_work.GetBlock().vtx.empty()) {
+        const std::string msg("SubmitBlock: no transactions in block template; unable to submit work");
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
+    }
     CMutableTransaction cb(current_work.GetBlock().vtx.front());
-    assert(cb.vin.size() == 1);
     auto nonce = client.ExtraNonce1(job_id);
-    assert(extranonce2.size() == 4);
+    if ((nonce.size() + extranonce2.size()) != 12) {
+        const std::string msg = strprintf("SubmitBlock: unexpected combined nonce length: extranonce1(%d) + extranonce2(%d) != 12; unable to submit work", nonce.size(), extranonce2.size());
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
+    }
     nonce.insert(nonce.end(), extranonce2.begin(),
                               extranonce2.end());
+    if (cb.vin.empty()) {
+        const std::string msg("SubmitBlock: first transaction is missing coinbase input; unable to customize work to miner");
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
+    }
     cb.vin.front().scriptSig =
            CScript()
         << current_work.m_height
         << nonce;
-    assert(cb.vout.size() >= 1);
+    if (cb.vout.empty()) {
+        const std::string msg("SubmitBlock: coinbase transaction is missing outputs; unable to customize work to miner");
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
+    }
     if (cb.vout.front().scriptPubKey == (CScript() << OP_FALSE)) {
         cb.vout.front().scriptPubKey =
             GetScriptForDestination(client.m_addr.Get());
