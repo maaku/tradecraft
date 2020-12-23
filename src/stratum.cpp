@@ -31,6 +31,9 @@
 #include <string>
 #include <vector>
 
+// for argument-dependent lookup
+using std::swap;
+
 #include <boost/algorithm/string.hpp> // for boost::trim
 #include <boost/lexical_cast.hpp>
 #include <boost/none.hpp>
@@ -549,7 +552,7 @@ std::string GetWorkUnit(StratumClient& client)
          + mining_notify.write()  + "\n";
 }
 
-bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork& current_work, std::vector<unsigned char> extranonce2, uint32_t nTime, uint32_t nNonce, uint32_t nVersion)
+bool SubmitBlock(StratumClient& client, const uint256& job_id, const uint256& mmroot, const StratumWork& current_work, std::vector<unsigned char> extranonce2, uint32_t nTime, uint32_t nNonce, uint32_t nVersion)
 {
     if (current_work.GetBlock().vtx.empty()) {
         const std::string msg("SubmitBlock: no transactions in block template; unable to submit work");
@@ -585,6 +588,12 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
     }
 
     CMutableTransaction bf(current_work.GetBlock().vtx.back());
+    if (current_work.m_block_template.has_block_final_tx) {
+        if (UpdateBlockFinalTransaction(bf, mmroot)) {
+            LogPrint("stratum", "Updated merge-mining commitment in block-final transaction.\n");
+        }
+    }
+
     std::vector<uint256> cb_branch = current_work.m_cb_branch;
     if (current_work.m_is_witness_enabled) {
         UpdateSegwitCommitment(current_work, cb, bf, cb_branch);
@@ -614,6 +623,103 @@ bool SubmitBlock(StratumClient& client, const uint256& job_id, const StratumWork
         res = ProcessNewBlock(state, Params(), NULL, &block, true, NULL, false);
     } else {
         LogPrintf("NEW SHARE!!! by %s: %s\n", client.m_addr.ToString(), hash.ToString());
+    }
+
+    // Now we check if the work meets any of the auxiliary header requirements,
+    // and if so submit them.
+    //client.m_mmwork[mmroot] = std::make_pair(GetTimeMillis(), mmwork);
+    if (current_work.m_is_witness_enabled && current_work.m_block_template.has_block_final_tx && client.m_mmwork.count(mmroot)) {
+        AuxProof auxproof;
+        CDataStream ds(SER_GETHASH, PROTOCOL_VERSION);
+        ds << bf;
+        ds.resize(ds.size() - 40);
+        auxproof.midstate_buffer.resize(ds.size() % 64);
+        uint64_t tmp = 0;
+        CSHA256()
+            .Write((unsigned char*)&ds[0], ds.size())
+            .Midstate(auxproof.midstate_hash.begin(),
+                      auxproof.midstate_buffer.data(),
+                     &tmp);
+        auxproof.midstate_length = static_cast<uint32_t>(tmp / 8);
+        auxproof.lock_time = bf.nLockTime;
+        std::vector<uint256> leaves;
+        leaves.reserve(current_work.GetBlock().vtx.size());
+        for (const auto& tx : current_work.GetBlock().vtx) {
+            leaves.push_back(tx.GetHash());
+        }
+        leaves.front() = cb.GetHash();
+        leaves.back() = bf.GetHash();
+        auxproof.aux_branch = ComputeStableMerkleBranch(leaves, leaves.size()-1).first;
+        auxproof.num_txns = leaves.size();
+        auxproof.nVersion = blkhdr.nVersion;
+        auxproof.hashPrevBlock = blkhdr.hashPrevBlock;
+        auxproof.nTime = blkhdr.nTime;
+        auxproof.nBits = blkhdr.nBits;
+        auxproof.nNonce = blkhdr.nNonce;
+        for (const auto& item : client.m_mmwork[mmroot].second) {
+            const uint256& chainid = item.first;
+            const AuxWork& auxwork = item.second;
+            if (!client.m_mmauth.count(chainid)) {
+                LogPrint("mergemine", "Got share for chain we aren't authorized for; unable to submit work.\n");
+                continue;
+            }
+            const std::string& username = client.m_mmauth[chainid].first;
+            SubmitAuxChainShare(chainid, username, auxwork, auxproof);
+            // FIXME: Change to our own consensus params with no powlimit
+            if (CheckProofOfWork(hash, auxwork.bits, auxwork.bias, Params().GetConsensus())) {
+                LogPrintf("GOT AUX CHAIN BLOCK!!! 0x%s by %s: %s %s\n", HexStr(chainid.begin(), chainid.end()), username, auxwork.commit.ToString(), hash.ToString());
+            } else {
+                LogPrintf("NEW AUX CHAIN SHARE!!! 0x%s by %s: %s %s\n", HexStr(chainid.begin(), chainid.end()), username, auxwork.commit.ToString(), hash.ToString());
+            }
+        }
+    }
+
+    if (res) {
+        client.m_send_work = true;
+    }
+
+    return res;
+}
+
+bool SubmitSecondStage(StratumClient& client, const uint256& chainid, const SecondStageWork& work, std::vector<unsigned char> extranonce2, uint32_t nTime, uint32_t nNonce, uint32_t nVersion)
+{
+    if (!client.m_mmauth.count(chainid)) {
+        LogPrint("mergemine", "Got second stage share for chain we aren't authorized for; unable to submit work.\n");
+        return false;
+    }
+    const std::string& username = client.m_mmauth[chainid].first;
+
+    std::vector<unsigned char> extranonce1 = client.ExtraNonce1(chainid);
+
+    SubmitSecondStageShare(chainid, username, work, SecondStageProof(extranonce1, extranonce2, nVersion, nTime, nNonce));
+
+    uint256 hash;
+    CSHA256()
+        .Write(&work.cb1[0], work.cb1.size())
+        .Write(&extranonce1[0], extranonce1.size())
+        .Write(&extranonce2[0], extranonce2.size())
+        .Write(&work.cb2[0], work.cb2.size())
+        .Finalize(hash.begin());
+    CSHA256()
+        .Write(hash.begin(), 32)
+        .Finalize(hash.begin());
+
+    CBlockHeader blkhdr;
+    blkhdr.nVersion = nVersion;
+    blkhdr.hashPrevBlock = work.hashPrevBlock;
+    blkhdr.hashMerkleRoot = ComputeMerkleRootFromBranch(hash, work.cb_branch, 0);
+    blkhdr.nTime = nTime;
+    blkhdr.nBits = work.nBits;
+    blkhdr.nNonce = nNonce;
+    hash = blkhdr.GetHash();
+
+    bool res = false;
+    // FIXME: Change to our own consensus params with no powlimit
+    if ((res = CheckProofOfWork(hash, work.nBits, 0, Params().GetConsensus()))) {
+        LogPrintf("GOT AUX CHAIN SECOND STAGE BLOCK!!! 0x%s by %s: %s\n", HexStr(chainid.begin(), chainid.end()), username, hash.ToString());
+        second_stages.erase(work.job_id);
+    } else {
+        LogPrintf("NEW AUX CHAIN SECOND STAGE SHARE!!! 0x%s by %s: %s\n", HexStr(chainid.begin(), chainid.end()), username, hash.ToString());
     }
 
     if (res) {
@@ -683,10 +789,65 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
     boost::trim(username);
 
     // params[1] is the client-provided password.  We do not perform
-    // user authorization, so we ignore this value.
+    // user authorization, but we instead allow the password field to
+    // be used to specify merge-mining parameters.
+    std::string password = params[1].get_str();
+    boost::trim(password);
+
+    size_t start = 0;
+    size_t pos = 0;
+    std::vector<std::string> opts;
+    while ((pos = password.find(',', start)) != std::string::npos) {
+        std::string opt(password, start, pos);
+        boost::trim(opt);
+        if (opt.empty()) {
+            continue;
+        }
+        opts.push_back(opt);
+        start = pos + 1;
+    }
+    std::string opt(password, start);
+    boost::trim(opt);
+    if (!opt.empty()) {
+        opts.push_back(opt);
+    }
+
+    std::map<uint256, std::pair<std::string, std::string> > mmauth;
+    for (const std::string& opt : opts) {
+        if ((pos = password.find('=')) != std::string::npos) {
+            std::string key(opt, 0, pos); // chain name or ID
+            boost::trim_right(key);
+            std::string value(opt, pos+1); // pass-through to chain server
+            boost::trim_left(value);
+            std::string username(value);
+            std::string password;
+            if ((pos = value.find(':')) != std::string::npos) {
+                username.resize(pos);
+                password = value.substr(pos+1);
+            }
+            if (chain_names.count(key)) {
+                const uint256& chainid = chain_names[key];
+                LogPrintf("Merge-mine chain \"%s\" (0x%s) with username \"%s\" and password \"%s\"\n", key, HexStr(chainid.begin(), chainid.end()), username, password);
+                mmauth[chainid] = std::make_pair(username, password);
+            } else {
+                uint256 chainid = ParseUInt256(key, "chainid");
+                std::vector<unsigned char> zero(24, 0x00);
+                if (memcmp(chainid.begin()+8, zero.data(), 24) == 0) {
+                    // At least 24 bytes are empty. Gonna go out on a limb and
+                    // say this wasn't a hex-encoded aux_pow_path.
+                    LogPrintf("Skipping unrecognized stratum password keyword option \"%s=%s\"\n", key, value);
+                } else {
+                    LogPrintf("Merge-mine chain 0x%s with username \"%s\" and password \"%s\"\n", HexStr(chainid.begin(), chainid.end()), value);
+                    mmauth[chainid] = std::make_pair(username, password);
+                }
+            }
+        } else {
+            LogPrintf("Skipping unrecognized stratum password option \"%s\"\n", opt);
+        }
+    }
 
     double mindiff = 0.0;
-    size_t pos = username.find('+');
+    pos = username.find('+');
     if (pos != std::string::npos) {
         // Extract the suffix and trim it
         std::string suffix(username, pos+1);
@@ -705,6 +866,10 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
     }
 
     client.m_addr = addr;
+    swap(client.m_mmauth, mmauth);
+    for (const auto& item : client.m_mmauth) {
+        RegisterMergeMineClient(item.first, item.second.first, item.second.second);
+    }
     client.m_mindiff = mindiff;
     client.m_authorized = true;
 
@@ -760,12 +925,7 @@ UniValue stratum_mining_submit(StratumClient& client, const UniValue& params)
         boost::trim_right(username);
     }
 
-    uint256 job_id = ParseUInt256(params[1], "job_id");
-    if (!work_templates.count(job_id)) {
-        LogPrint("stratum", "Received completed share for unknown job_id : %s\n", HexStr(job_id.begin(), job_id.end()));
-        return false;
-    }
-    StratumWork &current_work = work_templates[job_id];
+    std::string id = params[1].get_str();
 
     std::vector<unsigned char> extranonce2 = ParseHexV(params[2], "extranonce2");
     if (extranonce2.size() != 4) {
@@ -773,14 +933,51 @@ UniValue stratum_mining_submit(StratumClient& client, const UniValue& params)
     }
     uint32_t nTime = ParseHexInt4(params[3], "nTime");
     uint32_t nNonce = ParseHexInt4(params[4], "nNonce");
-    uint32_t nVersion = current_work.GetBlock().nVersion;
-    if (params.size() > 5) {
-        uint32_t bits = ParseHexInt4(params[5], "nVersion");
-        nVersion = (nVersion & ~client.m_version_rolling_mask)
-                 | (bits & client.m_version_rolling_mask);
-    }
 
-    SubmitBlock(client, job_id, current_work, extranonce2, nTime, nNonce, nVersion);
+    if (id[0] == ':') {
+        // Second stage work unit
+        std::string job_id(id, 1);
+        if (!second_stages.count(job_id)) {
+            LogPrint("stratum", "Received completed share for unknown second stage work : %s\n", id);
+            client.m_send_work = true;
+            return false;
+        }
+        const auto& item = second_stages[job_id];
+        const uint256& aux_pow_path = item.first;
+        const SecondStageWork& second_stage = item.second;
+
+        uint32_t nVersion = second_stage.nVersion;
+        if (params.size() > 5) {
+            uint32_t bits = ParseHexInt4(params[5], "nVersion");
+            nVersion = (nVersion & ~client.m_version_rolling_mask)
+                     | (bits & client.m_version_rolling_mask);
+        }
+
+        SubmitSecondStage(client, aux_pow_path, second_stage, extranonce2, nTime, nNonce, nVersion);
+    } else {
+        uint256 job_id, mmroot;
+        if ((pos = id.find(':', 0)) != std::string::npos) {
+            mmroot = ParseUInt256(std::string(id, pos+1), "mmroot");
+            id.resize(pos);
+        }
+        job_id = ParseUInt256(id, "job_id");
+
+        if (!work_templates.count(job_id)) {
+            LogPrint("stratum", "Received completed share for unknown job_id : %s\n", HexStr(job_id.begin(), job_id.end()));
+            client.m_send_work = true;
+            return false;
+        }
+        StratumWork &current_work = work_templates[job_id];
+
+        uint32_t nVersion = current_work.GetBlock().nVersion;
+        if (params.size() > 5) {
+            uint32_t bits = ParseHexInt4(params[5], "nVersion");
+            nVersion = (nVersion & ~client.m_version_rolling_mask)
+                     | (bits & client.m_version_rolling_mask);
+        }
+
+        SubmitBlock(client, job_id, mmroot, current_work, extranonce2, nTime, nNonce, nVersion);
+    }
 
     return true;
 }
