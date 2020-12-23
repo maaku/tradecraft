@@ -445,8 +445,11 @@ static UniValue stratum_mining_notify(AuxWorkServer& server, const UniValue& par
     uint32_t nTime = ParseHexInt4(params[7], "nTime");
 
     bool reset = false;
-    if (params.size() > 8) {
-        reset = params[8].get_bool();
+    if (g_second_stage.count(server.aux_pow_path) && (g_second_stage[server.aux_pow_path].hashPrevBlock != hashPrevBlock)) {
+        reset = true;
+    }
+    if ((params.size() > 8) && params[8].get_bool()) {
+        reset = true;
     }
 
     if (g_second_stage.count(server.aux_pow_path)) {
