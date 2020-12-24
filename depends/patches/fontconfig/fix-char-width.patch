@@ -1,0 +1,49 @@
+diff --color -rupN a/fontconfig/fontconfig.h b/fontconfig/fontconfig.h
+--- a/fontconfig/fontconfig.h	2014-03-24 06:03:12.000000000 +0000
++++ b/fontconfig/fontconfig.h	2020-12-24 23:03:30.845171200 +0000
+@@ -123,7 +123,8 @@ typedef int		FcBool;
+ #define FC_USER_CACHE_FILE	    ".fonts.cache-" FC_CACHE_VERSION
+ 
+ /* Adjust outline rasterizer */
+-#define FC_CHAR_WIDTH	    "charwidth"	/* Int */
++#define FC_CHARWIDTH	    "charwidth"	/* Int */
++#define FC_CHAR_WIDTH	    FC_CHARWIDTH
+ #define FC_CHAR_HEIGHT	    "charheight"/* Int */
+ #define FC_MATRIX	    "matrix"    /* FcMatrix */
+ 
+diff --color -rupN a/src/fcobjs.h b/src/fcobjs.h
+--- a/src/fcobjs.h	2014-01-20 08:14:20.000000000 +0000
++++ b/src/fcobjs.h	2020-12-24 23:03:54.292559981 +0000
+@@ -51,7 +51,7 @@ FC_OBJECT (DPI,			FcTypeDouble,	NULL)
+ FC_OBJECT (RGBA,		FcTypeInteger,	NULL)
+ FC_OBJECT (SCALE,		FcTypeDouble,	NULL)
+ FC_OBJECT (MINSPACE,		FcTypeBool,	NULL)
+-FC_OBJECT (CHAR_WIDTH,		FcTypeInteger,	NULL)
++FC_OBJECT (CHARWIDTH,		FcTypeInteger,	NULL)
+ FC_OBJECT (CHAR_HEIGHT,		FcTypeInteger,	NULL)
+ FC_OBJECT (MATRIX,		FcTypeMatrix,	NULL)
+ FC_OBJECT (CHARSET,		FcTypeCharSet,	FcCompareCharSet)
+diff --color -rupN a/src/fcobjshash.gperf b/src/fcobjshash.gperf
+--- a/src/fcobjshash.gperf	2014-01-22 09:47:18.000000000 +0000
++++ b/src/fcobjshash.gperf	2020-12-24 23:04:12.061178758 +0000
+@@ -44,7 +44,7 @@ int id;
+ "rgba",FC_RGBA_OBJECT
+ "scale",FC_SCALE_OBJECT
+ "minspace",FC_MINSPACE_OBJECT
+-"charwidth",FC_CHAR_WIDTH_OBJECT
++"charwidth",FC_CHARWIDTH_OBJECT
+ "charheight",FC_CHAR_HEIGHT_OBJECT
+ "matrix",FC_MATRIX_OBJECT
+ "charset",FC_CHARSET_OBJECT
+diff --color -rupN a/src/fcobjshash.h b/src/fcobjshash.h
+--- a/src/fcobjshash.h	2014-01-22 09:47:18.000000000 +0000
++++ b/src/fcobjshash.h	2020-12-24 23:04:38.636288617 +0000
+@@ -275,7 +275,7 @@ FcObjectTypeLookup (register const char
+ #line 26 "fcobjshash.gperf"
+       {(int)(long)&((struct FcObjectTypeNamePool_t *)0)->FcObjectTypeNamePool_str40,FC_WIDTH_OBJECT},
+ #line 47 "fcobjshash.gperf"
+-      {(int)(long)&((struct FcObjectTypeNamePool_t *)0)->FcObjectTypeNamePool_str41,FC_CHAR_WIDTH_OBJECT},
++      {(int)(long)&((struct FcObjectTypeNamePool_t *)0)->FcObjectTypeNamePool_str41,FC_CHARWIDTH_OBJECT},
+ #line 48 "fcobjshash.gperf"
+       {(int)(long)&((struct FcObjectTypeNamePool_t *)0)->FcObjectTypeNamePool_str42,FC_CHAR_HEIGHT_OBJECT},
+ #line 44 "fcobjshash.gperf"
