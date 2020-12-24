@@ -719,7 +719,6 @@ bool SubmitSecondStage(StratumClient& client, const uint256& chainid, const Seco
     // FIXME: Change to our own consensus params with no powlimit
     if ((res = CheckProofOfWork(hash, work.nBits, 0, Params().GetConsensus()))) {
         LogPrintf("GOT AUX CHAIN SECOND STAGE BLOCK!!! 0x%s by %s: %s\n", HexStr(chainid.begin(), chainid.end()), username, hash.ToString());
-        second_stages.erase(work.job_id);
     } else {
         LogPrintf("NEW AUX CHAIN SECOND STAGE SHARE!!! 0x%s by %s: %s\n", HexStr(chainid.begin(), chainid.end()), username, hash.ToString());
     }
