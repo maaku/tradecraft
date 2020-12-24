@@ -317,7 +317,8 @@ std::string GetWorkUnit(StratumClient& client)
             ((uint32_t*)hashPrevBlock.begin())[i] = bswap_32(
             ((uint32_t*)hashPrevBlock.begin())[i]);
         }
-        mining_notify_params.push_back(HexStr(hashPrevBlock.begin(), hashPrevBlock.end()));
+        mining_notify_params.push_back(HexStr(hashPrevBlock.begin(),
+                                              hashPrevBlock.end()));
         mining_notify_params.push_back(HexStr(second_stage->second.cb1.begin(),
                                               second_stage->second.cb1.end()));
         mining_notify_params.push_back(HexStr(second_stage->second.cb2.begin(),
@@ -325,7 +326,8 @@ std::string GetWorkUnit(StratumClient& client)
         // Reverse the order of the hashes, because that's what stratum does.
         UniValue branch(UniValue::VARR);
         for (const uint256& hash : second_stage->second.cb_branch) {
-            branch.push_back(HexStr(hash.begin(), hash.end()));
+            branch.push_back(HexStr(hash.begin(),
+                                    hash.end()));
         }
         mining_notify_params.push_back(branch);
         mining_notify_params.push_back(HexInt4(second_stage->second.nVersion));
