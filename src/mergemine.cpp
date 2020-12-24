@@ -133,18 +133,22 @@ static int SendAuxSubmitRequest(AuxWorkServer& server, const std::string& addres
     params.push_back(address);
     params.push_back(work.job_id);
     params.push_back(UniValue(UniValue::VARR)); // FIXME: no commit branch
-    params.push_back(HexStr(proof.midstate_hash.begin(), proof.midstate_hash.end()));
-    params.push_back(HexStr(proof.midstate_buffer.begin(), proof.midstate_buffer.end()));
+    params.push_back(HexStr(proof.midstate_hash.begin(),
+                            proof.midstate_hash.end()));
+    params.push_back(HexStr(proof.midstate_buffer.begin(),
+                            proof.midstate_buffer.end()));
     params.push_back(static_cast<uint64_t>(proof.midstate_length));
     params.push_back(HexInt4(proof.lock_time));
     UniValue aux_branch(UniValue::VARR);
     for (const uint256& hash : proof.aux_branch) {
-        aux_branch.push_back(HexStr(hash.begin(), hash.end()));
+        aux_branch.push_back(HexStr(hash.begin(),
+                                    hash.end()));
     }
     params.push_back(aux_branch);
     params.push_back(static_cast<uint64_t>(proof.num_txns));
     params.push_back(HexInt4(proof.nVersion));
-    params.push_back(HexStr(proof.hashPrevBlock.begin(), proof.hashPrevBlock.end()));
+    params.push_back(HexStr(proof.hashPrevBlock.begin(),
+                            proof.hashPrevBlock.end()));
     params.push_back(HexInt4(proof.nTime));
     params.push_back(HexInt4(proof.nBits));
     params.push_back(HexInt4(proof.nNonce));
