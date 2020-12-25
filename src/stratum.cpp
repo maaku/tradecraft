@@ -556,7 +556,7 @@ std::string GetWorkUnit(StratumClient& client)
     uint256 hashPrevBlock(blkhdr.hashPrevBlock);
     for (int i = 0; i < 256/32; ++i) {
         ((uint32_t*)hashPrevBlock.begin())[i] = bswap_32(
-            ((uint32_t*)hashPrevBlock.begin())[i]);
+        ((uint32_t*)hashPrevBlock.begin())[i]);
     }
     params.push_back(HexStr(hashPrevBlock.begin(), hashPrevBlock.end()));
     params.push_back(cb1);
