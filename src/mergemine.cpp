@@ -95,6 +95,22 @@ static std::map<uint256, bufferevent*> g_mergemine;
 //! A collection of second-stage work units to be solved, mapping chainid -> SecondStageWork.
 static std::map<uint256, SecondStageWork> g_second_stage;
 
+static AuxWorkServer* GetServerFromChainId(const uint256& chainid, const std::string& caller)
+{
+    if (!g_mergemine.count(chainid)) {
+        LogPrint("mergemine", "%s: error: unrecognized chainid with no active connection: 0x%s\n", caller, HexStr(chainid.begin(), chainid.end()));
+        return nullptr;
+    }
+    bufferevent* bev = g_mergemine[chainid];
+
+    if (!g_mergemine_conn.count(bev)) {
+        // This should never happen!!
+        LogPrintf("%s: error: currently no server record for bufferevent object; this should never happen!\n", caller);
+        return nullptr;
+    }
+    return &g_mergemine_conn[bev];
+}
+
 static int SendAuxAuthorizeRequest(AuxWorkServer& server, const std::string& username, const std::string& password)
 {
     LogPrintf("Authoriing aux-pow work on chain 0x%s through stratum+tcp://%s (%s) for client %s\n", HexStr(server.aux_pow_path.begin(), server.aux_pow_path.end()), server.socket.ToString(), server.name, username);
@@ -201,21 +217,17 @@ void RegisterMergeMineClient(const uint256& chainid, const std::string& username
     LOCK(cs_merge_mining);
 
     // Lookup server from chainid
-    if (!g_mergemine.count(chainid)) {
-        throw std::runtime_error(strprintf("Unrecognized chainid 0x%s", HexStr(chainid.begin(), chainid.end())));
+    AuxWorkServer* server = GetServerFromChainId(chainid, __func__);
+    if (!server) {
+        throw std::runtime_error(strprintf("No active connection to chainid 0x%s", HexStr(chainid.begin(), chainid.end())));
     }
-    bufferevent* bev = g_mergemine[chainid];
-    if (!g_mergemine_conn.count(bev)) {
-        throw std::runtime_error(strprintf("Not currently connected to a stratum server for chainid 0x%s", HexStr(chainid.begin(), chainid.end())));
-    }
-    AuxWorkServer& server = g_mergemine_conn[bev];
 
     // Send mining.aux.authorize message
-    int id = SendAuxAuthorizeRequest(server, username, password);
+    int id = SendAuxAuthorizeRequest(*server, username, password);
 
     // Log the id of the message so that reply (which contains the user's
     // canonical adddress string) can be matched.
-    server.aux_auth_jreqid[id] = username;
+    server->aux_auth_jreqid[id] = username;
 }
 
 std::map<uint256, AuxWork> GetMergeMineWork(const std::map<uint256, std::pair<std::string, std::string> >& auth)
@@ -233,32 +245,25 @@ std::map<uint256, AuxWork> GetMergeMineWork(const std::map<uint256, std::pair<st
         const std::string& password = item.second.second;
 
         // Lookup the server
-        if (!g_mergemine.count(chainid)) {
-            LogPrint("mergemine", "Requested work for chain with no active connection: 0x%s\n", HexStr(chainid.begin(), chainid.end()));
+        AuxWorkServer* server = GetServerFromChainId(chainid, __func__);
+        if (!server) {
             continue;
         }
-        bufferevent* bev = g_mergemine[chainid];
-        if (!g_mergemine_conn.count(bev)) {
-            // This should never happen!!
-            LogPrintf("GetMergeMineWork: error: no server record for existing bufferevent object corresponding to chainid 0x%s\n", HexStr(chainid.begin(), chainid.end()));
-            continue;
-        }
-        AuxWorkServer& server = g_mergemine_conn[bev];
 
         // Lookup the canonical address for the user.
-        if (!server.aux_auth.count(username)) {
+        if (!server->aux_auth.count(username)) {
             LogPrint("mergemine", "Requested work for chain 0x%s but user \"%s\" is not registered.\n", HexStr(chainid.begin(), chainid.end()), username);
             RegisterMergeMineClient(chainid, username, password);
             continue;
         }
-        const std::string address = server.aux_auth[username];
+        const std::string address = server->aux_auth[username];
 
         // Check to see if there is any work available for this user.
-        if (!server.aux_work.count(address)) {
+        if (!server->aux_work.count(address)) {
             LogPrint("mergemine", "No work available for user \"%s\" (\"%s\") on chain 0x%s\n", username, address, HexStr(chainid.begin(), chainid.end()));
             continue;
         }
-        ret[chainid] = server.aux_work[address];
+        ret[chainid] = server->aux_work[address];
     }
 
     // Return all found work units back to caller.
@@ -285,22 +290,6 @@ boost::optional<std::pair<uint256, SecondStageWork> > GetSecondStageWork(boost::
 
     // Report that there is no second-stage work available.
     return boost::none;
-}
-
-static AuxWorkServer* GetServerFromChainId(const uint256& chainid, const std::string& caller)
-{
-    if (!g_mergemine.count(chainid)) {
-        LogPrint("mergemine", "Submitted work for chain with no active connection: 0x%s\n", HexStr(chainid.begin(), chainid.end()));
-        return nullptr;
-    }
-    bufferevent* bev = g_mergemine[chainid];
-
-    if (!g_mergemine_conn.count(bev)) {
-        // This should never happen!!
-        LogPrintf("%s: error: no server record for bufferevent object.\n", caller);
-        return nullptr;
-    }
-    return &g_mergemine_conn[bev];
 }
 
 static std::string GetRegisteredAddress(const AuxWorkServer& server, const std::string& username)
