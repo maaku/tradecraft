@@ -80,11 +80,21 @@ struct AuxWorkServer
     AuxWorkServer(const std::string& nameIn, const CService& socketIn, bufferevent* bevIn) : name(nameIn), socket(socketIn), bev(bevIn), idflags(0), nextid(0), extranonce2_size(0), diff(0.0) { }
 };
 
+struct AuxServerDisconnect
+{
+    uint64_t timestamp;
+    std::string name;
+
+    AuxServerDisconnect() { timestamp = GetTimeMillis(); }
+    AuxServerDisconnect(const std::string& nameIn) : name(nameIn) { timestamp = GetTimeMillis(); }
+};
+
 //! Mapping of stratum method names -> handlers
 static std::map<std::string, boost::function<UniValue(AuxWorkServer&, const UniValue&)> > stratum_method_dispatch;
 
-//! Auxiliary work servers for which we have yet to establish a connection.
-static std::map<CService, std::string> g_mergemine_noconn;
+//! Auxiliary work servers for which we have yet to establish a connection,
+//! or need to re-establish a connection.
+static std::map<CService, AuxServerDisconnect> g_mergemine_noconn;
 
 //! Connected auxiliary work servers.
 static std::map<bufferevent*, AuxWorkServer> g_mergemine_conn;
@@ -212,6 +222,18 @@ static int SendSubmitRequest(AuxWorkServer& server, const std::string& address, 
     return id;
 }
 
+static void RegisterMergeMineClient(AuxWorkServer& server, const std::string& username, const std::string& password)
+{
+    LOCK(cs_merge_mining);
+
+    // Send mining.aux.authorize message
+    int id = SendAuxAuthorizeRequest(server, username, password);
+
+    // Log the id of the message so that reply (which contains the user's
+    // canonical adddress string) can be matched.
+    server.aux_auth_jreqid[id] = username;
+}
+
 void RegisterMergeMineClient(const uint256& chainid, const std::string& username, const std::string& password)
 {
     LOCK(cs_merge_mining);
@@ -222,12 +244,7 @@ void RegisterMergeMineClient(const uint256& chainid, const std::string& username
         throw std::runtime_error(strprintf("No active connection to chainid 0x%s", HexStr(chainid.begin(), chainid.end())));
     }
 
-    // Send mining.aux.authorize message
-    int id = SendAuxAuthorizeRequest(*server, username, password);
-
-    // Log the id of the message so that reply (which contains the user's
-    // canonical adddress string) can be matched.
-    server->aux_auth_jreqid[id] = username;
+    RegisterMergeMineClient(*server, username, password);
 }
 
 std::map<uint256, AuxWork> GetMergeMineWork(const std::map<uint256, std::pair<std::string, std::string> >& auth)
@@ -253,7 +270,7 @@ std::map<uint256, AuxWork> GetMergeMineWork(const std::map<uint256, std::pair<st
         // Lookup the canonical address for the user.
         if (!server->aux_auth.count(username)) {
             LogPrint("mergemine", "Requested work for chain 0x%s but user \"%s\" is not registered.\n", HexStr(chainid.begin(), chainid.end()), username);
-            RegisterMergeMineClient(chainid, username, password);
+            RegisterMergeMineClient(*server, username, password);
             continue;
         }
         const std::string address = server->aux_auth[username];
@@ -458,6 +475,8 @@ static UniValue stratum_mining_notify(AuxWorkServer& server, const UniValue& par
     return true;
 }
 
+static void ReconnectToEndpoints();
+
 static void merge_mining_read_cb(bufferevent *bev, void *ctx)
 {
     LOCK(cs_merge_mining);
@@ -629,6 +648,9 @@ static void merge_mining_read_cb(bufferevent *bev, void *ctx)
             bev = nullptr;
         }
     }
+
+    // Attempt to re-establish any dropped connections.
+    ReconnectToEndpoints();
 }
 
 static void merge_mining_event_cb(bufferevent *bev, short what, void *ctx)
@@ -660,8 +682,12 @@ static void merge_mining_event_cb(bufferevent *bev, short what, void *ctx)
             bufferevent_free(bev);
             bev = nullptr;
         }
-        // FIXME: Add connection back to g_mergemine_noconn?
+        // Add connection back to g_mergemine_noconn.
+        g_mergemine_noconn[server.socket] = AuxServerDisconnect(server.name);
     }
+
+    // Attempt to re-establish any dropped connections.
+    ReconnectToEndpoints();
 }
 
 static bufferevent* ConnectToAuxWorkServer(const std::string& name, const CService& socket)
@@ -705,6 +731,51 @@ static void SendSubscribeRequest(AuxWorkServer& server)
     }
 }
 
+static bufferevent* ConnectToStratumEndpoint(const CService& socket, const AuxServerDisconnect& conn)
+{
+    bufferevent *bev;
+
+    LOCK(cs_merge_mining);
+
+    // Attempt a connection to the stratum endpoint.
+    if ((bev = ConnectToAuxWorkServer(conn.name, socket))) {
+        // Record the connection as active.
+        g_mergemine_conn[bev] = AuxWorkServer(conn.name, socket, bev);
+        // Send the stratum subscribe and aux.subscribe messages.
+        SendSubscribeRequest(g_mergemine_conn[bev]);
+    } else {
+        // Unable to connect at this time; will retry later.
+        LogPrintf("Queing stratum+tcp://%s (%s) for later reconnect\n", socket.ToString(), conn.name);
+        g_mergemine_noconn[socket] = AuxServerDisconnect(conn.name);
+    }
+
+    return bev;
+}
+
+static void ReconnectToEndpoints()
+{
+    LOCK(cs_merge_mining);
+
+    uint64_t now = GetTimeMillis();
+
+    std::map<CService, AuxServerDisconnect> endpoints;
+    for (const auto& endpoint : g_mergemine_noconn) {
+        const CService& socket = endpoint.first;
+        const AuxServerDisconnect& conn = endpoint.second;
+        if (now >= (conn.timestamp + (15*1000))) {
+            endpoints[socket] = conn;
+        }
+    }
+
+    for (const auto& endpoint : endpoints) {
+        const CService& socket = endpoint.first;
+        const AuxServerDisconnect& conn = endpoint.second;
+        LogPrintf("Attempting reconnect to stratum+tcp://%s (%s)\n", socket.ToString(), conn.name);
+        g_mergemine_noconn.erase(socket);
+        bufferevent* bev = ConnectToStratumEndpoint(socket, conn);
+    }
+}
+
 static int DefaultMergeMinePort()
 {
     const std::string& name = ChainNameFromCommandLine();
@@ -717,6 +788,7 @@ static int DefaultMergeMinePort()
     return 9638;
 }
 
+static bool g_shutdown = false;
 void MergeMiningManagerThread()
 {
     int defaultPort = DefaultMergeMinePort();
@@ -773,30 +845,28 @@ void MergeMiningManagerThread()
         }
 
         for (std::map<CService, std::string>::const_iterator i = servers.begin(); i != servers.end(); ++i) {
-            // Attempt a connection to the stratum endpoint.
-            bufferevent *bev;
             const CService& socket = i->first;
             const std::string& name = i->second;
-            {
-                LOCK(cs_merge_mining);
-                if ((bev = ConnectToAuxWorkServer(name, socket))) {
-                    // Record the connection as active.
-                    g_mergemine_conn[bev] = AuxWorkServer(name, socket, bev);
-                    // Send the stratum subscribe and aux.subscribe messages.
-                    SendSubscribeRequest(g_mergemine_conn[bev]);
-                } else {
-                    // Unable to connect at this time; will retry later.
-                    g_mergemine_noconn[socket] = name;
-                }
-            }
-
+            ConnectToStratumEndpoint(socket, name);
             // Handle any events that have been triggered by our actions so far.
             event_base_loop(base, EVLOOP_NONBLOCK);
         }
     }
 
     LogPrint("mergemine", "Entering merge-mining event dispatch loop\n");
-    event_base_dispatch(base);
+    while (!g_shutdown) {
+        event_base_dispatch(base);
+
+        // Shutdown the thread if there are no connections to manage.
+        g_shutdown = g_mergemine_conn.empty()
+                  && g_mergemine_noconn.empty();
+
+        // If we are not done, wait 15 seconds before re-starting the dispatch
+        // loop, to prevent us from spin-locking.
+        if (!g_shutdown) {
+            boost::this_thread::sleep(boost::posix_time::seconds(15));
+        }
+    }
     LogPrint("mergemine", "Exited merge-mining event dispatch loop\n");
 }
 
@@ -831,6 +901,8 @@ bool InitMergeMining()
 void InterruptMergeMining()
 {
     LOCK(cs_merge_mining);
+    // Tell the merge-mining connection manager thread to shutdown.
+    g_shutdown = true;
 }
 
 /** Cleanup network connections made by the merge-mining subsystem, free
