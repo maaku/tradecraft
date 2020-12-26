@@ -858,6 +858,9 @@ void MergeMiningManagerThread()
 
     LogPrint("mergemine", "Entering merge-mining event dispatch loop\n");
     while (!g_shutdown) {
+        // Attempt to re-establish any connections that have been dropped.
+        ReconnectToEndpoints();
+
         event_base_dispatch(base);
 
         // Shutdown the thread if there are no connections to manage.
