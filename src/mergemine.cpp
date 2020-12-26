@@ -668,7 +668,7 @@ static bufferevent* ConnectToAuxWorkServer(const std::string& name, const CServi
 {
     bufferevent *bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
     if (!bev) {
-        LogPrintf("Unable to create bufferevent object for merge-mining initialization; stopping\n");
+        LogPrintf("Unable to create bufferevent object for merge-mining initialization\n");
         return nullptr;
     }
 
@@ -678,7 +678,7 @@ static bufferevent* ConnectToAuxWorkServer(const std::string& name, const CServi
     socklen_t len = sizeof(addr);
     socket.GetSockAddr(&addr, &len);
     if (bufferevent_socket_connect(bev, &addr, len) < 0) {
-        LogPrintf("Unable to connect to stratum+tcp://%s (%s) ; skipping\n", socket.ToString(), name);
+        LogPrintf("Unable to connect to stratum+tcp://%s (%s)\n", socket.ToString(), name);
         bufferevent_free(bev);
         bev = nullptr;
         return nullptr;
