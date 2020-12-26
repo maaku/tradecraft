@@ -861,11 +861,11 @@ void MergeMiningManagerThread()
         // Attempt to re-establish any connections that have been dropped.
         ReconnectToEndpoints();
 
+        // Enter event dispatch loop.
         event_base_dispatch(base);
 
         // Shutdown the thread if there are no connections to manage.
-        g_shutdown = g_mergemine_conn.empty()
-                  && g_mergemine_noconn.empty();
+        g_shutdown = g_shutdown || (g_mergemine_conn.empty() && g_mergemine_noconn.empty();
 
         // If we are not done, wait 15 seconds before re-starting the dispatch
         // loop, to prevent us from spin-locking.
