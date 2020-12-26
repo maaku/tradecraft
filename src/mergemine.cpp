@@ -676,14 +676,14 @@ static void merge_mining_event_cb(bufferevent *bev, short what, void *ctx)
             LogPrintf("Unregistering auxiliary work notifications for chain 0x%s from stratum+tcp://%s (%s)\n", HexStr(server.aux_pow_path.begin(), server.aux_pow_path.end()), server.socket.ToString(), server.name);
             g_mergemine.erase(server.aux_pow_path);
         }
+        // Add connection to g_mergemine_noconn.
+        g_mergemine_noconn[server.socket] = AuxServerDisconnect(server.name);
         LogPrint("mergemine", "Closing initial stratum connection to stratum+tcp://%s (%s)\n", server.socket.ToString(), server.name);
         g_mergemine_conn.erase(bev);
         if (bev) {
             bufferevent_free(bev);
             bev = nullptr;
         }
-        // Add connection back to g_mergemine_noconn.
-        g_mergemine_noconn[server.socket] = AuxServerDisconnect(server.name);
     }
 
     // Attempt to re-establish any dropped connections.
