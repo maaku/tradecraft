@@ -667,17 +667,19 @@ static void merge_mining_event_cb(bufferevent *bev, short what, void *ctx)
         LogPrint("mergemine", "Error detected on initial stratum connection to stratum+tcp://%s (%s)\n", server.socket.ToString(), server.name);
     }
     if (what & BEV_EVENT_EOF) {
-        LogPrint("mergemine", "Remote disconnect received initial on stratum connection to stratum+tcp://%s (%s)\n", server.socket.ToString(), server.name);
+        LogPrint("mergemine", "Remote disconnect received on stratum connection to stratum+tcp://%s (%s)\n", server.socket.ToString(), server.name);
     }
     // Remove the connection from our records, and tell libevent to disconnect
     // and free its resources.
     if (what & (BEV_EVENT_EOF | BEV_EVENT_ERROR)) {
+        // Remove connection from g_mergemine.
         if (g_mergemine.count(server.aux_pow_path) && g_mergemine[server.aux_pow_path] == bev) {
             LogPrintf("Unregistering auxiliary work notifications for chain 0x%s from stratum+tcp://%s (%s)\n", HexStr(server.aux_pow_path.begin(), server.aux_pow_path.end()), server.socket.ToString(), server.name);
             g_mergemine.erase(server.aux_pow_path);
         }
         // Add connection to g_mergemine_noconn.
         g_mergemine_noconn[server.socket] = AuxServerDisconnect(server.name);
+        // Remove connection from g_mergemine_conn.
         LogPrint("mergemine", "Closing initial stratum connection to stratum+tcp://%s (%s)\n", server.socket.ToString(), server.name);
         g_mergemine_conn.erase(bev);
         if (bev) {
