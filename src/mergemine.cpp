@@ -678,6 +678,7 @@ static void merge_mining_event_cb(bufferevent *bev, short what, void *ctx)
             g_mergemine.erase(server.aux_pow_path);
         }
         // Add connection to g_mergemine_noconn.
+        LogPrintf("Queing stratum+tcp://%s (%s) for later reconnect\n", server.socket.ToString(), server.name);
         g_mergemine_noconn[server.socket] = AuxServerDisconnect(server.name);
         // Remove connection from g_mergemine_conn.
         LogPrint("mergemine", "Closing initial stratum connection to stratum+tcp://%s (%s)\n", server.socket.ToString(), server.name);
