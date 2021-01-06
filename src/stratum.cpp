@@ -276,20 +276,37 @@ static std::string GetExtraNonceRequest(StratumClient& client, const uint256& jo
 
 std::string GetWorkUnit(StratumClient& client)
 {
+    try {
     LOCK(cs_main);
+    } catch(const std::exception& e) {
+        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+    }
 
+    try {
     if (vNodes.empty() && !Params().MineBlocksOnDemand()) {
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Bitcoin is not connected!");
     }
+    } catch(const std::exception& e) {
+        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+    }
 
+    try {
     if (IsInitialBlockDownload()) {
         throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Bitcoin is downloading blocks...");
     }
+    } catch(const std::exception& e) {
+        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+    }
 
+    try {
     if (!client.m_authorized) {
         throw JSONRPCError(RPC_INVALID_REQUEST, "Stratum client not authorized.  Use mining.authorize first, with a Bitcoin address as the username.");
     }
+    } catch(const std::exception& e) {
+        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+    }
 
+    try {
     auto second_stage =
         GetSecondStageWork(client.m_last_second_stage
                            ? boost::optional<uint256>(client.m_last_second_stage->first)
@@ -353,12 +370,16 @@ std::string GetWorkUnit(StratumClient& client)
         client.m_last_second_stage = boost::none;
         second_stages.clear();
     }
+    } catch(const std::exception& e) {
+        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+    }
 
     static CBlockIndex* tip = NULL;
     static uint256 job_id;
     static unsigned int transactions_updated_last = 0;
     static int64_t last_update_time = 0;
 
+    try {
     if (tip != chainActive.Tip() || (mempool.GetTransactionsUpdated() != transactions_updated_last && (GetTime() - last_update_time) > 5) || !work_templates.count(job_id))
     {
         CBlockIndex *tip_new = chainActive.Tip();
@@ -443,7 +464,11 @@ std::string GetWorkUnit(StratumClient& client)
             LogPrint("mergemine", "Removed oldest merge-mining work unit for miner %s from %s (%d total): %s\n", client.m_addr.ToString(), client.GetPeer().ToString(), client.m_mmwork.size(), HexStr(oldest_mmwork_id.get().begin(), oldest_mmwork_id.get().end()));
         }
     }
+    } catch(const std::exception& e) {
+        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+    }
 
+    try {
     StratumWork& current_work = work_templates[job_id];
 
     CMutableTransaction cb(current_work.GetBlock().vtx[0]);
@@ -552,6 +577,9 @@ std::string GetWorkUnit(StratumClient& client)
     return GetExtraNonceRequest(client, job_id)
          + set_difficulty.write() + "\n"
          + mining_notify.write()  + "\n";
+    } catch(const std::exception& e) {
+        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+    }
 }
 
 bool SubmitBlock(StratumClient& client, const uint256& job_id, const uint256& mmroot, const StratumWork& current_work, std::vector<unsigned char> extranonce2, uint32_t nTime, uint32_t nNonce, uint32_t nVersion)
