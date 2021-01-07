@@ -397,18 +397,66 @@ std::string GetWorkUnit(StratumClient& client)
         UniValue branch(UniValue::VARR);
         try {
         for (const uint256& hash : second_stage->second.cb_branch) {
+            try {
             branch.push_back(HexStr(hash.begin(),
                                     hash.end()));
+            } catch(const std::exception& e) {
+                std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+                LogPrintf("%s\n", msg);
+                throw std::runtime_error(msg);
+            }
         }
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
+        try {
         mining_notify_params.push_back(branch);
-        mining_notify_params.push_back(HexInt4(second_stage->second.nVersion));
-        mining_notify_params.push_back(HexInt4(second_stage->second.nBits));
-        mining_notify_params.push_back(HexInt4(second_stage->second.nTime));
-        if (client.m_last_second_stage && (client.m_last_second_stage->first == second_stage->first) && (client.m_last_second_stage->second == second_stage->second.hashPrevBlock)) {
-            mining_notify_params.push_back(false);
-        } else {
-            mining_notify_params.push_back(true);
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
         }
+        try {
+        mining_notify_params.push_back(HexInt4(second_stage->second.nVersion));
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
+        try {
+        mining_notify_params.push_back(HexInt4(second_stage->second.nBits));
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
+        try {
+        mining_notify_params.push_back(HexInt4(second_stage->second.nTime));
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
+        if (client.m_last_second_stage && (client.m_last_second_stage->first == second_stage->first) && (client.m_last_second_stage->second == second_stage->second.hashPrevBlock)) {
+            try {
+            mining_notify_params.push_back(false);
+            } catch(const std::exception& e) {
+                std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+                LogPrintf("%s\n", msg);
+                throw std::runtime_error(msg);
+            }
+        } else {
+            try {
+            mining_notify_params.push_back(true);
+            } catch(const std::exception& e) {
+                std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+                LogPrintf("%s\n", msg);
+                throw std::runtime_error(msg);
+            }
+        }
+        try {
         mining_notify.push_back(Pair("params", mining_notify_params));
         } catch(const std::exception& e) {
             std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
