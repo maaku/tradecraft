@@ -301,7 +301,7 @@ std::string GetWorkUnit(StratumClient& client)
         set_difficulty.push_back(Pair("id", client.m_nextid++));
         set_difficulty.push_back(Pair("method", "mining.set_difficulty"));
         UniValue set_difficulty_params(UniValue::VARR);
-        set_difficulty_params.push_back(diff);
+        set_difficulty_params.push_back(UniValue(diff));
         set_difficulty.push_back(Pair("params", set_difficulty_params));
 
         std::string job_id = ":" + second_stage->second.job_id;
@@ -334,9 +334,9 @@ std::string GetWorkUnit(StratumClient& client)
         mining_notify_params.push_back(HexInt4(second_stage->second.nBits));
         mining_notify_params.push_back(HexInt4(second_stage->second.nTime));
         if (client.m_last_second_stage && (client.m_last_second_stage->first == second_stage->first) && (client.m_last_second_stage->second == second_stage->second.hashPrevBlock)) {
-            mining_notify_params.push_back(false);
+            mining_notify_params.push_back(UniValue(false));
         } else {
-            mining_notify_params.push_back(true);
+            mining_notify_params.push_back(UniValue(true));
         }
         mining_notify.push_back(Pair("params", mining_notify_params));
 
