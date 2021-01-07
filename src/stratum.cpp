@@ -314,27 +314,67 @@ std::string GetWorkUnit(StratumClient& client)
         throw std::runtime_error(msg);
     }
 
+    boost::optional<std::pair<uint256, SecondStageWork> > second_stage;
     try {
-    auto second_stage =
+    second_stage =
         GetSecondStageWork(client.m_last_second_stage
                            ? boost::optional<uint256>(client.m_last_second_stage->first)
                            : boost::none);
+    } catch(const std::exception& e) {
+        std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
+    }
+    try {
     if (second_stage) {
-        double diff = ClampDifficulty(client, second_stage->second.diff);
+        double diff;
+        try {
+            diff = ClampDifficulty(client, second_stage->second.diff);
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
 
         UniValue set_difficulty(UniValue::VOBJ);
+        try {
         set_difficulty.push_back(Pair("id", client.m_nextid++));
         set_difficulty.push_back(Pair("method", "mining.set_difficulty"));
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
         UniValue set_difficulty_params(UniValue::VARR);
+        try {
         set_difficulty_params.push_back(diff);
         set_difficulty.push_back(Pair("params", set_difficulty_params));
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
 
-        std::string job_id = ":" + second_stage->second.job_id;
+        std::string job_id;
+        try {
+        job_id = ":" + second_stage->second.job_id;
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
 
         UniValue mining_notify(UniValue::VOBJ);
+        try {
         mining_notify.push_back(Pair("id", client.m_nextid++));
         mining_notify.push_back(Pair("method", "mining.notify"));
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
         UniValue mining_notify_params(UniValue::VARR);
+        try {
         mining_notify_params.push_back(job_id);
         // Byte-swap the hashPrevBlock, as stratum expects.
         uint256 hashPrevBlock(second_stage->second.hashPrevBlock);
@@ -348,8 +388,14 @@ std::string GetWorkUnit(StratumClient& client)
                                               second_stage->second.cb1.end()));
         mining_notify_params.push_back(HexStr(second_stage->second.cb2.begin(),
                                               second_stage->second.cb2.end()));
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
         // Reverse the order of the hashes, because that's what stratum does.
         UniValue branch(UniValue::VARR);
+        try {
         for (const uint256& hash : second_stage->second.cb_branch) {
             branch.push_back(HexStr(hash.begin(),
                                     hash.end()));
@@ -364,19 +410,69 @@ std::string GetWorkUnit(StratumClient& client)
             mining_notify_params.push_back(true);
         }
         mining_notify.push_back(Pair("params", mining_notify_params));
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
 
+        try {
         second_stages[second_stage->second.job_id] = *second_stage;
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
 
+        try {
         client.m_last_second_stage =
             std::make_pair(second_stage->first,
                            second_stage->second.hashPrevBlock);
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
 
-        return GetExtraNonceRequest(client, second_stage->first) // note: not job_id
-             + set_difficulty.write() + "\n"
-             + mining_notify.write() + "\n";
+        std::string ret;
+        try {
+            // note: not job_id
+            ret += GetExtraNonceRequest(client, second_stage->first);
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
+        try {
+            ret += set_difficulty.write() + "\n";
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
+        try {
+            ret += mining_notify.write() + "\n";
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
+        return ret;
     } else {
+        try {
         client.m_last_second_stage = boost::none;
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
+        try {
         second_stages.clear();
+        } catch(const std::exception& e) {
+            std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+            LogPrintf("%s\n", msg);
+            throw std::runtime_error(msg);
+        }
     }
     } catch(const std::exception& e) {
         std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
