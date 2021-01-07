@@ -279,7 +279,9 @@ std::string GetWorkUnit(StratumClient& client)
     try {
     LOCK(cs_main);
     } catch(const std::exception& e) {
-        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+        std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
     }
 
     try {
@@ -287,7 +289,9 @@ std::string GetWorkUnit(StratumClient& client)
         throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Bitcoin is not connected!");
     }
     } catch(const std::exception& e) {
-        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+        std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
     }
 
     try {
@@ -295,7 +299,9 @@ std::string GetWorkUnit(StratumClient& client)
         throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Bitcoin is downloading blocks...");
     }
     } catch(const std::exception& e) {
-        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+        std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
     }
 
     try {
@@ -303,7 +309,9 @@ std::string GetWorkUnit(StratumClient& client)
         throw JSONRPCError(RPC_INVALID_REQUEST, "Stratum client not authorized.  Use mining.authorize first, with a Bitcoin address as the username.");
     }
     } catch(const std::exception& e) {
-        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+        std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
     }
 
     try {
@@ -371,7 +379,9 @@ std::string GetWorkUnit(StratumClient& client)
         second_stages.clear();
     }
     } catch(const std::exception& e) {
-        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+        std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
     }
 
     static CBlockIndex* tip = NULL;
@@ -465,7 +475,9 @@ std::string GetWorkUnit(StratumClient& client)
         }
     }
     } catch(const std::exception& e) {
-        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+        std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
     }
 
     try {
@@ -578,7 +590,9 @@ std::string GetWorkUnit(StratumClient& client)
          + set_difficulty.write() + "\n"
          + mining_notify.write()  + "\n";
     } catch(const std::exception& e) {
-        LogPrintf("EXCEPTION %s:%d: %s\n", __FILE__, __LINE__, e.what());
+        std::string msg = strprintf("EXCEPTION %s:%d: %s", __FILE__, __LINE__, e.what());
+        LogPrintf("%s\n", msg);
+        throw std::runtime_error(msg);
     }
 }
 
