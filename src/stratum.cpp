@@ -489,7 +489,7 @@ std::string GetWorkUnit(StratumClient& client)
     set_difficulty.push_back(Pair("id", client.m_nextid++));
     set_difficulty.push_back(Pair("method", "mining.set_difficulty"));
     UniValue set_difficulty_params(UniValue::VARR);
-    set_difficulty_params.push_back(diff);
+    set_difficulty_params.push_back(UniValue(diff));
     set_difficulty.push_back(Pair("params", set_difficulty_params));
 
     auto nonce = client.ExtraNonce1(job_id);
@@ -541,7 +541,7 @@ std::string GetWorkUnit(StratumClient& client)
     params.push_back(HexInt4(blkhdr.nVersion));
     params.push_back(HexInt4(blkhdr.nBits));
     params.push_back(HexInt4(blkhdr.nTime));
-    params.push_back(client.m_last_tip != tip);
+    params.push_back(UniValue(client.m_last_tip != tip));
     client.m_last_tip = tip;
 
     UniValue mining_notify(UniValue::VOBJ);
