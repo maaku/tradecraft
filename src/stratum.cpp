@@ -856,7 +856,8 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
             if (addr.IsValid()) {
                 const uint256& chainid = Params().DefaultAuxPowPath();
                 if (mmauth.count(chainid)) {
-                    LogPrintf("Duplicate chain 0x%s; overwriting prior configuration\n");
+                    LogPrint("mergemine", "Duplicate chain 0x%s (default); skipping\n");
+                    continue;
                 }
                 std::string username(addr.ToString());
                 std::string password("x");
