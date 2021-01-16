@@ -861,10 +861,10 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
                 }
                 std::string username(addr.ToString());
                 std::string password("x");
-                LogPrintf("Merge-mine chain 0x%s with username \"%s\" and password \"%s\"\n", HexStr(chainid.begin(), chainid.end()), username, password);
+                LogPrint("mergemine", "Merge-mine chain 0x%s with username \"%s\" and password \"%s\"\n", HexStr(chainid.begin(), chainid.end()), username, password);
                 mmauth[chainid] = std::make_pair(username, password);
             } else {
-                LogPrintf("Skipping unrecognized stratum password option \"%s\"\n", opt);
+                LogPrint("mergemine", "Skipping unrecognized stratum password option \"%s\"\n", opt);
             }
         }
     }
