@@ -820,7 +820,7 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
 
     std::map<uint256, std::pair<std::string, std::string> > mmauth;
     for (const std::string& opt : opts) {
-        if ((pos = password.find('=')) != std::string::npos) {
+        if ((pos = opt.find('=')) != std::string::npos) {
             std::string key(opt, 0, pos); // chain name or ID
             boost::trim_right(key);
             std::string value(opt, pos+1); // pass-through to chain server
