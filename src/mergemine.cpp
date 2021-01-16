@@ -401,7 +401,7 @@ static UniValue stratum_mining_aux_notify(AuxWorkServer& server, const UniValue&
     for (const std::string& address : commits.getKeys()) {
         // The commitment is a 256-bit hash.
         uint256 commit = ParseUInt256(commits[address].get_str(), "commit");
-        LogPrintf("Got commitment for aux address \"%s\" on chain 0x%s: 0x%s %s,%d\n", address, HexStr(server.aux_pow_path.begin(), server.aux_pow_path.end()), commit.ToString(), HexInt4(bits), bias);
+        LogPrint("mergemine", "Got commitment for aux address \"%s\" on chain 0x%s: 0x%s %s,%d\n", address, HexStr(server.aux_pow_path.begin(), server.aux_pow_path.end()), commit.ToString(), HexInt4(bits), bias);
         server.aux_work[address] = AuxWork(time, job_id, commit, bits, bias);
     }
 
@@ -602,7 +602,7 @@ static void merge_mining_read_cb(bufferevent *bev, void *ctx)
             if (server.aux_auth_jreqid.count(id)) {
                 std::string username(server.aux_auth_jreqid[id]);
                 std::string address(val["result"].get_str());
-                LogPrintf("Mapping username \"%s\" to remote address \"%s\" for stratum+tcp://%s (%s)\n", username, address, server.socket.ToString(), server.name);
+                LogPrint("mergemine", "Mapping username \"%s\" to remote address \"%s\" for stratum+tcp://%s (%s)\n", username, address, server.socket.ToString(), server.name);
                 server.aux_auth[username] = address;
                 server.aux_auth_jreqid.erase(id);
             }
