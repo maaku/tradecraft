@@ -843,7 +843,7 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
                     // say this wasn't a hex-encoded aux_pow_path.
                     LogPrintf("Skipping unrecognized stratum password keyword option \"%s=%s\"\n", key, value);
                 } else {
-                    LogPrintf("Merge-mine chain 0x%s with username \"%s\" and password \"%s\"\n", HexStr(chainid.begin(), chainid.end()), value);
+                    LogPrintf("Merge-mine chain 0x%s with username \"%s\" and password \"%s\"\n", HexStr(chainid.begin(), chainid.end()), username, password);
                     mmauth[chainid] = std::make_pair(username, password);
                 }
             }
