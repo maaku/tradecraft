@@ -848,7 +848,19 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
                 }
             }
         } else {
-            LogPrintf("Skipping unrecognized stratum password option \"%s\"\n", opt);
+            CBitcoinAddress addr(opt);
+            if (addr.IsValid()) {
+                const uint256& chainid = Params().DefaultAuxPowPath();
+                if (mmauth.count(chainid)) {
+                    LogPrintf("Duplicate chain 0x%s; overwriting prior configuration\n");
+                }
+                std::string username(addr.ToString());
+                std::string password("x");
+                LogPrintf("Merge-mine chain 0x%s with username \"%s\" and password \"%s\"\n", HexStr(chainid.begin(), chainid.end()), username, password);
+                mmauth[chainid] = std::make_pair(username, password);
+            } else {
+                LogPrintf("Skipping unrecognized stratum password option \"%s\"\n", opt);
+            }
         }
     }
 
