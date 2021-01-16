@@ -797,12 +797,12 @@ void MergeMiningManagerThread()
     if (!mapArgs.count("-mergeminename")) {
         chain_names.clear();
         // Freicoin / Tradecraft main network.
-        chain_names["freicoin"] = uint256S("0x632938ec752e63b7f63cdd9a16b336c6c5cefbaad66278e402ce59d706f57ff6");
+        chain_names["freicoin"] = Params(CBaseChainParams::MAIN).DefaultAuxPowPath();
         chain_names["tradecraft"] = chain_names["freicoin"];
         // Freicoin / Tradecraft test network.
-        chain_names["testnet"] = uint256S("0xe99fc44bfacee2f7e28d135845ff8a385d6d31353928d5b499700f1a2ad1b18b");
+        chain_names["testnet"] = Params(CBaseChainParams::TESTNET).DefaultAuxPowPath();
         // Freicoin / Tradecraft RPC test network.
-        chain_names["regtest"] = uint256S("0xd799d41af01c1ac77e6a7793ba046a7432bb6ec250b84e2f5c6f225e05f0fc74");
+        chain_names["regtest"] = Params(CBaseChainParams::REGTEST).DefaultAuxPowPath();
     } else {
         // Setup the text string -> aux_pow_path map from conf-file settings:
         const std::vector<std::string>& vnames = mapMultiArgs["-mergeminename"];
