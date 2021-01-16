@@ -833,7 +833,7 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
             }
             if (chain_names.count(key)) {
                 const uint256& chainid = chain_names[key];
-                LogPrintf("Merge-mine chain \"%s\" (0x%s) with username \"%s\" and password \"%s\"\n", key, HexStr(chainid.begin(), chainid.end()), username, password);
+                LogPrint("mergemine", "Merge-mine chain \"%s\" (0x%s) with username \"%s\" and password \"%s\"\n", key, HexStr(chainid.begin(), chainid.end()), username, password);
                 mmauth[chainid] = std::make_pair(username, password);
             } else {
                 uint256 chainid = ParseUInt256(key, "chainid");
@@ -841,12 +841,12 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
                 if (memcmp(chainid.begin()+8, zero.data(), 24) == 0) {
                     // At least 24 bytes are empty. Gonna go out on a limb and
                     // say this wasn't a hex-encoded aux_pow_path.
-                    LogPrintf("Skipping unrecognized stratum password keyword option \"%s=%s\"\n", key, value);
+                    LogPrint("mergemine", "Skipping unrecognized stratum password keyword option \"%s=%s\"\n", key, value);
                 } else {
                     if (mmauth.count(chainid)) {
                         LogPrintf("Duplicate chain 0x%s; overwriting prior configuration\n");
                     }
-                    LogPrintf("Merge-mine chain 0x%s with username \"%s\" and password \"%s\"\n", HexStr(chainid.begin(), chainid.end()), username, password);
+                    LogPrint("mergemine", "Merge-mine chain 0x%s with username \"%s\" and password \"%s\"\n", HexStr(chainid.begin(), chainid.end()), username, password);
                     mmauth[chainid] = std::make_pair(username, password);
                 }
             }
