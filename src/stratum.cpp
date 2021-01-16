@@ -844,7 +844,8 @@ UniValue stratum_mining_authorize(StratumClient& client, const UniValue& params)
                     LogPrint("mergemine", "Skipping unrecognized stratum password keyword option \"%s=%s\"\n", key, value);
                 } else {
                     if (mmauth.count(chainid)) {
-                        LogPrintf("Duplicate chain 0x%s; overwriting prior configuration\n");
+                        LogPrint("mergemine", "Duplicate chain 0x%s; skipping\n");
+                        continue;
                     }
                     LogPrint("mergemine", "Merge-mine chain 0x%s with username \"%s\" and password \"%s\"\n", HexStr(chainid.begin(), chainid.end()), username, password);
                     mmauth[chainid] = std::make_pair(username, password);
