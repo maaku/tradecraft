@@ -1,5 +1,5 @@
 #
-# Copyright © 2011-2019 The Freicoin Developers.
+# Copyright © 2011-2021 The Freicoin Developers.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of version 3 of the GNU Affero General Public

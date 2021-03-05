@@ -4,7 +4,7 @@ Wrapper script for clang-format
 
 Copyright (c) 2015 MarcoFalke
 Copyright (c) 2015 The Bitcoin Core developers
-Copyright (c) 2010-2019 The Freicoin Developers
+Copyright (c) 2010-2021 The Freicoin Developers
 
 This program is free software: you can redistribute it and/or modify
 it under the conjunctive terms of BOTH version 3 of the GNU Affero

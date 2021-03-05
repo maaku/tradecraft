@@ -6,7 +6,7 @@ Source: https://github.com/bitcoin/bitcoin
 
 Files: *
 Copyright: 2009-2016, Bitcoin Core Developers
-           2011-2019, Freicoin Developers
+           2011-2021, Freicoin Developers
 License: AGPL-3 and Expat
 Comment: The Bitcoin Core Developers encompasses the current developers listed on bitcoin.org,
          as well as the numerous contributors to the project. The Freicoin Developers similarly

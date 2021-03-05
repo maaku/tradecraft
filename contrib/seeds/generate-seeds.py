@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Copyright (c) 2014 Wladimir J. van der Laan
-# Copyright (c) 2010-2019 The Freicoin Developers
+# Copyright (c) 2010-2021 The Freicoin Developers
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the conjunctive terms of BOTH version 3 of the GNU Affero

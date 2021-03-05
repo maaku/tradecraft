@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright (c) 2011-2019 The Freicoin Developers
+# Copyright (c) 2011-2021 The Freicoin Developers
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the conjunctive terms of BOTH version 3 of the GNU Affero
@@ -25,7 +25,7 @@ substitutions = [
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 ""","""
-# Copyright (c) 2010-2019 The Freicoin Developers
+# Copyright (c) 2010-2021 The Freicoin Developers
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the conjunctive terms of BOTH version 3 of the GNU Affero
@@ -46,7 +46,7 @@ substitutions = [
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 ""","""
-# Copyright (c) 2010-2019 The Freicoin Developers
+# Copyright (c) 2010-2021 The Freicoin Developers
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the conjunctive terms of BOTH version 3 of the GNU Affero
@@ -67,7 +67,7 @@ substitutions = [
 Distributed under the MIT software license, see the accompanying
 file COPYING or http://www.opensource.org/licenses/mit-license.php.
 ""","""
-Copyright (c) 2010-2019 The Freicoin Developers
+Copyright (c) 2010-2021 The Freicoin Developers
 
 This program is free software: you can redistribute it and/or modify
 it under the conjunctive terms of BOTH version 3 of the GNU Affero
@@ -96,7 +96,7 @@ This is experimental software.
 Distributed under the MIT software license, see the accompanying file COPYING
 or <http://www.opensource.org/licenses/mit-license.php>.
 ""","""
-Copyright (C) 2011-2019 The Freicoin Developers
+Copyright (C) 2011-2021 The Freicoin Developers
 
 Please contribute if you find Freicoin useful. Visit
 <https://freico.in> for further information about the software.
@@ -125,7 +125,7 @@ program.  If not, see <https://www.gnu.org/licenses/> and
 \tDistributed under the MIT software license, see the accompanying
 \tfile COPYING or http://www.opensource.org/licenses/mit-license.php.
 ""","""
-\tCopyright (c) 2011-2019 The Freicoin Developers
+\tCopyright (c) 2011-2021 The Freicoin Developers
 
 \tThis program is free software: you can redistribute it and/or modify
 \tit under the conjunctive terms of BOTH version 3 of the GNU Affero
@@ -149,7 +149,7 @@ program.  If not, see <https://www.gnu.org/licenses/> and
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 ""","""
-// Copyright (c) 2011-2019 The Freicoin Developers
+// Copyright (c) 2011-2021 The Freicoin Developers
 //
 // This program is free software: you can redistribute it and/or
 // modify it under the conjunctive terms of BOTH version 3 of the GNU
@@ -170,7 +170,7 @@ program.  If not, see <https://www.gnu.org/licenses/> and
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 ""","""
-// Copyright (c) 2011-2019 The Freicoin Developers
+// Copyright (c) 2011-2021 The Freicoin Developers
 //
 // This program is free software: you can redistribute it and/or
 // modify it under the conjunctive terms of BOTH version 3 of the GNU
@@ -193,7 +193,7 @@ program.  If not, see <https://www.gnu.org/licenses/> and
 //          Copyright John W. Wilkinson 2007 - 2009.
 // Distributed under the MIT License, see accompanying file LICENSE.txt
 ""","""
-//          Copyright The Freicoin Developers 2019.
+//          Copyright The Freicoin Developers 2019-2021.
 //
 // This program is free software: you can redistribute it and/or
 // modify it under the conjunctive terms of BOTH version 3 of the GNU
@@ -218,7 +218,7 @@ program.  If not, see <https://www.gnu.org/licenses/> and
  * Distributed under the MIT software license, see the accompanying   *
  * file COPYING or http://www.opensource.org/licenses/mit-license.php.*
 ""","""
- * Copyright (c) 2018-2019 The Freicoin Developers                    *
+ * Copyright (c) 2018-2021 The Freicoin Developers                    *
  *                                                                    *
  * This program is free software: you can redistribute it and/or      *
  * modify it under the conjunctive terms of BOTH version 3 of the GNU *
@@ -241,7 +241,7 @@ program.  If not, see <https://www.gnu.org/licenses/> and
  * Distributed under the MIT software license, see the accompanying    *
  * file COPYING or http://www.opensource.org/licenses/mit-license.php. *
 ""","""
- * Copyright (c) 2018-2019 The Freicoin Developers                     *
+ * Copyright (c) 2018-2021 The Freicoin Developers                     *
  *                                                                     *
  * This program is free software: you can redistribute it and/or       *
  * modify it under the conjunctive terms of BOTH version 3 of the GNU  *
@@ -264,7 +264,7 @@ program.  If not, see <https://www.gnu.org/licenses/> and
 dnl Distributed under the MIT software license, see the accompanying
 dnl file COPYING or http://www.opensource.org/licenses/mit-license.php.
 ""","""
-dnl Copyright (c) 2013-2019 The Freicoin Developers
+dnl Copyright (c) 2013-2021 The Freicoin Developers
 dnl
 dnl This program is free software: you can redistribute it and/or
 dnl modify it under the conjunctive terms of BOTH version 3 of the GNU

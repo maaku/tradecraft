@@ -3,7 +3,7 @@
 # linearize-hashes.py:  List blocks in a linear, no-fork version of the chain.
 #
 # Copyright (c) 2013-2014 The Bitcoin Core developers
-# Copyright (c) 2010-2019 The Freicoin Developers
+# Copyright (c) 2010-2021 The Freicoin Developers
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the conjunctive terms of BOTH version 3 of the GNU Affero

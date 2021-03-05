@@ -1,6 +1,6 @@
 /**********************************************************************
  * Copyright (c) 2013, 2014, 2015 Thomas Daede, Cory Fields           *
- * Copyright (c) 2018-2019 The Freicoin Developers                    *
+ * Copyright (c) 2018-2021 The Freicoin Developers                    *
  *                                                                    *
  * This program is free software: you can redistribute it and/or      *
  * modify it under the conjunctive terms of BOTH version 3 of the GNU *

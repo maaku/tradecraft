@@ -1,5 +1,5 @@
 dnl Copyright (c) 2013-2016 The Freicoin developers
-dnl Copyright (c) 2013-2019 The Freicoin Developers
+dnl Copyright (c) 2013-2021 The Freicoin Developers
 dnl
 dnl This program is free software: you can redistribute it and/or
 dnl modify it under the conjunctive terms of BOTH version 3 of the GNU

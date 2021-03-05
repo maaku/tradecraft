@@ -1,6 +1,6 @@
 // Copyright 2014 BitPay Inc.
 // Copyright 2015 Bitcoin Core Developers
-// Copyright (c) 2011-2019 The Freicoin Developers
+// Copyright (c) 2011-2021 The Freicoin Developers
 //
 // This program is free software: you can redistribute it and/or
 // modify it under the conjunctive terms of BOTH version 3 of the GNU

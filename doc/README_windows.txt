@@ -26,7 +26,7 @@ License
 -------
 
 Copyright (c) 2009-2016 Freicoin Developers
-Copyright (c) 2011-2019 Freicoin Developers
+Copyright (c) 2011-2021 Freicoin Developers
 
 Distributed under the conjunctive terms of BOTH the GNU Affero General
 Public License v3.0 and the MIT software license, see the accompanying
