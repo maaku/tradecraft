@@ -117,7 +117,7 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_AUXPOW].nTimeout = 1622592000; // June 2nd, 2021.
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000001bfc1acb352e9310223");
+        consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000000262149e6218a5b60cef");
 
         // Locked-in via checkpoint:
         consensus.verify_coinbase_lock_time_activation_height = 247554;
