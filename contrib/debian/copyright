@@ -8,9 +8,10 @@ Files: *
 Copyright: 2009-2016, Bitcoin Core Developers
            2011-2021, Freicoin Developers
 License: AGPL-3 and Expat
-Comment: The Bitcoin Core Developers encompasses the current developers listed on bitcoin.org,
-         as well as the numerous contributors to the project. The Freicoin Developers similarly
-         encompasses the contributors to Freicoin specifically.
+Comment: The Bitcoin Core Developers encompasses the current developers listed
+         on bitcoin.org, as well as the numerous contributors to the project.
+         The Freicoin Developers similarly encompasses the contributors to
+         Freicoin specifically.
 
 Files: debian/*
 Copyright: 2010-2011, Jonas Smedegaard <dr@jones.dk>
