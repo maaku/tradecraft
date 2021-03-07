@@ -256,7 +256,7 @@ class BIP9SoftForksTest(ComparisonTestFramework):
 
     def finaltx_invalidate(self, tx):
         '''Spend one of the block-final inputs with an OP_RETURN output, which
-        is invalid under the finaltx rules.
+        is invalid under the block-final tx rules.
         '''
         height = self.nodes[0].getblockcount() + 1
         prev_height = height - 100
