@@ -36,13 +36,12 @@ public:
 
     const std::string& DataDir() const { return strDataDir; }
     int RPCPort() const { return nRPCPort; }
-    int StratumPort() const { return nStratumPort; }
+    int StratumPort() const { return (RPCPort() + 1000); }
 
 protected:
     CBaseChainParams() {}
 
     int nRPCPort;
-    int nStratumPort;
     std::string strDataDir;
 };
 
