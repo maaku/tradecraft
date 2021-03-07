@@ -1228,8 +1228,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
         // and only helps with filling in pfMissingInputs (to determine missing vs spent).
         BOOST_FOREACH(const CTxIn txin, tx.vin) {
             if (txin.prevout.hash == view.GetFinalTx()) {
-                return state.DoS(100, false, REJECT_INVALID, "spend-block-final-txn", false,
-                                 strprintf("%s: spends prior block-final transaction", __func__));
+                return state.Invalid(false, REJECT_INVALID, "spend-block-final-txn");
             }
             if (!pcoinsTip->HaveCoinsInCache(txin.prevout.hash))
                 vHashTxnToUncache.push_back(txin.prevout.hash);
