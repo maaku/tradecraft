@@ -2505,11 +2505,11 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
     // Coordinate enforcement of block-final transaction using versionbits
     // logic.
-    bool enforce_block_final = pindex->pprev && IsBlockFinalEnforced(pindex->pprev, chainparams.GetConsensus());
+    bool enforce_block_final = pindex->pprev && IsFinalTxEnforced(pindex->pprev, chainparams.GetConsensus());
 
     // The very first block after activation has to provide an anyone-can-spend
     // output of a particular form in its coinbase transaction.
-    const bool initial_block_final = enforce_block_final && pindex->pprev->pprev && !IsBlockFinalEnforced(pindex->pprev->pprev, chainparams.GetConsensus());
+    const bool initial_block_final = enforce_block_final && pindex->pprev->pprev && !IsFinalTxEnforced(pindex->pprev->pprev, chainparams.GetConsensus());
 
     // Start enforcing WITNESS rules using versionbits logic.
     if (IsWitnessEnabled(pindex->pprev, chainparams.GetConsensus())) {
@@ -3749,7 +3749,7 @@ static bool CheckIndexAgainstCheckpoint(const CBlockIndex* pindexPrev, CValidati
     return true;
 }
 
-bool IsBlockFinalEnforced(const CBlockIndex* pindexPrev, const Consensus::Params& params)
+bool IsFinalTxEnforced(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
     LOCK(cs_main);
     return (VersionBitsState(pindexPrev, params, Consensus::DEPLOYMENT_FINALTX, versionbitscache) == THRESHOLD_ACTIVE);
@@ -4592,7 +4592,7 @@ bool RewindBlockIndex(const CChainParams& params)
 
     int nHeight = 1;
     while (nHeight <= chainActive.Height()) {
-        if (IsBlockFinalEnforced(chainActive[nHeight - 1], params.GetConsensus()) && pcoinsTip->GetFinalTx().IsNull()) {
+        if (IsFinalTxEnforced(chainActive[nHeight - 1], params.GetConsensus()) && pcoinsTip->GetFinalTx().IsNull()) {
             break;
         }
         if (IsWitnessEnabled(chainActive[nHeight - 1], params.GetConsensus()) && !(chainActive[nHeight]->nStatus & BLOCK_OPT_WITNESS)) {

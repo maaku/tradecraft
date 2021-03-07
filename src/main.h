@@ -717,7 +717,7 @@ bool DisconnectBlock(const CBlock& block, CValidationState& state, const CBlockI
 bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams, const CBlock& block, CBlockIndex* pindexPrev, bool fCheckPOW = true, bool fCheckMerkleRoot = true);
 
 /** Check whether block-final transaction rules are enforced for block. */
-bool IsBlockFinalEnforced(const CBlockIndex* pindexPrev, const Consensus::Params& params);
+bool IsFinalTxEnforced(const CBlockIndex* pindexPrev, const Consensus::Params& params);
 
 /** Check whether witness commitments are required for block. */
 bool IsWitnessEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& params);

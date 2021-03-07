@@ -179,12 +179,12 @@ private:
     bool blockFinished;
 
     // The current state of the block-final activation logic
-    enum BlockFinalState {
+    enum FinalTxState {
         NO_BLOCK_FINAL_TX,
         INITIAL_BLOCK_FINAL_TXOUT,
         HAS_BLOCK_FINAL_TX,
     };
-    BlockFinalState block_final_state;
+    FinalTxState block_final_state;
 
 public:
     BlockAssembler(const CChainParams& chainparams);
