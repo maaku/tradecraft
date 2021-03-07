@@ -2530,21 +2530,24 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             return state.DoS(100, error("%s: first tx is not coinbase", __func__),
                              REJECT_INVALID, "bad-cb-missing");
         }
+        // Make sure there is at least *one* output in the coinbase which
+        // satisfies our spend criteria.
         if (block.vtx[0].vout.empty()) {
             return state.DoS(100, error("%s: activation coinbase has no outputs", __func__),
                              REJECT_INVALID, "bad-cb-missing-outputs");
         }
-        // Make sure ALL outputs in the coinbase satisfy our spend criteria.
         uint32_t idx;
         const CTransaction& coinbaseTx = block.vtx.front();
         for (idx = 0; idx < (uint32_t)coinbaseTx.vout.size(); ++idx) {
-            if (!IsTriviallySpendable(coinbaseTx, idx, flags|SCRIPT_VERIFY_WITNESS|SCRIPT_VERIFY_CLEANSTACK)) {
-                // Due to a bug in deployed versions of the block-final code,
-                // the activation coinbase must have only trivially spendable
-                // outputs.  We enforce this rule for compatibility.
-                return state.DoS(100, error("%s: coinbase has non-trivial output", __func__),
-                                 REJECT_INVALID, "bad-cb-non-trivial-output");
+            if (IsTriviallySpendable(coinbaseTx, idx, flags|SCRIPT_VERIFY_WITNESS|SCRIPT_VERIFY_CLEANSTACK)) {
+                // We have a winner, so stop looking.
+                break;
             }
+        }
+        // Check if we found any suitable outputs.
+        if (idx == coinbaseTx.vout.size()) {
+            return state.DoS(100, error("%s: coinbase missing output for block-final tx", __func__),
+                             REJECT_INVALID, "bad-cb-missing-block-final-output");
         }
         // Rules for the initial block final are different from those
         // that are enforced later.
@@ -2618,7 +2621,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             // Block-final transactions are chained together, and must spend
             // every single output of the prior block-final transaction, so that
             // we don't end up with coinbase-like reorg risk taint.
-            if (spends_prior_tx != prev_final_tx->vout.size()) {
+            if (!prev_final_tx->IsCoinBase() && spends_prior_tx != prev_final_tx->vout.size()) {
                 return state.DoS(100, error("%s: missing txin of prior block-final transaction", __func__),
                                  REJECT_INVALID, "block-final-missing-prior-input");
             }
