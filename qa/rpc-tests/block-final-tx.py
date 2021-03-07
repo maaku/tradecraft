@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2015-2016 The Bitcoin developers
+# Copyright (c) 2015-2016 The Bitcoin Developers
 # Copyright (c) 2019-2021 The Freicoin Developers
 #
 # This program is free software: you can redistribute it and/or modify
@@ -160,7 +160,7 @@ class BlockFinalTxTest(ComparisonTestFramework):
         assert('finaltx' not in tmpl['rules'])
         assert('finaltx' in tmpl['vbavailable'])
         assert_equal(tmpl['vbrequired'], 0)
-        assert(tmpl['version'] & 2)
+        assert(tmpl['version'] & (1 << 1))
 
         # Test 5
         # Generate a block without any spendable outputs, which should
@@ -180,7 +180,7 @@ class BlockFinalTxTest(ComparisonTestFramework):
         assert('finaltx' in tmpl['rules'])
         assert('finaltx' not in tmpl['vbavailable'])
         assert_equal(tmpl['vbrequired'], 0)
-        assert(not (tmpl['version'] & 2))
+        assert(not (tmpl['version'] & (1 << 1)))
 
         # Test 6
         # Attempt to do the same thing: generate a block with no
