@@ -1198,7 +1198,6 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
             const CTransaction *ptxConflicting = itConflicting->second;
             if (!setConflicts.count(ptxConflicting->GetHash()))
             {
-
                 setConflicts.insert(ptxConflicting->GetHash());
             }
         }
