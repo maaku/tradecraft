@@ -147,16 +147,16 @@ class CompactBlocksTest(FreicoinTestFramework):
         block.nVersion = 4
         blocktemplate = {} if height < 2 else node.getblocktemplate({'rules':['segwit','auxpow']})
         try:
-            blockfinal_prevout = blocktemplate['blockfinal']['prevout']
+            finaltx_prevout = blocktemplate['finaltx']['prevout']
         except:
-            blockfinal_prevout = []
-        if blockfinal_prevout:
+            finaltx_prevout = []
+        if finaltx_prevout:
             finaltx = CTransaction()
             finaltx.nVersion = 2
             finaltx.nLockTime = block.vtx[0].nLockTime
             finaltx.lock_height = block.vtx[0].lock_height
             finaltx.vout.append(CTxOut(0, CScript([OP_TRUE])))
-            for prevout in blockfinal_prevout:
+            for prevout in finaltx_prevout:
                 finaltx.vin.append(CTxIn(COutPoint(uint256_from_str(unhexlify(prevout['txid'])[::-1]), prevout['vout']), CScript([]), 0xffffffff))
                 finaltx.vout[-1].nValue += prevout['amount']
             finaltx.rehash()

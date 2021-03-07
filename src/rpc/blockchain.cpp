@@ -1008,7 +1008,7 @@ UniValue getblockchaininfo(const UniValue& params, bool fHelp)
     softforks.push_back(SoftForkDesc("bip34", 2, tip, consensusParams));
     softforks.push_back(SoftForkDesc("bip66", 3, tip, consensusParams));
     BIP9SoftForkDescPushBack(bip9_softforks, "locktime", consensusParams, Consensus::DEPLOYMENT_LOCKTIME);
-    BIP9SoftForkDescPushBack(bip9_softforks, "blockfinal", consensusParams, Consensus::DEPLOYMENT_BLOCKFINAL);
+    BIP9SoftForkDescPushBack(bip9_softforks, "finaltx", consensusParams, Consensus::DEPLOYMENT_FINALTX);
     BIP9SoftForkDescPushBack(bip9_softforks, "segwit", consensusParams, Consensus::DEPLOYMENT_SEGWIT);
     BIP9SoftForkDescPushBack(bip9_softforks, "auxpow", consensusParams, Consensus::DEPLOYMENT_AUXPOW);
     obj.push_back(Pair("softforks",             softforks));

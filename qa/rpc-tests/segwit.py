@@ -106,14 +106,14 @@ class SegWitTest(FreicoinTestFramework):
 
     def success_mine(self, node, txid, sign, redeem_script=""):
         send_to_witness(1, node, getutxo(txid), self.pubkey[0], Decimal("49.998"), sign, redeem_script)
-        has_block_final = "blockfinal" in node.getblocktemplate({'rules':['segwit','auxpow']})
+        has_block_final = "finaltx" in node.getblocktemplate({'rules':['segwit','auxpow']})
         block = node.generate(1)
         assert_equal(len(node.getblock(block[0])["tx"]), 2 + has_block_final)
         sync_blocks(self.nodes)
 
     def skip_mine(self, node, txid, sign, redeem_script=""):
         send_to_witness(1, node, getutxo(txid), self.pubkey[0], Decimal("49.998"), sign, redeem_script)
-        has_block_final = "blockfinal" in node.getblocktemplate({'rules':['segwit','auxpow']})
+        has_block_final = "finaltx" in node.getblocktemplate({'rules':['segwit','auxpow']})
         block = node.generate(1)
         assert_equal(len(node.getblock(block[0])["tx"]), 1 + has_block_final)
         sync_blocks(self.nodes)

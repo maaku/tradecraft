@@ -175,14 +175,14 @@ CBlockTemplate* BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn)
     // tracks just whether the soft-fork is active, but by the time we get
     // to transaction selection it will only be true if there is a
     // block-final transaction in this block template.
-    if (VersionBitsState(pindexPrev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_BLOCKFINAL, versionbitscache) == THRESHOLD_ACTIVE) {
+    if (VersionBitsState(pindexPrev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_FINALTX, versionbitscache) == THRESHOLD_ACTIVE) {
         block_final_state = HAS_BLOCK_FINAL_TX;
     }
 
     // Check if this is the first block for which the block-final rules are
     // enforced, in which case all we need to do is add the initial
     // anyone-can-spend output.
-    if ((block_final_state == HAS_BLOCK_FINAL_TX) && pindexPrev->pprev && (VersionBitsState(pindexPrev->pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_BLOCKFINAL, versionbitscache) != THRESHOLD_ACTIVE)) {
+    if ((block_final_state == HAS_BLOCK_FINAL_TX) && pindexPrev->pprev && (VersionBitsState(pindexPrev->pprev, chainparams.GetConsensus(), Consensus::DEPLOYMENT_FINALTX, versionbitscache) != THRESHOLD_ACTIVE)) {
         block_final_state = INITIAL_BLOCK_FINAL_TXOUT;
     }
 

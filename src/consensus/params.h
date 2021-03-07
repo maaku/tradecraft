@@ -31,7 +31,7 @@ enum DeploymentPos
 {
     DEPLOYMENT_TESTDUMMY,
     DEPLOYMENT_LOCKTIME, // Deployment of BIP68 and BIP113.
-    DEPLOYMENT_BLOCKFINAL, // Deployment of block-final miner commitment transaction.
+    DEPLOYMENT_FINALTX, // Deployment of block-final miner commitment transaction.
     DEPLOYMENT_SEGWIT, // Deployment of BIP141, BIP143, and BIP147.
     DEPLOYMENT_AUXPOW, // Deployment of merge mining.
     // NOTE: Also add new deployments to VersionBitsDeploymentInfo in versionbits.cpp

@@ -406,7 +406,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             "  \"curtime\" : ttt,                  (numeric) current timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
             "  \"bits\" : \"xxxxxxxx\",              (string) compressed target of next block\n"
             "  \"height\" : n                      (numeric) The height of the next block\n"
-            "  \"blockfinal\" : {                  (json object) information necessary to construct the block-final transaction\n"
+            "  \"finaltx\" : {                  (json object) information necessary to construct the block-final transaction\n"
             "      \"prevout\" : [                 (array) UTXO records of inputs which must be included in the block-final transaction\n"
             "          {\n"
             "              \"txid\" : txid,        (string) input txid\n"
@@ -693,10 +693,10 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     result.push_back(Pair("previousblockhash", pblock->hashPrevBlock.GetHex()));
     result.push_back(Pair("transactions", transactions));
     result.push_back(Pair("coinbaseaux", aux));
-    CAmount blockfinal_fee = pblocktemplate->has_block_final_tx
+    CAmount finaltx_fee = pblocktemplate->has_block_final_tx
                            ? pblocktemplate->vTxFees.back()
                            : 0;
-    result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].vout[0].GetReferenceValue() - blockfinal_fee));
+    result.push_back(Pair("coinbasevalue", (int64_t)pblock->vtx[0].vout[0].GetReferenceValue() - finaltx_fee));
     result.push_back(Pair("longpollid", chainActive.Tip()->GetBlockHash().GetHex() + i64tostr(nTransactionsUpdatedLast)));
     result.push_back(Pair("target", hashTarget.GetHex()));
     result.push_back(Pair("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1));
@@ -715,7 +715,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
     result.push_back(Pair("locktime", (int64_t)(pindexPrev->GetMedianTimePast())));
     result.push_back(Pair("height", (int64_t)(pindexPrev->nHeight+1)));
     if (pblocktemplate->has_block_final_tx) {
-        UniValue blockfinal_prevout(UniValue::VARR);
+        UniValue finaltx_prevout(UniValue::VARR);
         BOOST_FOREACH(const CTxIn& txin, pblock->vtx.back().vin) {
             UniValue in(UniValue::VOBJ);
             in.push_back(Pair("txid", txin.prevout.hash.GetHex()));
@@ -725,11 +725,11 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
                 throw JSONRPCError(RPC_INTERNAL_ERROR, strprintf("UTXO record for block-final input '%s:%d' not found", txin.prevout.hash.GetHex(), txin.prevout.n));
             }
             in.push_back(Pair("amount", (int64_t)coins.GetPresentValueOfOutput(txin.prevout.n, pindexPrev->nHeight+1)));
-            blockfinal_prevout.push_back(in);
+            finaltx_prevout.push_back(in);
         }
-        UniValue blockfinal(UniValue::VOBJ);
-        blockfinal.push_back(Pair("prevout", blockfinal_prevout));
-        result.push_back(Pair("blockfinal", blockfinal));
+        UniValue finaltx(UniValue::VOBJ);
+        finaltx.push_back(Pair("prevout", finaltx_prevout));
+        result.push_back(Pair("finaltx", finaltx));
     }
 
     return result;

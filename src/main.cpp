@@ -3754,7 +3754,7 @@ static bool CheckIndexAgainstCheckpoint(const CBlockIndex* pindexPrev, CValidati
 bool IsBlockFinalEnforced(const CBlockIndex* pindexPrev, const Consensus::Params& params)
 {
     LOCK(cs_main);
-    return (VersionBitsState(pindexPrev, params, Consensus::DEPLOYMENT_BLOCKFINAL, versionbitscache) == THRESHOLD_ACTIVE);
+    return (VersionBitsState(pindexPrev, params, Consensus::DEPLOYMENT_FINALTX, versionbitscache) == THRESHOLD_ACTIVE);
 }
 
 bool IsWitnessEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& params)

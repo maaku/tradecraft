@@ -47,14 +47,14 @@ class BlockFinalTxTest(ComparisonTestFramework):
         # self.address = self.nodes[0].getnewaddress()
         # self.pubkey = bytes.fromhex(self.nodes[0].validateaddress(self.address)['pubkey'])
 
-    def generate_blocks(self, number, version, test_blocks = [], blockfinal = False):
+    def generate_blocks(self, number, version, test_blocks = [], finaltx = False):
         for i in range(number):
             block = create_block(self.tip, create_coinbase(self.height), self.last_block_time + 1)
             block.nVersion = version
             tx_final = CTransaction()
-            if blockfinal:
+            if finaltx:
                 tx_final.nVersion = 2
-                tx_final.vin.extend(self.blockfinal_vin)
+                tx_final.vin.extend(self.finaltx_vin)
                 tx_final.vout.append(CTxOut(0, CScript([OP_TRUE])))
                 tx_final.nLockTime = block.vtx[0].nLockTime
                 tx_final.lock_height = block.vtx[0].lock_height
@@ -67,9 +67,9 @@ class BlockFinalTxTest(ComparisonTestFramework):
             self.last_block_time += 1
             self.tip = block.sha256
             self.height += 1
-            self.blockfinal_vin = []
+            self.finaltx_vin = []
             for txout in tx_final.vout:
-                self.blockfinal_vin.append(CTxIn(COutPoint(tx_final.sha256, 0), CScript([]), 0xffffffff))
+                self.finaltx_vin.append(CTxIn(COutPoint(tx_final.sha256, 0), CScript([]), 0xffffffff))
         return test_blocks
 
     def get_bip9_status(self, key):
@@ -94,12 +94,12 @@ class BlockFinalTxTest(ComparisonTestFramework):
         self.nodeaddress = self.nodes[0].getnewaddress()
         self.last_block_time = int(time.time())
 
-        # BLOCKFINAL begins in DEFINED state
-        assert_equal(self.get_bip9_status('blockfinal')['status'], 'defined')
+        # FINALTX begins in DEFINED state
+        assert_equal(self.get_bip9_status('finaltx')['status'], 'defined')
         tmpl = self.nodes[0].getblocktemplate({})
-        assert('blockfinal' not in tmpl['rules'])
-        assert('blockfinal' not in tmpl['vbavailable'])
-        assert('blockfinal' not in tmpl)
+        assert('finaltx' not in tmpl['rules'])
+        assert('finaltx' not in tmpl['vbavailable'])
+        assert('finaltx' not in tmpl)
         assert_equal(tmpl['vbrequired'], 0)
         assert_equal(tmpl['version'] & 0xe0000002, 0x20000000)
 
@@ -108,12 +108,12 @@ class BlockFinalTxTest(ComparisonTestFramework):
         test_blocks = self.generate_blocks(141, 3) # height = 143
         yield TestInstance(test_blocks, sync_every_block=False)
 
-        assert_equal(self.get_bip9_status('blockfinal')['status'], 'started')
+        assert_equal(self.get_bip9_status('finaltx')['status'], 'started')
         tmpl = self.nodes[0].getblocktemplate({})
-        assert('blockfinal' not in tmpl['rules'])
-        assert('blockfinal' in tmpl['vbavailable'])
-        assert('blockfinal' not in tmpl)
-        assert_equal(tmpl['vbavailable']['blockfinal'], 1)
+        assert('finaltx' not in tmpl['rules'])
+        assert('finaltx' in tmpl['vbavailable'])
+        assert('finaltx' not in tmpl)
+        assert_equal(tmpl['vbavailable']['finaltx'], 1)
         assert_equal(tmpl['vbrequired'], 0)
         assert_equal(tmpl['version'] & 0xe0000002, 0x20000002)
 
@@ -131,9 +131,9 @@ class BlockFinalTxTest(ComparisonTestFramework):
         test_blocks = self.generate_blocks(24, 0x20020000, test_blocks) # signalling not ready
         yield TestInstance(test_blocks, sync_every_block=False)
 
-        assert_equal(self.get_bip9_status('blockfinal')['status'], 'started')
+        assert_equal(self.get_bip9_status('finaltx')['status'], 'started')
         tmpl = self.nodes[0].getblocktemplate({})
-        assert_equal(tmpl['vbavailable']['blockfinal'], 1)
+        assert_equal(tmpl['vbavailable']['finaltx'], 1)
         assert_equal(tmpl['vbrequired'], 0)
         assert_equal(tmpl['version'] & 0xe0000002, 0x20000002)
 
@@ -146,19 +146,19 @@ class BlockFinalTxTest(ComparisonTestFramework):
         test_blocks = self.generate_blocks(10, 0x20020000, test_blocks) # signalling not ready
         yield TestInstance(test_blocks, sync_every_block=False)
 
-        assert_equal(self.get_bip9_status('blockfinal')['status'], 'locked_in')
+        assert_equal(self.get_bip9_status('finaltx')['status'], 'locked_in')
         tmpl = self.nodes[0].getblocktemplate({})
-        assert('blockfinal' not in tmpl['rules'])
+        assert('finaltx' not in tmpl['rules'])
 
         # Test 4
         # 143 more blocks (waiting period-1) to get us at the brink of activation
         test_blocks = self.generate_blocks(143, 3)
         yield TestInstance(test_blocks, sync_every_block=False)
 
-        assert_equal(self.get_bip9_status('blockfinal')['status'], 'locked_in')
+        assert_equal(self.get_bip9_status('finaltx')['status'], 'locked_in')
         tmpl = self.nodes[0].getblocktemplate({})
-        assert('blockfinal' not in tmpl['rules'])
-        assert('blockfinal' in tmpl['vbavailable'])
+        assert('finaltx' not in tmpl['rules'])
+        assert('finaltx' in tmpl['vbavailable'])
         assert_equal(tmpl['vbrequired'], 0)
         assert(tmpl['version'] & 2)
 
@@ -175,10 +175,10 @@ class BlockFinalTxTest(ComparisonTestFramework):
         yield TestInstance(test_blocks, sync_every_block=False)
         self.tip = test_blocks[-1][0].sha256
 
-        assert_equal(self.get_bip9_status('blockfinal')['status'], 'active')
+        assert_equal(self.get_bip9_status('finaltx')['status'], 'active')
         tmpl = self.nodes[0].getblocktemplate({})
-        assert('blockfinal' in tmpl['rules'])
-        assert('blockfinal' not in tmpl['vbavailable'])
+        assert('finaltx' in tmpl['rules'])
+        assert('finaltx' not in tmpl['vbavailable'])
         assert_equal(tmpl['vbrequired'], 0)
         assert(not (tmpl['version'] & 2))
 
@@ -214,7 +214,7 @@ class BlockFinalTxTest(ComparisonTestFramework):
         yield TestInstance(test_blocks, sync_every_block=False)
 
         tmpl = self.nodes[0].getblocktemplate({})
-        assert('blockfinal' not in tmpl)
+        assert('finaltx' not in tmpl)
 
         # Test 9
         # Generate one more block to allow non_protected_output
@@ -224,11 +224,11 @@ class BlockFinalTxTest(ComparisonTestFramework):
         yield TestInstance(test_blocks, sync_every_block=False)
 
         tmpl = self.nodes[0].getblocktemplate({})
-        assert('blockfinal' in tmpl)
-        assert_equal(len(tmpl['blockfinal']['prevout']), 1)
-        assert_equal(tmpl['blockfinal']['prevout'][0]['txid'], encode(ser_uint256(non_protected_output.hash)[::-1], 'hex_codec').decode('ascii'))
-        assert_equal(tmpl['blockfinal']['prevout'][0]['vout'], non_protected_output.n)
-        assert_equal(tmpl['blockfinal']['prevout'][0]['amount'], 624940398)
+        assert('finaltx' in tmpl)
+        assert_equal(len(tmpl['finaltx']['prevout']), 1)
+        assert_equal(tmpl['finaltx']['prevout'][0]['txid'], encode(ser_uint256(non_protected_output.hash)[::-1], 'hex_codec').decode('ascii'))
+        assert_equal(tmpl['finaltx']['prevout'][0]['vout'], non_protected_output.n)
+        assert_equal(tmpl['finaltx']['prevout'][0]['amount'], 624940398)
 
         # Extra pass-through value is not included in the
         # coinbasevalue field.
@@ -268,11 +268,11 @@ class BlockFinalTxTest(ComparisonTestFramework):
         self.height += 1
 
         tmpl = self.nodes[0].getblocktemplate({})
-        assert('blockfinal' in tmpl)
-        assert_equal(len(tmpl['blockfinal']['prevout']), 1)
-        assert_equal(tmpl['blockfinal']['prevout'][0]['txid'], encode(ser_uint256(tx_final.sha256)[::-1], 'hex_codec').decode('ascii'))
-        assert_equal(tmpl['blockfinal']['prevout'][0]['vout'], 0)
-        assert_equal(tmpl['blockfinal']['prevout'][0]['amount'], 624939802)
+        assert('finaltx' in tmpl)
+        assert_equal(len(tmpl['finaltx']['prevout']), 1)
+        assert_equal(tmpl['finaltx']['prevout'][0]['txid'], encode(ser_uint256(tx_final.sha256)[::-1], 'hex_codec').decode('ascii'))
+        assert_equal(tmpl['finaltx']['prevout'][0]['vout'], 0)
+        assert_equal(tmpl['finaltx']['prevout'][0]['amount'], 624939802)
 
         # Test 12
         # Create a block-final transaction with multiple outputs,
@@ -434,26 +434,26 @@ class BlockFinalTxTest(ComparisonTestFramework):
         assert_equal(self.nodes[0].getblockcount(), height)
         assert_equal(self.nodes[0].getblockhash(height), test_blocks[-1][0].hash)
         self.tip = test_blocks[-1][0].sha256
-        self.blockfinal_vin = [CTxIn(COutPoint(test_blocks[-1][0].vtx[-1].sha256, 0), CScript([]), 0xffffffff)]
+        self.finaltx_vin = [CTxIn(COutPoint(test_blocks[-1][0].vtx[-1].sha256, 0), CScript([]), 0xffffffff)]
 
         # Test 18-21
         # Mine two blocks with trivially-spendable coinbase outputs,
         # then test that the one that is exactly 100 blocks old is
         # allowed to be spent in a block-final transaction, but the
         # older one cannot.
-        test_blocks = self.generate_blocks(1, 3, blockfinal=True)
+        test_blocks = self.generate_blocks(1, 3, finaltx=True)
         assert_equal(test_blocks[-1][0].vtx[0].vout[0].scriptPubKey, CScript([OP_TRUE]))
         txin1 = CTxIn(COutPoint(test_blocks[-1][0].vtx[0].sha256, 0), CScript([]), 0xffffffff)
 
-        test_blocks = self.generate_blocks(1, 3, test_blocks, blockfinal=True)
+        test_blocks = self.generate_blocks(1, 3, test_blocks, finaltx=True)
         assert_equal(test_blocks[-1][0].vtx[0].vout[0].scriptPubKey, CScript([OP_TRUE]))
         txin2 = CTxIn(COutPoint(test_blocks[-1][0].vtx[0].sha256, 0), CScript([]), 0xffffffff)
 
-        test_blocks = self.generate_blocks(1, 3, test_blocks, blockfinal=True)
+        test_blocks = self.generate_blocks(1, 3, test_blocks, finaltx=True)
         assert_equal(test_blocks[-1][0].vtx[0].vout[0].scriptPubKey, CScript([OP_TRUE]))
         txin3 = CTxIn(COutPoint(test_blocks[-1][0].vtx[0].sha256, 0), CScript([]), 0xffffffff)
 
-        test_blocks = self.generate_blocks(98, 3, test_blocks, blockfinal=True)
+        test_blocks = self.generate_blocks(98, 3, test_blocks, finaltx=True)
         yield TestInstance(test_blocks, sync_every_block=False)
 
         # txin1 is too old -- it should have been collected on the last block
@@ -461,7 +461,7 @@ class BlockFinalTxTest(ComparisonTestFramework):
         block.nVersion = 3
         tx_final = CTransaction()
         tx_final.nVersion = 2
-        tx_final.vin.extend(self.blockfinal_vin)
+        tx_final.vin.extend(self.finaltx_vin)
         tx_final.vin.append(txin1)
         tx_final.vout.append(CTxOut(0, CScript([OP_TRUE])))
         tx_final.nLockTime = block.vtx[0].nLockTime
@@ -499,7 +499,7 @@ class BlockFinalTxTest(ComparisonTestFramework):
         self.last_block_time += 1
         self.tip = test_blocks[-1][0].sha256
         self.height += 1
-        self.blockfinal_vin = [CTxIn(COutPoint(test_blocks[-1][0].vtx[-1].sha256, 0), CScript([]), 0xffffffff)]
+        self.finaltx_vin = [CTxIn(COutPoint(test_blocks[-1][0].vtx[-1].sha256, 0), CScript([]), 0xffffffff)]
 
         return
 

@@ -223,15 +223,15 @@ class SegWitTest(FreicoinTestFramework):
         block = create_block(int(tip, 16), create_coinbase(height), block_time)
         blocktemplate = {} if height < 2 else self.nodes[0].getblocktemplate({'rules':['segwit','auxpow']})
         try:
-            blockfinal_prevout = blocktemplate['blockfinal']['prevout']
+            finaltx_prevout = blocktemplate['finaltx']['prevout']
         except:
-            blockfinal_prevout = []
-        if blockfinal_prevout:
+            finaltx_prevout = []
+        if finaltx_prevout:
             finaltx = CTransaction()
             finaltx.nLockTime = block.vtx[0].nLockTime
             finaltx.lock_height = block.vtx[0].lock_height
             finaltx.vout.append(CTxOut(0, CScript([OP_TRUE])))
-            for prevout in blockfinal_prevout:
+            for prevout in finaltx_prevout:
                 finaltx.vin.append(CTxIn(COutPoint(uint256_from_str(unhexlify(prevout['txid'])[::-1]), prevout['vout']), CScript([]), 0xffffffff))
                 finaltx.vout[-1].nValue += prevout['amount']
             finaltx.rehash()
@@ -389,15 +389,15 @@ class SegWitTest(FreicoinTestFramework):
         # Will need to rewrite the tests here if we are past the first period
         assert(height < VB_PERIOD - 1)
         # Genesis block is 'defined'.
-        assert_equal(get_bip9_status(self.nodes[0], 'blockfinal')['status'], 'defined')
+        assert_equal(get_bip9_status(self.nodes[0], 'finaltx')['status'], 'defined')
         assert_equal(get_bip9_status(self.nodes[0], 'segwit')['status'], 'defined')
-        # Advance to end of period, status should now be 'started' for blockfinal
+        # Advance to end of period, status should now be 'started' for finaltx
         self.nodes[0].generate(VB_PERIOD-height-1)
-        assert_equal(get_bip9_status(self.nodes[0], 'blockfinal')['status'], 'started')
+        assert_equal(get_bip9_status(self.nodes[0], 'finaltx')['status'], 'started')
         assert_equal(get_bip9_status(self.nodes[0], 'segwit')['status'], 'defined')
-        # Advance one more period, status should now be 'locked_in' for blockfinal and 'started' for segwit
+        # Advance one more period, status should now be 'locked_in' for finaltx and 'started' for segwit
         self.nodes[0].generate(VB_PERIOD)
-        assert_equal(get_bip9_status(self.nodes[0], 'blockfinal')['status'], 'locked_in')
+        assert_equal(get_bip9_status(self.nodes[0], 'finaltx')['status'], 'locked_in')
         assert_equal(get_bip9_status(self.nodes[0], 'segwit')['status'], 'started')
 
     # Mine enough blocks to lock in segwit, but don't activate.
@@ -405,16 +405,16 @@ class SegWitTest(FreicoinTestFramework):
     # signalling blocks, rather than just at the right period boundary.
     def advance_to_segwit_lockin(self):
         height = self.nodes[0].getblockcount()
-        assert_equal(get_bip9_status(self.nodes[0], 'blockfinal')['status'], 'locked_in')
+        assert_equal(get_bip9_status(self.nodes[0], 'finaltx')['status'], 'locked_in')
         assert_equal(get_bip9_status(self.nodes[0], 'segwit')['status'], 'started')
         # Advance to end of period, and verify lock-in happens at the end
         self.nodes[0].generate(VB_PERIOD-1)
         height = self.nodes[0].getblockcount()
         assert((height % VB_PERIOD) == VB_PERIOD - 2)
-        assert_equal(get_bip9_status(self.nodes[0], 'blockfinal')['status'], 'locked_in')
+        assert_equal(get_bip9_status(self.nodes[0], 'finaltx')['status'], 'locked_in')
         assert_equal(get_bip9_status(self.nodes[0], 'segwit')['status'], 'started')
         self.nodes[0].generate(1)
-        assert_equal(get_bip9_status(self.nodes[0], 'blockfinal')['status'], 'active')
+        assert_equal(get_bip9_status(self.nodes[0], 'finaltx')['status'], 'active')
         assert_equal(get_bip9_status(self.nodes[0], 'segwit')['status'], 'locked_in')
 
 
@@ -422,14 +422,14 @@ class SegWitTest(FreicoinTestFramework):
     # TODO: we could verify that activation only happens at the right threshold
     # of signalling blocks, rather than just at the right period boundary.
     def advance_to_segwit_active(self):
-        assert_equal(get_bip9_status(self.nodes[0], 'blockfinal')['status'], 'active')
+        assert_equal(get_bip9_status(self.nodes[0], 'finaltx')['status'], 'active')
         assert_equal(get_bip9_status(self.nodes[0], 'segwit')['status'], 'locked_in')
         height = self.nodes[0].getblockcount()
         self.nodes[0].generate(VB_PERIOD - (height%VB_PERIOD) - 2)
-        assert_equal(get_bip9_status(self.nodes[0], 'blockfinal')['status'], 'active')
+        assert_equal(get_bip9_status(self.nodes[0], 'finaltx')['status'], 'active')
         assert_equal(get_bip9_status(self.nodes[0], 'segwit')['status'], 'locked_in')
         self.nodes[0].generate(1)
-        assert_equal(get_bip9_status(self.nodes[0], 'blockfinal')['status'], 'active')
+        assert_equal(get_bip9_status(self.nodes[0], 'finaltx')['status'], 'active')
         assert_equal(get_bip9_status(self.nodes[0], 'segwit')['status'], 'active')
 
     # This test can only be run after segwit has activated

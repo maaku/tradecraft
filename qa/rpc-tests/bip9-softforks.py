@@ -159,7 +159,7 @@ class BIP9SoftForksTest(ComparisonTestFramework):
         tmpl = self.nodes[0].getblocktemplate({})
         assert(bipName not in tmpl['rules'])
 
-        if bipName == 'blockfinal':
+        if bipName == 'finaltx':
             test_blocks = self.generate_blocks(100, 4)
             yield TestInstance(test_blocks, sync_every_block=False)
 
@@ -227,7 +227,7 @@ class BIP9SoftForksTest(ComparisonTestFramework):
                 self.test_BIP('locktime', 0x20000001, self.sequence_lock_invalidate, self.donothing, 0),
                 self.test_BIP('locktime', 0x20000001, self.mtp_invalidate, self.donothing, 0),
                 #self.test_BIP('locktime', 0x20000001, self.donothing, self.csv_invalidate, 0) #disabled on Freicoin
-                self.test_BIP('blockfinal', 0x20000002, self.blockfinal_invalidate, self.donothing, 1)
+                self.test_BIP('finaltx', 0x20000002, self.finaltx_invalidate, self.donothing, 1)
         ):
             yield test
 
@@ -254,9 +254,9 @@ class BIP9SoftForksTest(ComparisonTestFramework):
         tx.vin[0].nSequence = 0x90FFFFFF
         tx.nLockTime = self.last_block_time
 
-    def blockfinal_invalidate(self, tx):
+    def finaltx_invalidate(self, tx):
         '''Spend one of the block-final inputs with an OP_RETURN output, which
-        is invalid under the blockfinal rules.
+        is invalid under the finaltx rules.
         '''
         height = self.nodes[0].getblockcount() + 1
         prev_height = height - 100
