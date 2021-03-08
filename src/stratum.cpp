@@ -1350,8 +1350,7 @@ void BlockWatcher()
 
         // Either new block, or updated transactions.  Either way,
         // send updated work to miners.
-        typedef std::pair<bufferevent*, StratumClient> subscription_type;
-        BOOST_FOREACH (subscription_type subscription, subscriptions) {
+        for (auto& subscription : subscriptions) {
             bufferevent* bev = subscription.first;
             evbuffer *output = bufferevent_get_output(bev);
             StratumClient& client = subscription.second;
