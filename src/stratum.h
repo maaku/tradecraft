@@ -6,10 +6,6 @@
 #ifndef FREICOIN_STRATUM_H
 #define FREICOIN_STRATUM_H
 
-#include "netbase.h"
-
-#include <event2/event.h>
-
 /** Configure the stratum server. */
 bool InitStratumServer();
 
