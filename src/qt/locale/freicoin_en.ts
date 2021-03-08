@@ -11,7 +11,7 @@
     <message>
         <location line="+27"/>
         <source>Create a new address</source>
-        <translation type="unfinished"></translation>
+        <translation>Create a new address</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -21,7 +21,7 @@
     <message>
         <location line="+14"/>
         <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Copy the currently selected address to the system clipboard</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -29,29 +29,29 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+14"/>
+        <location line="+67"/>
+        <source>C&amp;lose</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-53"/>
         <source>Delete the currently selected address from the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Delete the currently selected address from the list</translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+27"/>
+        <location line="+30"/>
         <source>Export the data in the current tab to a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Export the data in the current tab to a file</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Export</translation>
     </message>
     <message>
-        <location line="+20"/>
-        <source>C&amp;lose</source>
-        <translation type="unfinished"></translation>
+        <location line="-30"/>
+        <source>&amp;Delete</source>
+        <translation>&amp;Delete</translation>
     </message>
     <message>
         <location filename="../addressbookpage.cpp" line="+64"/>
@@ -147,22 +147,22 @@
     <message>
         <location filename="../forms/askpassphrasedialog.ui" line="+26"/>
         <source>Passphrase Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Passphrase Dialog</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Enter passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter passphrase</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>New passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation>New passphrase</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Repeat new passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation>Repeat new passphrase</translation>
     </message>
     <message>
         <location filename="../askpassphrasedialog.cpp" line="+60"/>
@@ -361,7 +361,7 @@
     <message>
         <location line="+56"/>
         <source>Amount</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Amount</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -376,7 +376,7 @@
     <message>
         <location line="+5"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Date</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -386,7 +386,7 @@
     <message>
         <location line="+3"/>
         <source>Confirmed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Confirmed</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -582,12 +582,12 @@
     <message>
         <location filename="../forms/editaddressdialog.ui" line="+14"/>
         <source>Edit Address</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit Address</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>&amp;Label</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Label</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -595,14 +595,14 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>&amp;Address</source>
+        <location line="+17"/>
+        <source>The address associated with this address list entry. This can only be modified for sending addresses.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>The address associated with this address list entry. This can only be modified for sending addresses.</source>
-        <translation type="unfinished"></translation>
+        <location line="-10"/>
+        <source>&amp;Address</source>
+        <translation>&amp;Address</translation>
     </message>
     <message>
         <location filename="../editaddressdialog.cpp" line="+42"/>
@@ -650,90 +650,75 @@
     <message>
         <location filename="../intro.cpp" line="+92"/>
         <source>A new data directory will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>A new data directory will be created.</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>name</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Directory already exists. Add %1 if you intend to create a new directory here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Directory already exists. Add %1 if you intend to create a new directory here.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Path already exists, and is not a directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Path already exists, and is not a directory.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cannot create data directory here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cannot create data directory here.</translation>
     </message>
 </context>
 <context>
     <name>FreicoinGUI</name>
     <message>
-        <location filename="../freicoingui.cpp" line="+145"/>
-        <source>Wallet</source>
-        <translation type="unfinished"></translation>
+        <location filename="../freicoingui.cpp" line="+355"/>
+        <source>Sign &amp;message...</source>
+        <translation>Sign &amp;message...</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+386"/>
+        <source>Synchronizing with network...</source>
+        <translation>Synchronizing with network...</translation>
+    </message>
+    <message>
+        <location line="-464"/>
+        <source>&amp;Overview</source>
+        <translation>&amp;Overview</translation>
+    </message>
+    <message>
+        <location line="-130"/>
         <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+130"/>
-        <source>&amp;Overview</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+131"/>
         <source>Show general overview of wallet</source>
-        <translation type="unfinished"></translation>
+        <translation>Show general overview of wallet</translation>
     </message>
     <message>
-        <location line="+6"/>
-        <source>&amp;Send</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Send coins to a Freicoin address</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>&amp;Receive</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Request payments (generates QR codes and freicoin: URIs)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
+        <location line="+28"/>
         <source>&amp;Transactions</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Transactions</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Browse transaction history</source>
-        <translation type="unfinished"></translation>
+        <translation>Browse transaction history</translation>
     </message>
     <message>
         <location line="+23"/>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xit</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quit application</source>
-        <translation type="unfinished"></translation>
+        <translation>Quit application</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -748,17 +733,17 @@
     <message>
         <location line="+3"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>About &amp;Qt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show information about Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Show information about Qt</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Options...</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -766,102 +751,152 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>&amp;Show / Hide</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Show or hide the main Window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location line="+6"/>
         <source>&amp;Encrypt Wallet...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Encrypt Wallet...</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Encrypt the private keys that belong to your wallet</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>&amp;Backup Wallet...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Backup wallet to another location</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Change Passphrase...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Change the passphrase used for wallet encryption</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Sign &amp;message...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Sign messages with your Freicoin addresses to prove you own them</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Verify message...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Verify messages to ensure they were signed with specified Freicoin addresses</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Backup Wallet...</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>&amp;Debug window</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Change Passphrase...</source>
+        <translation>&amp;Change Passphrase...</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Open debugging and diagnostic console</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+12"/>
         <source>&amp;Sending addresses...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Show the list of used sending addresses and labels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
+        <location line="+2"/>
         <source>&amp;Receiving addresses...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Show the list of used receiving addresses and labels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Open &amp;URI...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+381"/>
+        <source>Reindexing blocks on disk...</source>
+        <translation>Reindexing blocks on disk...</translation>
+    </message>
+    <message>
+        <location line="-466"/>
+        <source>Send coins to a Freicoin address</source>
+        <translation>Send coins to a Freicoin address</translation>
+    </message>
+    <message>
+        <location line="+67"/>
+        <source>Backup wallet to another location</source>
+        <translation>Backup wallet to another location</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Change the passphrase used for wallet encryption</source>
+        <translation>Change the passphrase used for wallet encryption</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>&amp;Debug window</source>
+        <translation>&amp;Debug window</translation>
+    </message>
+    <message>
         <location line="+1"/>
+        <source>Open debugging and diagnostic console</source>
+        <translation>Open debugging and diagnostic console</translation>
+    </message>
+    <message>
+        <location line="-4"/>
+        <source>&amp;Verify message...</source>
+        <translation>&amp;Verify message...</translation>
+    </message>
+    <message>
+        <location line="+490"/>
+        <source>Freicoin</source>
+        <translation>Freicoin</translation>
+    </message>
+    <message>
+        <location line="-702"/>
+        <source>Wallet</source>
+        <translation>Wallet</translation>
+    </message>
+    <message>
+        <location line="+139"/>
+        <source>&amp;Send</source>
+        <translation>&amp;Send</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>&amp;Receive</source>
+        <translation>&amp;Receive</translation>
+    </message>
+    <message>
+        <location line="+50"/>
+        <source>&amp;Show / Hide</source>
+        <translation>&amp;Show / Hide</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Show or hide the main Window</source>
+        <translation>Show or hide the main Window</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Encrypt the private keys that belong to your wallet</source>
+        <translation>Encrypt the private keys that belong to your wallet</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Sign messages with your Freicoin addresses to prove you own them</source>
+        <translation>Sign messages with your Freicoin addresses to prove you own them</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Verify messages to ensure they were signed with specified Freicoin addresses</source>
+        <translation>Verify messages to ensure they were signed with specified Freicoin addresses</translation>
+    </message>
+    <message>
+        <location line="+58"/>
+        <source>&amp;File</source>
+        <translation>&amp;File</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <source>&amp;Settings</source>
+        <translation>&amp;Settings</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>&amp;Help</source>
+        <translation>&amp;Help</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Tabs toolbar</source>
+        <translation>Tabs toolbar</translation>
+    </message>
+    <message>
+        <location line="-158"/>
+        <source>Request payments (generates QR codes and freicoin: URIs)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+70"/>
+        <source>Show the list of used sending addresses and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Show the list of used receiving addresses and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Open a freicoin: URI or payment request</source>
         <translation type="unfinished"></translation>
     </message>
@@ -870,51 +905,16 @@
         <source>&amp;Command-line options</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location line="+2"/>
-        <source>Show the %1 help message to get a list with possible Freicoin command-line options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+41"/>
-        <source>&amp;File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+14"/>
-        <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Tabs toolbar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+118"/>
-        <source>%1 client</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message numerus="yes">
-        <location line="+151"/>
+        <location line="+350"/>
         <source>%n active connection(s) to Freicoin network</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n active connection to Freicoin network</numerusform>
+            <numerusform>%n active connections to Freicoin network</numerusform>
         </translation>
     </message>
     <message>
-        <location line="+18"/>
-        <source>Synchronizing with network...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+4"/>
+        <location line="+22"/>
         <source>Indexing blocks on disk...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -924,51 +924,41 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+4"/>
-        <source>Reindexing blocks on disk...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
+        <location line="+11"/>
         <source>No block source available...</source>
-        <translation type="unfinished"></translation>
+        <translation>No block source available...</translation>
     </message>
     <message numerus="yes">
         <location line="+9"/>
         <source>Processed %n block(s) of transaction history.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Processed %n block of transaction history.</numerusform>
+            <numerusform>Processed %n blocks of transaction history.</numerusform>
         </translation>
     </message>
-    <message>
-        <location line="+5"/>
-        <source>Up to date</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message numerus="yes">
-        <location line="+21"/>
+        <location line="+26"/>
         <source>%n hour(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n hour</numerusform>
+            <numerusform>%n hours</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+4"/>
         <source>%n day(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n day</numerusform>
+            <numerusform>%n days</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+4"/>
         <location line="+6"/>
         <source>%n week(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n week</numerusform>
+            <numerusform>%n weeks</numerusform>
         </translation>
     </message>
     <message>
@@ -980,52 +970,62 @@
         <location line="+0"/>
         <source>%n year(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>%n year</numerusform>
+            <numerusform>%n years</numerusform>
         </translation>
     </message>
     <message>
         <location line="+4"/>
         <source>%1 behind</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 behind</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>Catching up...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+21"/>
         <source>Last received block was generated %1 ago.</source>
-        <translation type="unfinished"></translation>
+        <translation>Last received block was generated %1 ago.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Transactions after this will not yet be visible.</source>
-        <translation type="unfinished"></translation>
+        <translation>Transactions after this will not yet be visible.</translation>
     </message>
     <message>
-        <location line="+13"/>
-        <source>Freicoin</source>
-        <translation type="unfinished">Freicoin</translation>
-    </message>
-    <message>
-        <location line="+14"/>
+        <location line="+27"/>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Warning</source>
-        <translation type="unfinished">Warning</translation>
+        <translation>Warning</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Information</source>
-        <translation type="unfinished">Information</translation>
+        <translation>Information</translation>
     </message>
     <message>
-        <location line="+91"/>
+        <location line="-95"/>
+        <source>Up to date</source>
+        <translation>Up to date</translation>
+    </message>
+    <message>
+        <location line="-397"/>
+        <source>Show the %1 help message to get a list with possible Freicoin command-line options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+197"/>
+        <source>%1 client</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+244"/>
+        <source>Catching up...</source>
+        <translation>Catching up...</translation>
+    </message>
+    <message>
+        <location line="+142"/>
         <source>Date: %1
 </source>
         <translation type="unfinished"></translation>
@@ -1057,22 +1057,22 @@
     <message>
         <location line="+1"/>
         <source>Sent transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Sent transaction</translation>
     </message>
     <message>
         <location line="+0"/>
         <source>Incoming transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Incoming transaction</translation>
     </message>
     <message>
         <location line="+62"/>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;locked&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
@@ -1080,7 +1080,7 @@
     <message>
         <location filename="../utilitydialog.cpp" line="+54"/>
         <source>version</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">version</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -1101,12 +1101,12 @@
     <message>
         <location line="+1"/>
         <source>Usage:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Usage:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>command-line options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">command-line options</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1149,7 +1149,7 @@
     <message>
         <location filename="../forms/intro.ui" line="+14"/>
         <source>Welcome</source>
-        <translation type="unfinished"></translation>
+        <translation>Welcome</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -1169,12 +1169,12 @@
     <message>
         <location line="+10"/>
         <source>Use the default data directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Use the default data directory</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Use a custom data directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Use a custom data directory:</translation>
     </message>
     <message>
         <location filename="../intro.cpp" line="+89"/>
@@ -1184,7 +1184,7 @@
     <message>
         <location line="+26"/>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message numerus="yes">
         <location line="+9"/>
@@ -1236,12 +1236,12 @@
     <message>
         <location filename="../forms/optionsdialog.ui" line="+14"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Main</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Main</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1269,7 +1269,59 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location line="+114"/>
+        <source>Accept connections from outside</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Allow incoming connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+44"/>
+        <location line="+187"/>
+        <source>IP address of the proxy (e.g. IPv4: 127.0.0.1 / IPv6: ::1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+94"/>
+        <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+80"/>
         <location line="+13"/>
+        <source>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items. %s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-10"/>
+        <source>Third party transaction URLs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>Active command-line options that override above options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Reset all client options to default.</source>
+        <translation>Reset all client options to default.</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Reset Options</source>
+        <translation>&amp;Reset Options</translation>
+    </message>
+    <message>
+        <location line="-514"/>
+        <source>&amp;Network</source>
+        <translation>&amp;Network</translation>
+    </message>
+    <message>
+        <location line="-85"/>
         <source>(0 = auto, &lt;0 = leave that many cores free)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1284,12 +1336,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+6"/>
-        <source>Whether to show coin control features or not.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="+9"/>
         <source>Enable coin &amp;control features</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1304,32 +1351,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+24"/>
-        <source>&amp;Network</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+6"/>
+        <location line="+30"/>
         <source>Automatically open the Freicoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatically open the Freicoin client port on the router. This only works when your router supports UPnP and it is enabled.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Map port using &amp;UPnP</source>
-        <translation type="unfinished"></translation>
+        <translation>Map port using &amp;UPnP</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Accept connections from outside</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Allow incoming connections</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
+        <location line="+17"/>
         <source>Connect to the Freicoin network through a SOCKS5 proxy.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1342,25 +1374,19 @@
         <location line="+9"/>
         <location line="+187"/>
         <source>Proxy &amp;IP:</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy &amp;IP:</translation>
     </message>
     <message>
-        <location line="-162"/>
-        <location line="+187"/>
-        <source>IP address of the proxy (e.g. IPv4: 127.0.0.1 / IPv6: ::1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-180"/>
+        <location line="-155"/>
         <location line="+187"/>
         <source>&amp;Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Port:</translation>
     </message>
     <message>
         <location line="-162"/>
         <location line="+187"/>
         <source>Port of the proxy (e.g. 9050)</source>
-        <translation type="unfinished"></translation>
+        <translation>Port of the proxy (e.g. 9050)</translation>
     </message>
     <message>
         <location line="-163"/>
@@ -1402,7 +1428,7 @@
     <message>
         <location line="+102"/>
         <source>&amp;Window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Window</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -1417,32 +1443,27 @@
     <message>
         <location line="+7"/>
         <source>Show only a tray icon after minimizing the window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Show only a tray icon after minimizing the window.</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Minimize to the tray instead of the taskbar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Minimize to the tray instead of the taskbar</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <source>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Exit in the menu.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
+        <location line="+10"/>
         <source>M&amp;inimize on close</source>
-        <translation type="unfinished"></translation>
+        <translation>M&amp;inimize on close</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>&amp;Display</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Display</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>User Interface &amp;language:</source>
-        <translation type="unfinished"></translation>
+        <translation>User Interface &amp;language:</translation>
     </message>
     <message>
         <location line="+13"/>
@@ -1452,53 +1473,32 @@
     <message>
         <location line="+11"/>
         <source>&amp;Unit to show amounts in:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Unit to show amounts in:</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
+        <translation>Choose the default subdivision unit to show in the interface and when sending coins.</translation>
+    </message>
+    <message>
+        <location line="-450"/>
+        <source>Whether to show coin control features or not.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+11"/>
-        <location line="+13"/>
-        <source>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items. %s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-10"/>
-        <source>Third party transaction URLs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+41"/>
-        <source>Active command-line options that override above options:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+43"/>
-        <source>Reset all client options to default.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>&amp;Reset Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+61"/>
+        <location line="+612"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cancel</translation>
     </message>
     <message>
         <location filename="../optionsdialog.cpp" line="+100"/>
         <source>default</source>
-        <translation type="unfinished"></translation>
+        <translation>default</translation>
     </message>
     <message>
         <location line="+64"/>
@@ -1508,7 +1508,7 @@
     <message>
         <location line="+72"/>
         <source>Confirm options reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Confirm options reset</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1529,7 +1529,7 @@
     <message>
         <location line="+25"/>
         <source>The supplied proxy address is invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>The supplied proxy address is invalid.</translation>
     </message>
 </context>
 <context>
@@ -1537,61 +1537,16 @@
     <message>
         <location filename="../forms/overviewpage.ui" line="+14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
-        <location line="+46"/>
-        <source>Balances</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+62"/>
         <location line="+386"/>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Freicoin network after a connection is established, but this process has not completed yet.</source>
-        <translation type="unfinished"></translation>
+        <translation>The displayed information may be out of date. Your wallet automatically synchronizes with the Freicoin network after a connection is established, but this process has not completed yet.</translation>
     </message>
     <message>
-        <location line="-333"/>
-        <source>Unconfirmed transactions to watch-only addresses</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+25"/>
-        <source>Total of transactions that have yet to be confirmed, and do not yet count toward the spendable balance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+25"/>
-        <source>Mined balance in watch-only addresses that has not yet matured</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+42"/>
-        <source>Total:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Mined balance that has not yet matured</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+29"/>
-        <source>Immature:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Your current total balance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+25"/>
-        <source>Current total balance in watch-only addresses</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="-139"/>
         <source>Watch-only:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1603,26 +1558,71 @@
     <message>
         <location line="+16"/>
         <source>Your current spendable balance</source>
-        <translation type="unfinished"></translation>
+        <translation>Your current spendable balance</translation>
     </message>
     <message>
-        <location line="+25"/>
-        <source>Your current balance in watch-only addresses</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
+        <location line="+41"/>
         <source>Pending:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-236"/>
+        <source>Total of transactions that have yet to be confirmed, and do not yet count toward the spendable balance</source>
+        <translation>Total of transactions that have yet to be confirmed, and do not yet count toward the spendable balance</translation>
+    </message>
+    <message>
+        <location line="+112"/>
+        <source>Immature:</source>
+        <translation>Immature:</translation>
+    </message>
+    <message>
+        <location line="-29"/>
+        <source>Mined balance that has not yet matured</source>
+        <translation>Mined balance that has not yet matured</translation>
+    </message>
+    <message>
+        <location line="-177"/>
+        <source>Balances</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+161"/>
+        <source>Total:</source>
+        <translation>Total:</translation>
+    </message>
+    <message>
+        <location line="+61"/>
+        <source>Your current total balance</source>
+        <translation>Your current total balance</translation>
+    </message>
+    <message>
+        <location line="+92"/>
+        <source>Your current balance in watch-only addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
         <source>Spendable:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Recent transactions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-317"/>
+        <source>Unconfirmed transactions to watch-only addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+50"/>
+        <source>Mined balance in watch-only addresses that has not yet matured</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+128"/>
+        <source>Current total balance in watch-only addresses</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1756,12 +1756,12 @@
     <name>PeerTableModel</name>
     <message>
         <location filename="../peertablemodel.cpp" line="+131"/>
-        <source>Node/Service</source>
+        <source>User Agent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+0"/>
-        <source>User Agent</source>
+        <source>Node/Service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1775,7 +1775,7 @@
     <message>
         <location filename="../freicoinunits.cpp" line="+195"/>
         <source>Amount</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Amount</translation>
     </message>
     <message>
         <location filename="../guiutil.cpp" line="+149"/>
@@ -1811,7 +1811,7 @@
     <message>
         <location line="+5"/>
         <source>N/A</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">N/A</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -1845,27 +1845,7 @@
 <context>
     <name>RPCConsole</name>
     <message>
-        <location filename="../forms/debugwindow.ui" line="+14"/>
-        <source>Debug window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>&amp;Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Client version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+10"/>
+        <location filename="../forms/debugwindow.ui" line="+56"/>
         <location line="+26"/>
         <location line="+26"/>
         <location line="+23"/>
@@ -1894,16 +1874,30 @@
         <location line="+26"/>
         <location line="+23"/>
         <source>N/A</source>
+        <translation>N/A</translation>
+    </message>
+    <message>
+        <location line="-1322"/>
+        <source>Client version</source>
+        <translation>Client version</translation>
+    </message>
+    <message>
+        <location line="-22"/>
+        <source>&amp;Information</source>
+        <translation>&amp;Information</translation>
+    </message>
+    <message>
+        <location line="-10"/>
+        <source>Debug window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1299"/>
-        <location line="+987"/>
-        <source>User Agent</source>
+        <location line="+25"/>
+        <source>General</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-961"/>
+        <location line="+56"/>
         <source>Using BerkeleyDB version</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1915,12 +1909,12 @@
     <message>
         <location line="+26"/>
         <source>Startup time</source>
-        <translation type="unfinished"></translation>
+        <translation>Startup time</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Network</source>
-        <translation type="unfinished"></translation>
+        <translation>Network</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -1930,25 +1924,20 @@
     <message>
         <location line="+23"/>
         <source>Number of connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Number of connections</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>Block chain</source>
-        <translation type="unfinished"></translation>
+        <translation>Block chain</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Current number of blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Current number of blocks</translation>
     </message>
     <message>
-        <location line="+23"/>
-        <source>Last block time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+29"/>
+        <location line="+52"/>
         <source>Memory Pool</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1963,57 +1952,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+41"/>
-        <source>Debug log file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Open the %1 debug log file from the current data directory. This can take a few seconds for large log files.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+26"/>
-        <source>&amp;Console</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+39"/>
-        <source>Decrease font size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+29"/>
-        <source>Increase font size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+32"/>
-        <source>Clear console</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+95"/>
-        <source>&amp;Network Traffic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+52"/>
-        <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+16"/>
-        <source>Totals</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+64"/>
+        <location line="+404"/>
         <location line="+558"/>
         <source>Received</source>
         <translation type="unfinished"></translation>
@@ -2057,12 +1996,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+46"/>
-        <source>Services</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+23"/>
+        <location line="+69"/>
         <source>Starting Block</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2077,7 +2011,33 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+23"/>
+        <location line="-1079"/>
+        <location line="+987"/>
+        <source>User Agent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-684"/>
+        <source>Open the %1 debug log file from the current data directory. This can take a few seconds for large log files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+68"/>
+        <source>Decrease font size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Increase font size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+610"/>
+        <source>Services</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+92"/>
         <source>Ban Score</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2117,7 +2077,57 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../rpcconsole.cpp" line="-550"/>
+        <location line="-1093"/>
+        <source>Last block time</source>
+        <translation>Last block time</translation>
+    </message>
+    <message>
+        <location line="+110"/>
+        <source>&amp;Open</source>
+        <translation>&amp;Open</translation>
+    </message>
+    <message>
+        <location line="+26"/>
+        <source>&amp;Console</source>
+        <translation>&amp;Console</translation>
+    </message>
+    <message>
+        <location line="+195"/>
+        <source>&amp;Network Traffic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+52"/>
+        <source>&amp;Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Totals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../rpcconsole.cpp" line="-340"/>
+        <source>In:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Out:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../forms/debugwindow.ui" line="-299"/>
+        <source>Debug log file</source>
+        <translation>Debug log file</translation>
+    </message>
+    <message>
+        <location line="+136"/>
+        <source>Clear console</source>
+        <translation>Clear console</translation>
+    </message>
+    <message>
+        <location filename="../rpcconsole.cpp" line="-211"/>
         <source>&amp;Disconnect Node</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2162,25 +2172,15 @@
     <message>
         <location line="+1"/>
         <source>Use up and down arrows to navigate history, and &lt;b&gt;Ctrl-L&lt;/b&gt; to clear screen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Use up and down arrows to navigate history, and &lt;b&gt;Ctrl-L&lt;/b&gt; to clear screen.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Type &lt;b&gt;help&lt;/b&gt; for an overview of available commands.</source>
-        <translation type="unfinished"></translation>
+        <translation>Type &lt;b&gt;help&lt;/b&gt; for an overview of available commands.</translation>
     </message>
     <message>
-        <location line="+33"/>
-        <source>In:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Out:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+110"/>
+        <location line="+144"/>
         <source>%1 B</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2245,7 +2245,22 @@
 <context>
     <name>ReceiveCoinsDialog</name>
     <message>
-        <location filename="../forms/receivecoinsdialog.ui" line="+34"/>
+        <location filename="../forms/receivecoinsdialog.ui" line="+107"/>
+        <source>&amp;Amount:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-16"/>
+        <source>&amp;Label:</source>
+        <translation type="unfinished">&amp;Label:</translation>
+    </message>
+    <message>
+        <location line="-37"/>
+        <source>&amp;Message:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-20"/>
         <source>Reuse one of the previously used receiving addresses. Reusing addresses has security and privacy issues. Do not use this unless re-generating a payment request made before.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2261,12 +2276,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-20"/>
-        <source>&amp;Message:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="-7"/>
         <location line="+21"/>
         <source>An optional label to associate with the new receiving address.</source>
         <translation type="unfinished"></translation>
@@ -2277,28 +2287,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>&amp;Label:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
+        <location line="+23"/>
         <location line="+22"/>
         <source>An optional amount to request. Leave this empty or zero to not request a specific amount.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-19"/>
-        <source>&amp;Amount:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+34"/>
-        <source>&amp;Request payment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+17"/>
+        <location line="+32"/>
         <source>Clear all fields of the form.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2313,7 +2308,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+25"/>
+        <location line="-95"/>
+        <source>&amp;Request payment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+120"/>
         <source>Show the selected request (does the same as double clicking an entry)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2393,7 +2393,7 @@
     <message>
         <location line="+2"/>
         <source>Amount</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Amount</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -2421,7 +2421,7 @@
     <message>
         <location filename="../recentrequeststablemodel.cpp" line="+43"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Date</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -2460,7 +2460,7 @@
         <location filename="../forms/sendcoinsdialog.ui" line="+14"/>
         <location filename="../sendcoinsdialog.cpp" line="+557"/>
         <source>Send Coins</source>
-        <translation type="unfinished"></translation>
+        <translation>Send Coins</translation>
     </message>
     <message>
         <location line="+76"/>
@@ -2508,12 +2508,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+32"/>
-        <source>Dust:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+48"/>
+        <location line="+80"/>
         <source>After Fee:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2548,23 +2543,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+3"/>
-        <source>Hide</source>
+        <location line="+54"/>
+        <source>per kilobyte</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+48"/>
+        <location line="-3"/>
         <location line="+16"/>
         <source>If the custom fee is set to 1000 kria and the transaction is only 250 bytes, then &quot;per kilobyte&quot; only pays 250 kria in fee, while &quot;total at least&quot; pays 1000 kria. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-13"/>
-        <source>per kilobyte</source>
+        <location line="-64"/>
+        <source>Hide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+16"/>
+        <location line="+67"/>
         <source>total at least</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2610,39 +2605,44 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+59"/>
-        <source>Confirm the send action</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>S&amp;end</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+23"/>
-        <source>Clear all fields of the form.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Clear &amp;All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+14"/>
+        <location line="+102"/>
         <source>Send to multiple recipients at once</source>
-        <translation type="unfinished"></translation>
+        <translation>Send to multiple recipients at once</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add &amp;Recipient</source>
+        <translation>Add &amp;Recipient</translation>
+    </message>
+    <message>
+        <location line="-20"/>
+        <source>Clear all fields of the form.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+38"/>
-        <source>Balance:</source>
+        <location line="-805"/>
+        <source>Dust:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+808"/>
+        <source>Clear &amp;All</source>
+        <translation>Clear &amp;All</translation>
+    </message>
+    <message>
+        <location line="+55"/>
+        <source>Balance:</source>
+        <translation>Balance:</translation>
+    </message>
+    <message>
+        <location line="-84"/>
+        <source>Confirm the send action</source>
+        <translation>Confirm the send action</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>S&amp;end</source>
+        <translation>S&amp;end</translation>
     </message>
     <message>
         <location filename="../sendcoinsdialog.cpp" line="-476"/>
@@ -2794,39 +2794,51 @@
 <context>
     <name>SendCoinsEntry</name>
     <message>
-        <location filename="../forms/sendcoinsentry.ui" line="+21"/>
-        <source>This is a normal payment.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../forms/sendcoinsentry.ui" line="+155"/>
+        <location line="+539"/>
+        <location line="+533"/>
+        <source>A&amp;mount:</source>
+        <translation>A&amp;mount:</translation>
     </message>
     <message>
-        <location line="+21"/>
+        <location line="-1185"/>
         <source>Pay &amp;To:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pay &amp;To:</translation>
     </message>
     <message>
-        <location line="+18"/>
-        <source>The Freicoin address to send the payment to</source>
-        <translation type="unfinished"></translation>
+        <location line="+93"/>
+        <source>&amp;Label:</source>
+        <translation>&amp;Label:</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="-68"/>
         <source>Choose previously used address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+16"/>
-        <source>Alt+A</source>
+        <location line="-46"/>
+        <source>This is a normal payment.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+39"/>
+        <source>The Freicoin address to send the payment to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Alt+A</source>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Paste address from clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Paste address from clipboard</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Alt+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+P</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2836,24 +2848,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="-1059"/>
-        <source>&amp;Label:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Enter a label for this address to add it to the list of used addresses</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <location line="+539"/>
-        <location line="+533"/>
-        <source>A&amp;mount:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-1054"/>
+        <location line="-1021"/>
         <source>The fee will be deducted from the amount being sent. The recipient will receive less freicoins than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2868,17 +2863,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+10"/>
-        <source>A message that was attached to the freicoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Freicoin network.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+433"/>
+        <location line="+443"/>
         <source>This is an unauthenticated payment request.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+15"/>
+        <location line="+529"/>
+        <source>This is an authenticated payment request.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-1009"/>
+        <source>Enter a label for this address to add it to the list of used addresses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+47"/>
+        <source>A message that was attached to the freicoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Freicoin network.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+448"/>
         <location line="+529"/>
         <source>Pay To:</source>
         <translation type="unfinished"></translation>
@@ -2887,11 +2892,6 @@
         <location line="-495"/>
         <location line="+533"/>
         <source>Memo:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="-53"/>
-        <source>This is an authenticated payment request.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2927,12 +2927,12 @@
     <message>
         <location filename="../forms/signverifymessagedialog.ui" line="+14"/>
         <source>Signatures - Sign / Verify a Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Signatures - Sign / Verify a Message</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Sign Message</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sign Message</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2954,58 +2954,58 @@
         <location line="-200"/>
         <location line="+210"/>
         <source>Alt+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <location line="-200"/>
         <source>Paste address from clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Paste address from clipboard</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Alt+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+P</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Enter the message you want to sign here</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter the message you want to sign here</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Signature</source>
-        <translation type="unfinished"></translation>
+        <translation>Signature</translation>
     </message>
     <message>
         <location line="+27"/>
         <source>Copy the current signature to the system clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Copy the current signature to the system clipboard</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Sign the message to prove you own this Freicoin address</source>
-        <translation type="unfinished"></translation>
+        <translation>Sign the message to prove you own this Freicoin address</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Sign &amp;Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Sign &amp;Message</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Reset all sign message fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset all sign message fields</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+143"/>
         <source>Clear &amp;All</source>
-        <translation type="unfinished"></translation>
+        <translation>Clear &amp;All</translation>
     </message>
     <message>
         <location line="-84"/>
         <source>&amp;Verify Message</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verify Message</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -3020,17 +3020,17 @@
     <message>
         <location line="+37"/>
         <source>Verify the message to ensure it was signed with the specified Freicoin address</source>
-        <translation type="unfinished"></translation>
+        <translation>Verify the message to ensure it was signed with the specified Freicoin address</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Verify &amp;Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Verify &amp;Message</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Reset all verify message fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset all verify message fields</translation>
     </message>
     <message>
         <location filename="../signverifymessagedialog.cpp" line="+55"/>
@@ -3109,7 +3109,7 @@
     <message>
         <location filename="../networkstyle.cpp" line="+33"/>
         <source>[testnet]</source>
-        <translation type="unfinished"></translation>
+        <translation>[testnet]</translation>
     </message>
 </context>
 <context>
@@ -3196,7 +3196,7 @@
     <message>
         <location line="+4"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Date</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3341,7 +3341,7 @@
     <message>
         <location line="+21"/>
         <source>Amount</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Amount</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3361,7 +3361,7 @@
     <message>
         <location filename="../forms/transactiondescdialog.ui" line="+20"/>
         <source>This pane shows a detailed description of the transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>This pane shows a detailed description of the transaction</translation>
     </message>
     <message>
         <location filename="../transactiondescdialog.cpp" line="+31"/>
@@ -3374,7 +3374,7 @@
     <message>
         <location filename="../transactiontablemodel.cpp" line="+261"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Date</translation>
     </message>
     <message>
         <location line="+0"/>
@@ -3661,7 +3661,7 @@
     <message>
         <location line="+9"/>
         <source>Confirmed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Confirmed</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -3671,7 +3671,7 @@
     <message>
         <location line="+1"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Date</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3745,7 +3745,7 @@
     <message>
         <location filename="../walletmodel.cpp" line="+303"/>
         <source>Send Coins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Send Coins</translation>
     </message>
 </context>
 <context>
@@ -3753,12 +3753,12 @@
     <message>
         <location filename="../walletview.cpp" line="+60"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Export</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Export the data in the current tab to a file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Export the data in the current tab to a file</translation>
     </message>
     <message>
         <location line="+194"/>
