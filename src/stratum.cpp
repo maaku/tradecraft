@@ -1372,10 +1372,13 @@ void BlockWatcher()
             std::string data;
             try {
                 data = GetWorkUnit(client);
-            } catch (...) {
+            } catch (const UniValue& objError) {
+                data = JSONRPCReply(NullUniValue, objError, NullUniValue);
+            } catch (const std::exception& e) {
                 // Some sort of error.  Ignore.
-                LogPrint("stratum", "Error generating updated work for stratum client\n");
-                continue;
+                std::string msg = strprintf("Error generating updated work for stratum client: %s", e.what());
+                LogPrint("stratum", "%s\n", msg);
+                data = JSONRPCReply(NullUniValue, JSONRPCError(RPC_INTERNAL_ERROR, msg), NullUniValue);
             }
             // Send the new work to the client
             LogPrint("stratum", "Sending updated stratum work unit to %s : %s", client.GetPeer().ToString(), data);
