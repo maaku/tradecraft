@@ -387,7 +387,7 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "  \"curtime\" : ttt,                  (numeric) current timestamp in seconds since epoch (Jan 1 1970 GMT)\n"
             "  \"bits\" : \"xxxxxxxx\",              (string) compressed target of next block\n"
             "  \"height\" : n                      (numeric) The height of the next block\n"
-            "  \"finaltx\" : {                  (json object) information necessary to construct the block-final transaction\n"
+            "  \"finaltx\" : {                     (json object) information necessary to construct the block-final transaction\n"
             "      \"prevout\" : [                 (array) UTXO records of inputs which must be included in the block-final transaction\n"
             "          {\n"
             "              \"txid\" : txid,        (string) input txid\n"
