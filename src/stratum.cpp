@@ -524,7 +524,7 @@ std::string GetWorkUnit(StratumClient& client)
     uint256 hashPrevBlock(current_work.GetBlock().hashPrevBlock);
     for (int i = 0; i < 256/32; ++i) {
         ((uint32_t*)hashPrevBlock.begin())[i] = bswap_32(
-            ((uint32_t*)hashPrevBlock.begin())[i]);
+        ((uint32_t*)hashPrevBlock.begin())[i]);
     }
     params.push_back(HexStr(hashPrevBlock.begin(), hashPrevBlock.end()));
     params.push_back(cb1);
@@ -937,17 +937,7 @@ UniValue stratum_mining_submit(StratumClient& client, const UniValue& params)
 {
     const std::string method("mining.submit");
     BoundParams(method, params, 5, 6);
-
-    std::string username = params[0].get_str();
-    boost::trim(username);
-
-    // There may or may not be a '+' suffix in the username, so we
-    // clean it up just in case:
-    size_t pos = username.find('+');
-    if (pos != std::string::npos) {
-        username.resize(pos);
-        boost::trim_right(username);
-    }
+    // First parameter is the client username, which is ignored.
 
     std::string id = params[1].get_str();
 
@@ -980,6 +970,7 @@ UniValue stratum_mining_submit(StratumClient& client, const UniValue& params)
         SubmitSecondStage(client, aux_pow_path, second_stage, extranonce2, nTime, nNonce, nVersion);
     } else {
         uint256 job_id, mmroot;
+        size_t pos = 0;
         if ((pos = id.find(':', 0)) != std::string::npos) {
             mmroot = ParseUInt256(std::string(id, pos+1), "mmroot");
             id.resize(pos);
