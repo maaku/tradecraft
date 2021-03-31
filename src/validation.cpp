@@ -1906,14 +1906,12 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         // so local code analysis tools don't think we have an unhandled case
         // that could cause a crash:
         if (block.vtx.empty()) {
-            return state.DoS(100, error("%s: first tx is not coinbase", __func__),
-                             REJECT_INVALID, "bad-cb-missing");
+            return state.DoS(100, false, REJECT_INVALID, "bad-cb-missing");
         }
         // Make sure there is at least *one* output in the coinbase which
         // satisfies our spend criteria.
         if (block.vtx[0]->vout.empty()) {
-            return state.DoS(100, error("%s: activation coinbase has no outputs", __func__),
-                             REJECT_INVALID, "bad-cb-missing-outputs");
+            return state.DoS(100, false, REJECT_INVALID, "bad-cb-missing-outputs");
         }
         uint32_t idx;
         const CTransaction& coinbaseTx = *block.vtx.front();
@@ -1925,8 +1923,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         }
         // Check if we found any suitable outputs.
         if (idx == coinbaseTx.vout.size()) {
-            return state.DoS(100, error("%s: coinbase missing output for block-final tx", __func__),
-                             REJECT_INVALID, "bad-cb-missing-block-final-output");
+            return state.DoS(100, false, REJECT_INVALID, "bad-cb-missing-block-final-output");
         }
         // Rules for the initial block final are different from those
         // that are enforced later.
@@ -1966,8 +1963,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             // necessary since coinbase can't have inputs, but for clarity we
             // explicitly check and fail with the relevant error message.
             if (block.vtx.size() < 2) {
-                return state.DoS(100, error("%s: missing block-final transaction", __func__),
-                                 REJECT_INVALID, "missing-block-final-tx");
+                return state.DoS(100, false, REJECT_INVALID, "missing-block-final-tx");
             }
             const CTransaction& final_tx = *block.vtx.back();
             // Make sure each txin comes from either the prior block-final
@@ -1994,29 +1990,25 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                 }
                 // Otherwise we must be spending an already-matured coin which
                 // doesn't fit into the above categories.
-                return state.DoS(100, error("%s: block-final transaction makes invalid spend", __func__),
-                                 REJECT_INVALID, "block-final-spend-invalid");
+                return state.DoS(100, false, REJECT_INVALID, "block-final-spend-invalid");
             }
             // Block-final transactions are chained together, and must spend
             // every single output of the prior block-final transaction, so that
             // we don't end up with coinbase-like reorg risk taint.
             if (!prev_final_tx->IsCoinBase() && spends_prior_tx != prev_final_tx->vout.size()) {
-                return state.DoS(100, error("%s: missing txin of prior block-final transaction", __func__),
-                                 REJECT_INVALID, "block-final-missing-prior-input");
+                return state.DoS(100, false, REJECT_INVALID, "block-final-missing-prior-input");
             }
             // As a DoS prevention measure, the block-final transaction is only
             // allowed to have as many outputs as it has has inputs.
             if (final_tx.vout.size() > final_tx.vin.size()) {
-                return state.DoS(100, error("%s: too many outputs for block-final transaction", __func__),
-                                 REJECT_INVALID, "block-final-excesss-output");
+                return state.DoS(100, false, REJECT_INVALID, "block-final-excesss-output");
             }
             // Every output of the block-final transaction must be trivially
             // spendable (spendable with current validation flags, without
             // providing a scriptSig or witness).
             for (const CTxOut& txout : final_tx.vout) {
                 if (!IsTriviallySpendable(final_tx, 0, flags|SCRIPT_VERIFY_WITNESS|SCRIPT_VERIFY_CLEANSTACK)) {
-                    return state.DoS(100, error("%s: block-final txout not trivially spendable", __func__),
-                                     REJECT_INVALID, "block-final-output-spendable");
+                    return state.DoS(100, false, REJECT_INVALID, "block-final-output-spendable");
                 }
             }
         }
